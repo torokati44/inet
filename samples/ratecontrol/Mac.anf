@@ -9,9 +9,6 @@
       <items xsi:type="scave:Add" filterPattern="module(RateControlExample.Host[0].wlan[0].mac.rateControl) AND name(databitrate:vector)" type="VECTOR"/>
       <items xsi:type="scave:Add" filterPattern="module(RateControlExample.sinkHost.udpApp[0]) AND name(throughput:vector)" type="VECTOR"/>
       <items xsi:type="scave:Group" name="databitrate:vector RateControlExample.Host[0].wlan[0].mac.rateControl">
-        <items xsi:type="scave:Apply" operation="slidingwinavg">
-          <params name="windowSize" value="10"/>
-        </items>
         <items xsi:type="scave:LineChart" name="databitrate:vector RateControlExample.Host[0].wlan[0].mac.rateControl" lineNameFormat="">
           <properties name="Symbols.Type" value="Dot"/>
           <properties name="Line.Type" value="SampleHold"/>
@@ -27,6 +24,6 @@
     </datasets>
   </datasets>
   <chartSheets>
-    <chartSheets name="Background Noise" charts="//@datasets/@datasets.0/@items.2/@items.1"/>
+    <chartSheets name="Background Noise" charts="//@datasets/@datasets.0/@items.2/@items.0"/>
   </chartSheets>
 </scave:Analysis>
