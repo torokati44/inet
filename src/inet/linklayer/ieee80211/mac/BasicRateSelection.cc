@@ -22,6 +22,10 @@
 #include "inet/physicallayer/ieee80211/mode/IIeee80211Mode.h"
 #include "inet/physicallayer/ieee80211/mode/Ieee80211ModeSet.h"
 
+#include <stdlib.h>
+#include <string.h>
+#include "MacUtils.h"
+
 namespace inet {
 namespace ieee80211 {
 
@@ -69,8 +73,27 @@ const IIeee80211Mode *BasicRateSelection::getModeForMulticastDataOrMgmtFrame(Iee
     return multicastFrameMode;
 }
 
-const IIeee80211Mode *BasicRateSelection::getModeForControlFrame(Ieee80211Frame *controlFrame)
+//const IIeee80211Mode *BasicRateSelection::getModeForControlFrame(Ieee80211Frame *controlFrame)
+//{
+//    return controlFrameMode;
+//}
+
+const IIeee80211Mode *BasicRateSelection::getModeForControlFrame(Ieee80211DataOrMgmtFrame *dataFrame, Ieee80211Frame *controlFrame)
 {
+    // TODO: if the frame is an ACK frame, return the fastest mandatory mode that is slower than the data frame mode
+    bool isthisack = (bool)(dynamic_cast<Ieee80211ACKFrame *>(dataFrame));
+    EV << "RATE SELECTION: received frame " << isthisack << endl;
+    if(!isthisack)
+    {
+        EV_DETAIL << "NOT ACK FRAME!" << endl;
+        if(dataFrame!=nullptr)
+        {
+    auto x = check_and_cast<Ieee80211ReceptionIndication *>(dataFrame->getControlInfo());
+//            auto x = dataFrame->getControlInfo()
+    auto bitrate = x->getMode()->getDataMode()->getNetBitrate();
+        }
+    }
+    else EV_DETAIL << "NOT ACK" << endl;
     return controlFrameMode;
 }
 
