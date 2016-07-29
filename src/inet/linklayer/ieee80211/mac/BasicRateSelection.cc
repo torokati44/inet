@@ -91,7 +91,7 @@ const IIeee80211Mode *BasicRateSelection::getModeForControlFrame(Ieee80211DataOr
             auto mode = x->getMode();
             EV_DETAIL << "bitrate of received data frame: " << bitrate << endl;
             controlFrameMode = modeSet->getSlowerMandatoryMode(mode);
-            if(controlFrame == nullptr)
+            if(controlFrameMode == nullptr)
             {
                 EV_DETAIL << "using slowest mandatory mode for upcoming ACK frame" << endl;
                 controlFrameMode = mode;
