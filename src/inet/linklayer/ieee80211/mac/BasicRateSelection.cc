@@ -74,35 +74,16 @@ const IIeee80211Mode *BasicRateSelection::getModeForMulticastDataOrMgmtFrame(Iee
     return multicastFrameMode;
 }
 
-//const IIeee80211Mode *BasicRateSelection::getModeForControlFrame(Ieee80211Frame *controlFrame)
-//{
-//    return controlFrameMode;
-//}
-
 const IIeee80211Mode *BasicRateSelection::getModeForControlFrame(Ieee80211DataOrMgmtFrame *dataFrame, Ieee80211Frame *controlFrame)
 {
-    // TODO: if the frame is an ACK frame, return the fastest mandatory mode that is slower than the data frame mode
-    if (dynamic_cast<Ieee80211ACKFrame *>(controlFrame)) {
-        EV_DETAIL << "ACK FRAME!" << endl;
-        if (dataFrame != nullptr){
-            auto x = check_and_cast<Ieee80211ReceptionIndication *>(dataFrame->getControlInfo());
-//            auto x = dataFrame->getControlInfo()
-            auto bitrate = x->getMode()->getDataMode()->getNetBitrate();
-            auto mode = x->getMode();
-            EV_DETAIL << "bitrate of received data frame: " << bitrate << endl;
-            controlFrameMode = modeSet->getSlowerMandatoryMode(mode);
-            if(controlFrameMode == nullptr)
-            {
-                EV_DETAIL << "using slowest mandatory mode for upcoming ACK frame" << endl;
-                controlFrameMode = mode;
-            }
-            bitrate = controlFrameMode -> getDataMode()->getNetBitrate();
-            EV_DETAIL << "bitrate of upcoming ACK frame: " << bitrate << endl;
-        }
+    if (dynamic_cast<Ieee80211ACKFrame *>(controlFrame) && dataFrame != nullptr) {
+        auto controlInfo = check_and_cast<Ieee80211ReceptionIndication *>(dataFrame->getControlInfo());
+        auto dataMode = controlInfo->getMode();
+        auto ackMode = modeSet->getSlowerMandatoryMode(dataMode);
+        return ackMode != nullptr ? ackMode : controlFrameMode;
     }
-
-    else EV_DETAIL << "NOT ACK FRAME" << endl;
-    return controlFrameMode;
+    else
+        return controlFrameMode;
 }
 
 const IIeee80211Mode *BasicRateSelection::getResponseControlFrameMode()
