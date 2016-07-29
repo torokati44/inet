@@ -13,6 +13,7 @@
       <items xsi:type="scave:ComputeScalar" scalarName="throughput" valueExpr="'bitrate' * (1 - **.radio.'packetErrorRate:histogram:mean')" moduleExpr="" groupByExpr=""/>
       <items xsi:type="scave:ScatterChart" name="SNIR vs distance" xDataPattern="module(.) AND name(distance)">
         <filters xsi:type="scave:Select" filterPattern="bitrate OR distance OR minSNIR:histogram:mean"/>
+        <properties name="Graph.Title" value="SNIR vs distance"/>
         <properties name="Symbols.Type" value="None"/>
         <properties name="Line.Type" value="Linear"/>
         <isoDataPattern>module(.) AND name(bitrate)</isoDataPattern>
