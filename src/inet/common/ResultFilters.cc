@@ -110,15 +110,38 @@ void ThroughputFilter::receiveSignal(cResultFilter *prev, simtime_t_cref t, cObj
 {
     if (auto packet = dynamic_cast<cPacket *>(object)) {
         const simtime_t now = simTime();
-        if (now - lastSignal >= 0.1 || packets >= 50) {
+        packets++;
+        if (packets >= packetLimit) {
+            bytes += packet->getByteLength();
             double throughput = 8 * bytes / (now - lastSignal).dbl();
+            fire(this, now, throughput DETAILS_ARG_NAME);
             lastSignal = now;
             bytes = 0;
             packets = 0;
-            fire(this, now, throughput DETAILS_ARG_NAME);
         }
-        bytes += packet->getByteLength();
-        packets++;
+        else if (now - lastSignal >= interval) {
+            double throughput = 8 * bytes / interval.dbl();
+            fire(this, lastSignal + interval, throughput DETAILS_ARG_NAME);
+            lastSignal = lastSignal + interval;
+            bytes = 0;
+            packets = 0;
+            if (emitIntermediateZeros) {
+                while (now - lastSignal >= interval) {
+                    fire(this, lastSignal + interval, 0.0 DETAILS_ARG_NAME);
+                    lastSignal = lastSignal + interval;
+                }
+            }
+            else {
+                if (now - lastSignal >= interval) { // no packets arrived for a long period
+                    // zero should have been signaled at the beginning of this packet (approximation)
+                    fire(this, now - interval, 0.0 DETAILS_ARG_NAME);
+                    lastSignal = now - interval;
+                }
+            }
+            bytes += packet->getByteLength();
+        }
+        else
+            bytes += packet->getByteLength();
     }
 }
 
