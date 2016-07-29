@@ -1,29 +1,48 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <scave:Analysis xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:scave="http://www.omnetpp.org/omnetpp/scave">
   <inputs>
-    <inputs name="/inet/samples/ratecontrol/results/Mac-*.vec"/>
-    <inputs name="/inet/samples/ratecontrol/results/Mac-*.sca"/>
+    <inputs name="results/*.vec"/>
+    <inputs name="results/*.sca"/>
   </inputs>
   <datasets>
     <datasets name="databitrate:vector RateControlExample.Host[0].wlan[0].mac.rateControl">
       <items xsi:type="scave:Add" filterPattern="module(RateControlExample.Host[0].wlan[0].mac.rateControl) AND name(databitrate:vector)" type="VECTOR"/>
       <items xsi:type="scave:Add" filterPattern="module(RateControlExample.sinkHost.udpApp[0]) AND name(throughput:vector)" type="VECTOR"/>
-      <items xsi:type="scave:Group" name="databitrate:vector RateControlExample.Host[0].wlan[0].mac.rateControl">
-        <items xsi:type="scave:LineChart" name="databitrate:vector RateControlExample.Host[0].wlan[0].mac.rateControl" lineNameFormat="">
-          <properties name="Symbols.Type" value="Dot"/>
-          <properties name="Line.Type" value="SampleHold"/>
-          <properties name="Symbols.Type/RateControlExample.sinkHost.udpApp[0] throughput:vector" value="Dot"/>
-          <properties name="Line.Type/RateControlExample.sinkHost.udpApp[0] throughput:vector" value="BackwardSampleHold"/>
-        </items>
+      <items xsi:type="scave:Apply" operation="timewinavg">
+        <filters xsi:type="scave:Select" filterPattern="throughput:vector" type="VECTOR"/>
+        <params name="windowSize" value="0.1"/>
       </items>
-    </datasets>
-    <datasets name="throughput:vector RateControlExample.sinkHost.udpApp[0]">
-      <items xsi:type="scave:LineChart" name="throughput:vector RateControlExample.sinkHost.udpApp[0]" lineNameFormat="">
-        <properties name="Symbols.Type" value="Dot"/>
+      <items xsi:type="scave:Apply" operation="expression">
+        <params name="expression" value="y-y%1000000"/>
+      </items>
+      <items xsi:type="scave:LineChart" name="" lineNameFormat="">
+        <properties name="Line.Display/General-0-20160729-14:26:44-13777 0 RateControlExample.sinkHost.udpApp[0] expression(timewinavg(throughput:vector)) $rateControl=&quot;&quot;" value="false"/>
+        <properties name="Line.Display/General-1-20160729-14:28:13-13777 1 RateControlExample.Host[0].wlan[0].mac.rateControl expression(databitrate:vector) $rateControl=&quot;ARFRateControl&quot;" value="false"/>
+        <properties name="Line.Display/General-1-20160729-14:28:13-13777 1 RateControlExample.sinkHost.udpApp[0] expression(timewinavg(throughput:vector)) $rateControl=&quot;ARFRateControl&quot;" value="false"/>
+        <properties name="Symbols.Type/General-2-20160729-14:29:44-13777 2 RateControlExample.sinkHost.udpApp[0] expression(timewinavg(throughput:vector)) $rateControl=&quot;AARFRateControl&quot;" value="None"/>
+        <properties name="Line.Type/General-2-20160729-14:29:44-13777 2 RateControlExample.sinkHost.udpApp[0] expression(timewinavg(throughput:vector)) $rateControl=&quot;AARFRateControl&quot;" value="BackwardSampleHold"/>
+        <properties name="Line.Type/General-2-20160729-14:29:44-13777 2 RateControlExample.Host[0].wlan[0].mac.rateControl expression(databitrate:vector) $rateControl=&quot;AARFRateControl&quot;" value="Dots"/>
+        <properties name="Symbols.Size/General-2-20160729-14:29:44-13777 2 RateControlExample.Host[0].wlan[0].mac.rateControl expression(databitrate:vector) $rateControl=&quot;AARFRateControl&quot;" value="1"/>
+      </items>
+      <items xsi:type="scave:LineChart" name="" lineNameFormat="">
+        <properties name="Y.Axis.Min" value="-1000000.0"/>
+        <properties name="Legend.Display" value="true"/>
+        <properties name="Line.Display//inet/samples/ratecontrol/results/General-1.vec General-1-20160729-14:28:13-13777 1 RateControlExample.Host[0].wlan[0].mac.rateControl databitrate:vector $rateControl=&quot;ARFRateControl&quot;" value="false"/>
+        <properties name="Line.Display//inet/samples/ratecontrol/results/General-2.vec General-2-20160729-14:29:44-13777 2 RateControlExample.Host[0].wlan[0].mac.rateControl databitrate:vector $rateControl=&quot;AARFRateControl&quot;" value="false"/>
+        <properties name="Line.Type" value="BackwardSampleHold"/>
+        <properties name="Line.Type/General-2-20160729-14:29:44-13777 2 RateControlExample.sinkHost.udpApp[0] expression(timewinavg(throughput:vector)) $rateControl=&quot;AARFRateControl&quot;" value="BackwardSampleHold"/>
+        <properties name="Line.Type/General-1-20160729-14:28:13-13777 1 RateControlExample.Host[0].wlan[0].mac.rateControl expression(databitrate:vector) $rateControl=&quot;ARFRateControl&quot;" value="BackwardSampleHold"/>
+        <properties name="Line.Display/General-2-20160729-14:29:44-13777 2 RateControlExample.Host[0].wlan[0].mac.rateControl expression(databitrate:vector) $rateControl=&quot;AARFRateControl&quot;" value="false"/>
+        <properties name="Line.Type/General-0-20160729-14:26:44-13777 0 RateControlExample.sinkHost.udpApp[0] expression(timewinavg(throughput:vector)) $rateControl=&quot;&quot;" value="BackwardSampleHold"/>
+        <properties name="Symbols.Type/General-0-20160729-14:26:44-13777 0 RateControlExample.sinkHost.udpApp[0] expression(timewinavg(throughput:vector)) $rateControl=&quot;&quot;" value="None"/>
+        <properties name="Symbols.Type/General-1-20160729-14:28:13-13777 1 RateControlExample.sinkHost.udpApp[0] expression(timewinavg(throughput:vector)) $rateControl=&quot;ARFRateControl&quot;" value="None"/>
+        <properties name="Line.Type/General-1-20160729-14:28:13-13777 1 RateControlExample.sinkHost.udpApp[0] expression(timewinavg(throughput:vector)) $rateControl=&quot;ARFRateControl&quot;" value="BackwardSampleHold"/>
+        <properties name="Symbols.Type/General-2-20160729-14:29:44-13777 2 RateControlExample.sinkHost.udpApp[0] expression(timewinavg(throughput:vector)) $rateControl=&quot;AARFRateControl&quot;" value="None"/>
+        <properties name="Line.Display/General-1-20160729-14:28:13-13777 1 RateControlExample.Host[0].wlan[0].mac.rateControl expression(databitrate:vector) $rateControl=&quot;ARFRateControl&quot;" value="false"/>
       </items>
     </datasets>
   </datasets>
   <chartSheets>
-    <chartSheets name="Background Noise" charts="//@datasets/@datasets.0/@items.2/@items.0"/>
+    <chartSheets name="default" charts="//@datasets/@datasets.0/@items.5 //@datasets/@datasets.0/@items.4"/>
   </chartSheets>
 </scave:Analysis>
