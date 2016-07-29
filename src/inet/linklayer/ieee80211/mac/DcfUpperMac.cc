@@ -160,7 +160,7 @@ void DcfUpperMac::enqueue(Ieee80211DataOrMgmtFrame *frame)
 void DcfUpperMac::lowerFrameReceived(Ieee80211Frame *frame)
 {
     Enter_Method("lowerFrameReceived(\"%s\")", frame->getName());
-    delete frame->removeControlInfo();          //TODO
+    //delete frame->removeControlInfo();          //TODO
     take(frame);
 
     if (!utils->isForUs(frame)) {
