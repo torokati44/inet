@@ -24,7 +24,8 @@
 
 #include <stdlib.h>
 #include <string.h>
-#include "MacUtils.h"
+
+#include "inet/linklayer/ieee80211/mac/MacUtils.h"
 
 namespace inet {
 namespace ieee80211 {
@@ -87,8 +88,19 @@ const IIeee80211Mode *BasicRateSelection::getModeForControlFrame(Ieee80211DataOr
             auto x = check_and_cast<Ieee80211ReceptionIndication *>(dataFrame->getControlInfo());
 //            auto x = dataFrame->getControlInfo()
             auto bitrate = x->getMode()->getDataMode()->getNetBitrate();
+            auto mode = x->getMode();
+            EV_DETAIL << "bitrate of received data frame: " << bitrate << endl;
+            controlFrameMode = modeSet->getSlowerMandatoryMode(mode);
+            if(controlFrame == nullptr)
+            {
+                EV_DETAIL << "using slowest mandatory mode for upcoming ACK frame" << endl;
+                controlFrameMode = mode;
+            }
+            bitrate = controlFrameMode -> getDataMode()->getNetBitrate();
+            EV_DETAIL << "bitrate of upcoming ACK frame: " << bitrate << endl;
         }
     }
+
     else EV_DETAIL << "NOT ACK FRAME" << endl;
     return controlFrameMode;
 }
