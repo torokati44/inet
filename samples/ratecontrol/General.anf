@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<scave:Analysis xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:scave="http://www.omnetpp.org/omnetpp/scave">
+  <inputs>
+    <inputs name="/inet/samples/ratecontrol/results/General-*.vec"/>
+  </inputs>
+  <datasets>
+    <datasets name="Run 1">
+      <items xsi:type="scave:Add" filterPattern="module(*) AND name(databitrate:vector) AND file(/inet/samples/ratecontrol/results/General-1.vec)  AND module(*.Host[*].*) " type="VECTOR"/>
+      <items xsi:type="scave:Add" filterPattern="module(*) AND name(throughput:vector) AND file(/inet/samples/ratecontrol/results/General-1.vec) " type="VECTOR"/>
+      <items xsi:type="scave:LineChart" name="" lineNameFormat="">
+        <properties name="Y.Axis.Max" value="7.0E7"/>
+        <properties name="X.Axis.Max" value="50.0"/>
+        <properties name="Line.Type/RateControlExample.Host[0].wlan[0].mac.rateControl databitrate:vector" value="SampleHold"/>
+        <properties name="Symbols.Type" value="Dot"/>
+        <properties name="Symbols.Size" value="2"/>
+        <properties name="Symbols.Type/RateControlExample.sinkHost.udpApp[0] throughput:vector" value="Dot"/>
+        <properties name="Symbols.Size/RateControlExample.sinkHost.udpApp[0] throughput:vector" value="2"/>
+        <properties name="Line.Type/RateControlExample.sinkHost.udpApp[0] throughput:vector" value="Linear"/>
+      </items>
+    </datasets>
+    <datasets name="Run 2">
+      <items xsi:type="scave:Add" filterPattern="name(databitrate:vector) AND file(/inet/samples/ratecontrol/results/General-2.vec) AND module(*.Host[*].*)  " type="VECTOR"/>
+      <items xsi:type="scave:Add" filterPattern="name(throughput:vector) AND file(/inet/samples/ratecontrol/results/General-2.vec)  " type="VECTOR"/>
+      <items xsi:type="scave:LineChart" name="" lineNameFormat="">
+        <properties name="Line.Type/RateControlExample.Host[0].wlan[0].mac.rateControl databitrate:vector" value="SampleHold"/>
+        <properties name="Line.Type/RateControlExample.sinkHost.udpApp[0] throughput:vector" value="Linear"/>
+        <properties name="Symbols.Type" value="Dot"/>
+        <properties name="Symbols.Size" value="2"/>
+      </items>
+    </datasets>
+    <datasets name="Run 0">
+      <items xsi:type="scave:Add" filterPattern="name(throughput:vector) AND file(/inet/samples/ratecontrol/results/General-0.vec) " type="VECTOR"/>
+      <items xsi:type="scave:LineChart" name="" lineNameFormat="">
+        <properties name="Graph.Title" value="No rate control"/>
+        <properties name="Y.Axis.Max" value="7.0E7"/>
+        <properties name="X.Axis.Max" value="50.0"/>
+        <properties name="Symbols.Type" value="Dot"/>
+        <properties name="Symbols.Size" value="2"/>
+        <properties name="Line.Type" value="Linear"/>
+        <properties name="Line.Color" value="red"/>
+      </items>
+    </datasets>
+    <datasets name="Throughput">
+      <items xsi:type="scave:Add" filterPattern="name(throughput:vector)" type="VECTOR"/>
+      <items xsi:type="scave:LineChart" name="" lineNameFormat="">
+        <properties name="Y.Axis.Max" value="7.0E7"/>
+        <properties name="X.Axis.Max" value="50.0"/>
+        <properties name="Symbols.Type" value="Dot"/>
+        <properties name="Symbols.Size" value="2"/>
+        <properties name="Line.Type" value="Linear"/>
+      </items>
+    </datasets>
+    <datasets name="Databitrate">
+      <items xsi:type="scave:Add" filterPattern="name(databitrate:vector) AND module(*.Host[*].*) " type="VECTOR"/>
+      <items xsi:type="scave:LineChart" name="" lineNameFormat="">
+        <properties name="Y.Axis.Max" value="7.0E7"/>
+        <properties name="X.Axis.Max" value="50.0"/>
+        <properties name="Symbols.Type" value="None"/>
+        <properties name="Symbols.Size" value="2"/>
+        <properties name="Line.Type" value="SampleHold"/>
+      </items>
+    </datasets>
+  </datasets>
+  <chartSheets>
+    <chartSheets name="default" charts="//@datasets/@datasets.0/@items.2 //@datasets/@datasets.1/@items.2 //@datasets/@datasets.2/@items.1 //@datasets/@datasets.3/@items.1 //@datasets/@datasets.4/@items.1"/>
+    <chartSheets name="Throughput vs databitrate" charts="//@datasets/@datasets.0/@items.2 //@datasets/@datasets.1/@items.2 //@datasets/@datasets.2/@items.1"/>
+  </chartSheets>
+</scave:Analysis>
