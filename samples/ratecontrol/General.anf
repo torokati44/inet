@@ -9,7 +9,6 @@
       <items xsi:type="scave:Add" filterPattern="module(*) AND name(throughput:vector) AND file(/inet/samples/ratecontrol/results/General-1.vec) " type="VECTOR"/>
       <items xsi:type="scave:LineChart" name="" lineNameFormat="">
         <properties name="Y.Axis.Max" value="7.0E7"/>
-        <properties name="X.Axis.Max" value="50.0"/>
         <properties name="Line.Type/RateControlExample.Host[0].wlan[0].mac.rateControl databitrate:vector" value="SampleHold"/>
         <properties name="Symbols.Type" value="Dot"/>
         <properties name="Symbols.Size" value="2"/>
@@ -33,18 +32,15 @@
       <items xsi:type="scave:LineChart" name="" lineNameFormat="">
         <properties name="Graph.Title" value="No rate control"/>
         <properties name="Y.Axis.Max" value="7.0E7"/>
-        <properties name="X.Axis.Max" value="50.0"/>
         <properties name="Symbols.Type" value="Dot"/>
         <properties name="Symbols.Size" value="2"/>
         <properties name="Line.Type" value="Linear"/>
-        <properties name="Line.Color" value="red"/>
       </items>
     </datasets>
     <datasets name="Throughput">
       <items xsi:type="scave:Add" filterPattern="name(throughput:vector)" type="VECTOR"/>
       <items xsi:type="scave:LineChart" name="" lineNameFormat="">
         <properties name="Y.Axis.Max" value="7.0E7"/>
-        <properties name="X.Axis.Max" value="50.0"/>
         <properties name="Symbols.Type" value="Dot"/>
         <properties name="Symbols.Size" value="2"/>
         <properties name="Line.Type" value="Linear"/>
