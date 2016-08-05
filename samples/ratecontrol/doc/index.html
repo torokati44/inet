@@ -27,33 +27,32 @@
 	<p>
 		For example, in certain channel conditions if hosts transmitted with 54 mbps, the transmissions would not be received correctly, and the throughput would drop to zero.
 		However, transmissions with 6 mbps would be correctly receivable due to the simpler modulation (BPSK instead of 64QAM).
-		It is not obvious which rate works the best with what channel conditions. There are algorithms to find the best rate.
+		It is not obvious which rate works the best with what channel conditions. The goal of rate control algorithms is to find the best rate.
 	</p>
 
 	<p><b>Rate control algorithms</b></p>
 
-	<p>Some rate control algoithms vary the transmission rate according to packet loss. When too many packets are lost (ie. the ACK for them doesn't arrive) the transmission rate is lowered. When a number of packets are sent without loss, the rate is increased.
+	<p>Some rate control algorithms vary the transmission rate according to packet loss. When too many packets are lost (ie. the ACK for them doesn't arrive) the transmission rate is lowered. When a number of packets are sent without loss, the rate is increased.
 	</p>
 
-	<p>INET has different rate control algoritm models, like <tt>ARFRateControl</tt>, <tt>AARFRateControl</tt> and
+	<p>INET has different rate control models, like <tt>ARFRateControl</tt>, <tt>AARFRateControl</tt> and
 		<tt>OnoeRateControl</tt>.
 	</p>
 
 	<p><b>The network</b></p>
 
 	<p>Hosts are placed on the edge of the playground. During the simulation, they move along the edge of the
-		playground with different speed, while <i>Host[0]</i> sends UDP packets to <i>sinkHost</i>. There is an
-		obstacle in the middle of the playground. The line of
+		playground with different speed, while <i>Host[0]</i> sends UDP packets to <i>sinkHost</i>. There is a forest
+		 in the middle of the playground, acting as an obstacle. The line of
 		transmission intersects the obstacle at certain times, which degrades transmissions.
 	</p>
 
-	<p><center><img src="network2.png"></center></p>
+	<p><center><img src="network.png"></center></p>
 
 	<p><b>Configuration</b></p>
 
 	<p>
-		The two hosts are configured to move along the edges of the playground at different speeds, so the distance
-		between them varies. Host[0] is configured to saturate the channel with UDP traffic when using the fastest
+		Host[0] is configured to saturate the channel with UDP traffic when using the fastest
 		mode, 54 mbps. This way the maximum throughput can be measured.
 	</p>
 
@@ -84,7 +83,7 @@
 		24 mbps when the transmissions are not obstructed by the forest. It decreases to zero when the forest gets between the hosts.
 		In the other configuraton in which the hosts use rate control, the rate control algorithm varies the rate when transmissions
 		go through the obstacle. The rate is switched rapidly, which looks like if there were multiple levels on the graph. 
-		Some transmissions can still be received correctly even though they go through the forest, the throughput decreases but at first its
+		Some transmissions can still be received correctly even though they go through the forest. The throughput decreases at first, its
 		not zero. There are intervals where it decreases to zero, and the rate is set to the lowest level. Throughput and nominal data rate for the two scenarios can be compared on the following charts.
 	</p>
 
