@@ -78,9 +78,13 @@
         <properties name="Line.Type" value="SampleHold"/>
       </items>
     </datasets>
+    <datasets name="Packetcount">
+      <items xsi:type="scave:Add" filterPattern="module(*.sinkHost.udpApp[0]) AND name(rcvdPk:count)"/>
+      <items xsi:type="scave:BarChart"/>
+    </datasets>
   </datasets>
   <chartSheets>
-    <chartSheets name="default" charts="//@datasets/@datasets.0/@items.2 //@datasets/@datasets.1/@items.2 //@datasets/@datasets.2/@items.1 //@datasets/@datasets.3/@items.2"/>
+    <chartSheets name="default" charts="//@datasets/@datasets.0/@items.2 //@datasets/@datasets.1/@items.2 //@datasets/@datasets.2/@items.1 //@datasets/@datasets.3/@items.2 //@datasets/@datasets.4/@items.1"/>
     <chartSheets name="Throughput vs databitrate" charts="//@datasets/@datasets.0/@items.2 //@datasets/@datasets.1/@items.2"/>
   </chartSheets>
 </scave:Analysis>

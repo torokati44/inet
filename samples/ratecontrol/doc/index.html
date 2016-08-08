@@ -52,8 +52,8 @@
 	<p><b>Configuration</b></p>
 
 	<p>
-		Host[0] is configured to saturate the channel with UDP traffic when using the fastest
-		mode, 54 mbps. This way the maximum throughput can be measured.
+		Hosts are configured to operate in 802.11 'a' mode and ad-hoc mode. Host[0] is configured to saturate the channel with UDP traffic when using the fastest
+		mode, 54 mbps. This way the maximum application level throughput can be measured.
 	</p>
 
 	<p>
@@ -71,7 +71,7 @@
 	<p><center><img src="ratecontrol1.gif"></center></p>
 
 	<p>
-		The following charts show the nominal data bitrate and the actual application level throughput for the two configurations 
+		Bitrate and throughput are recorded during the simulations. The following charts show the nominal data bitrate and the actual application level throughput for the two configurations 
 		(the values are in s and bps).
 	</p>
 
@@ -84,11 +84,15 @@
 		In the other configuraton in which the hosts use rate control, the rate control algorithm varies the rate when transmissions
 		go through the obstacle. The rate is switched rapidly, which looks like if there were multiple levels on the graph. 
 		Some transmissions can still be received correctly even though they go through the forest. The throughput decreases at first, its
-		not zero. There are intervals where it decreases to zero, and the rate is set to the lowest level. Throughput and nominal data rate for the two scenarios can be compared on the following charts.
+		not zero. There are intervals where it decreases to zero, and the rate is set to the lowest level (6 mbps). Throughput and nominal data rate for the two scenarios can be compared on the following charts.
 	</p>
 
 	<p><center><img src="throughput.png" width=850px></center></p>
 	<p><center><img src="bitrate.png" width=850px></center></p>
+
+	<p>The received packet count at <i>sinkHost</i> is 18366 for 'No rate control', and 35966 for 'AARFRateControl'.</p>
+
+	<p><b>Conclusion</b></p>
 
 	<p>This shows that rate control is effective in maximizing the performance of the wireless network, as it increases throughput during
 		difficult channel conditions. Throughput is not zero in situations when it would be, if rate control wasn't used.
