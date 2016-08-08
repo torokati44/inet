@@ -1,0 +1,37 @@
+<html>
+<head>
+	<title>Errorrate Example</title>
+	<link rel="stylesheet" type="text/css" href="../../../etc/samples.css">
+</head>
+
+<body>
+
+	<h1><center>Errorrate Example</center></h1>
+
+	<h2>Goals</h2>
+
+	<p>This example analyzes how packet error rate changes as a function of distance in 802.11 wireless models.</p>
+
+	<h2>The model</h2>
+
+	<p><b>Configuration</b></p>
+
+	<p>The network contains 2 hosts. <i>sourceHost</i> sends ping requests to <i>destinationHost</i>.
+		The configuration is a parameter study, where the variables are the distance between the hosts and the bitrate.
+		The distance runs between 100 and 8000 meters, in 25 meter steps. The bitrate is varied between the following values:
+		6, 12, 24, 36 and 54 mbps. This results in about 1500 short simulation runs.</p>
+
+		<p>
+			Each simulation runs for 1 second. The ping application in <i>sourceHost</i> sends ping requests with the interval of 1 second.
+		</p>
+
+	<p><b>Packet error rate</b></p>
+
+	<p>Since <i>sourceHost</i> just sends one or two ping packet in most of the simulations (they might send more because of retries, if the distance is great enough
+		so they don't get an answer), the packet error rate cannot be measured. Instead, it is computed from the bit error rate (BER), which is computed from the signal-to-noise-plus-interference ratio (SNIR). </p>
+
+	<p><b>Radio</b></p>
+
+	<p>about radio config</p>
+
+</body>
