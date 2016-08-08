@@ -20,6 +20,7 @@
       </items>
       <items xsi:type="scave:ScatterChart" name="PER vs distance" xDataPattern="module(.) AND name(distance)">
         <filters xsi:type="scave:Select" filterPattern="bitrate OR distance OR packetErrorRate:histogram:mean"/>
+        <properties name="Graph.Title" value="PER vs distance"/>
         <properties name="Y.Axis.Log" value="true"/>
         <properties name="Symbols.Type" value="None"/>
         <properties name="Line.Type" value="Linear"/>
@@ -27,6 +28,7 @@
       </items>
       <items xsi:type="scave:ScatterChart" name="PER vs SNIR" xDataPattern="module(ErrorRateTest.sourceHost.wlan[0].radio) AND name(minSNIR:histogram:mean)">
         <filters xsi:type="scave:Select" filterPattern="bitrate OR minSNIR:histogram:mean OR packetErrorRate:histogram:mean"/>
+        <properties name="Graph.Title" value="PER vs SNIR"/>
         <properties name="Y.Axis.Log" value="true"/>
         <properties name="Symbols.Type" value="None"/>
         <properties name="Line.Type" value="Linear"/>
@@ -35,6 +37,7 @@
       </items>
       <items xsi:type="scave:ScatterChart" name="Througput vs distance" xDataPattern="module(.) AND name(distance)">
         <filters xsi:type="scave:Select" filterPattern="bitrate OR distance OR throughput"/>
+        <properties name="Graph.Title" value="Throughput vs distance"/>
         <properties name="Symbols.Type" value="None"/>
         <properties name="Line.Type" value="Linear"/>
         <isoDataPattern>module(.) AND name(bitrate)</isoDataPattern>
