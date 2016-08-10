@@ -6,7 +6,7 @@
 
 <body>
 
-	<h1><center>Errorrate Example</center></h1>
+	<h1><center>Error Rate Example</center></h1>
 
 	<h2>Goals</h2>
 
@@ -50,12 +50,13 @@
 	<p>
 		The next chart shows how packet error rate decreases with SNIR. After a certain SNIR value, the packet error rate is very small, about 10^-14, which can be taken as 0.
 		There is difference between the various bitrates. Slower bitrates use simpler modulation like binary phase shift keying, which is more tolerant to noise than more complex
-		modulations used by faster bitrates. Note that the zigzags in the graph are double arythmetic anomalies.
+		modulations used by faster bitrates. Note that the zigzags in the graph are double arithmetic anomalies.
 	</p>
 
 	<p><center><img src="PER_SNIR.png"></center></p>
 
-	<p>The following chart shows the packet error rate vs distance. Again, slower bitrates show less packet errors as the distance increases because of the simpler modulation.</p>
+	<p>The following chart shows the packet error rate vs distance. PER increases exponentially with distance. 
+		Again, slower bitrates show less packet errors as the distance increases because of the simpler modulation.</p>
 
 	<p><center><img src="PER_distance.png"></center></p>
 
@@ -66,5 +67,10 @@
 	<p><center><img src="throughput_distance.png"></center></p>
 
 	<p><b>Conclusion</b></p>
+
+	<p>Packet error rate increases exponentially with distance. Slower bitrates are less sensitive to increasing distance, because they use simpler modulation. Faster bitrate modes
+		are advantageous in short distances because of the increased throughput, but slower modes work better at longer distances. Furthermode, using rate adaptation, a host can use fast modes
+		in short distances and slower modes for larger ones.
+	</p>
 
 </body>
