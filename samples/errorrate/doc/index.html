@@ -1,6 +1,6 @@
 <html>
 <head>
-	<title>Errorrate Example</title>
+	<title>Error Rate Example</title>
 	<link rel="stylesheet" type="text/css" href="../../../etc/samples.css">
 </head>
 
@@ -28,12 +28,43 @@
 	<p><b>Packet error rate</b></p>
 
 	<p>Since <i>sourceHost</i> just sends one or two ping packet in most of the simulations (they might send more because of retries, if the distance is great enough
-		so they don't get an answer), the packet error rate cannot be measured. Instead, it is computed from the bit error rate (BER), which is computed from the signal-to-noise-plus-interference ratio (SNIR). </p>
+		so they don't get an answer), the packet error rate (PER) cannot be measured. Instead, it is computed from the bit error rate (BER) of the received packets, which is computed from the signal-to-noise-plus-interference ratio (SNIR). </p>
 
 	<p><b>Radio</b></p>
 
 	<p>about radio config</p>
 
 	<h2>Results</h2>
+
+	<p>SNIR is recorded from the simulation runs. From this, PER and throughput are computed. Throughput is the effective bitrate, the nominal bitrate decreased becuase of packet errors. </p>
+	<p>
+		SNIR is plotted against distance on the following chart.
+	</p>
+
+	<p><center><img src="SNIR_distance.png"></center></p>
+
+	<p>SNIR decreases exponentially with distance, and is the same for all bitrates. SNIR is measured at the receiver, and depends on the power of noise and the power of the signal.
+		The noise is uniform everywhere (<tt>IsotropicScalarBackgroundNoise</tt>). The signal decreases exponentially with distance.
+	</p>
+
+	<p>
+		The next chart shows how packet error rate decreases with SNIR. After a certain SNIR value, the packet error rate is very small, about 10^-14, which can be taken as 0.
+		There is difference between the various bitrates. Slower bitrates use simpler modulation like binary phase shift keying, which is more tolerant to noise than more complex
+		modulations used by faster bitrates. Note that the zigzags in the graph are double arythmetic anomalies.
+	</p>
+
+	<p><center><img src="PER_SNIR.png"></center></p>
+
+	<p>The following chart shows the packet error rate vs distance. Again, slower bitrates show less packet errors as the distance increases because of the simpler modulation.</p>
+
+	<p><center><img src="PER_distance.png"></center></p>
+
+	<p>Throughput vs distance is plotted on the next chart. Higher bitrates are more sensitive to increases in distance, as the throughput drops rapidly after a critical distance.
+		This critical distance is farther for slower bitrates, and the decrease is not as rapid. 
+	</p>
+
+	<p><center><img src="throughput_distance.png"></center></p>
+
+	<p><b>Conclusion</b></p>
 
 </body>
