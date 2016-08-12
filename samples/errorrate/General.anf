@@ -8,8 +8,8 @@
     <datasets name="Error rate">
       <items xsi:type="scave:Add" filterPattern="distance"/>
       <items xsi:type="scave:Add" filterPattern="bitrate"/>
-      <items xsi:type="scave:Add" filterPattern="module(*.sourceHost.*) AND minSNIR:histogram:mean"/>
-      <items xsi:type="scave:Add" filterPattern="module(*.sourceHost.*) AND packetErrorRate:histogram:mean"/>
+      <items xsi:type="scave:Add" filterPattern="module(*.destinationHost.*) AND minSNIR:histogram:mean"/>
+      <items xsi:type="scave:Add" filterPattern="module(*.destinationHost.*) AND packetErrorRate:histogram:mean"/>
       <items xsi:type="scave:ComputeScalar" scalarName="throughput" valueExpr="'bitrate' * (1 - **.radio.'packetErrorRate:histogram:mean')" moduleExpr="" groupByExpr=""/>
       <items xsi:type="scave:ScatterChart" name="SNIR vs distance" xDataPattern="module(.) AND name(distance)">
         <filters xsi:type="scave:Select" filterPattern="bitrate OR distance OR minSNIR:histogram:mean"/>
