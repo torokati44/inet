@@ -7,13 +7,14 @@
   <datasets>
     <datasets name="throughput">
       <items xsi:type="scave:Add" filterPattern="name(throughput:vector)" type="VECTOR"/>
+      <items xsi:type="scave:Apply" operation="mean"/>
       <items xsi:type="scave:Compute" operation="expression">
-        <params name="expression" value="24500000"/>
+        <params name="expression" value="24577573"/>
       </items>
       <items xsi:type="scave:LineChart"/>
     </datasets>
   </datasets>
   <chartSheets>
-    <chartSheets name="default" charts="//@datasets/@datasets.0/@items.2"/>
+    <chartSheets name="default" charts="//@datasets/@datasets.0/@items.3"/>
   </chartSheets>
 </scave:Analysis>
