@@ -79,7 +79,7 @@ const IIeee80211Mode *BasicRateSelection::getModeForControlFrame(Ieee80211DataOr
     if (dynamic_cast<Ieee80211ACKFrame *>(controlFrame) && dataFrame != nullptr) {
         auto controlInfo = check_and_cast<Ieee80211ReceptionIndication *>(dataFrame->getControlInfo());
         auto dataMode = controlInfo->getMode();
-        auto ackMode = modeSet->getSlowerMandatoryMode(dataMode);
+        auto ackMode = modeSet->getIsMandatory(dataMode) ? dataMode : modeSet->getSlowerMandatoryMode(dataMode);
         return ackMode != nullptr ? ackMode : controlFrameMode;
     }
     else
@@ -90,7 +90,8 @@ const IIeee80211Mode *BasicRateSelection::getResponseControlFrameMode(Ieee80211F
 {
     if (frame != nullptr) {
         auto controlInfo = check_and_cast<Ieee80211TransmissionRequest *>(frame->getControlInfo());
-        auto responseMode = modeSet->getSlowerMandatoryMode(controlInfo->getMode());
+        auto frameMode = controlInfo->getMode();
+        auto responseMode = modeSet->getIsMandatory(frameMode) ? frameMode : modeSet->getSlowerMandatoryMode(controlInfo->getMode());
         return responseMode != nullptr ? responseMode : controlFrameMode;
     }
     else
