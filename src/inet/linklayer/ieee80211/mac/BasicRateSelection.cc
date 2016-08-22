@@ -86,9 +86,15 @@ const IIeee80211Mode *BasicRateSelection::getModeForControlFrame(Ieee80211DataOr
         return controlFrameMode;
 }
 
-const IIeee80211Mode *BasicRateSelection::getResponseControlFrameMode()
+const IIeee80211Mode *BasicRateSelection::getResponseControlFrameMode(Ieee80211Frame *frame)
 {
-    return controlFrameMode;
+    if (frame != nullptr) {
+        auto controlInfo = check_and_cast<Ieee80211TransmissionRequest *>(frame->getControlInfo());
+        auto responseMode = modeSet->getSlowerMandatoryMode(controlInfo->getMode());
+        return responseMode != nullptr ? responseMode : controlFrameMode;
+    }
+    else
+        return controlFrameMode;
 }
 
 } // namespace ieee80211

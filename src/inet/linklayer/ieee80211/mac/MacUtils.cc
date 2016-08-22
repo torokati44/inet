@@ -35,12 +35,12 @@ MacUtils::MacUtils(IMacParameters *params, IRateSelection *rateSelection) :
         params(params), rateSelection(rateSelection) {
 }
 
-simtime_t MacUtils::getAckDuration() const {
-    return rateSelection->getResponseControlFrameMode()->getDuration(LENGTH_ACK);
+simtime_t MacUtils::getAckDuration(Ieee80211Frame *dataFrame) const {
+    return rateSelection->getResponseControlFrameMode(dataFrame)->getDuration(LENGTH_ACK);
 }
 
-simtime_t MacUtils::getCtsDuration() const {
-    return rateSelection->getResponseControlFrameMode()->getDuration(LENGTH_CTS);
+simtime_t MacUtils::getCtsDuration(Ieee80211Frame *rtsFrame) const {
+    return rateSelection->getResponseControlFrameMode(rtsFrame)->getDuration(LENGTH_CTS);
 }
 
 simtime_t MacUtils::getAckEarlyTimeout() const {
@@ -49,8 +49,8 @@ simtime_t MacUtils::getAckEarlyTimeout() const {
             + params->getPhyRxStartDelay();
 }
 
-simtime_t MacUtils::getAckFullTimeout() const {
-    return params->getSifsTime() + params->getSlotTime() + getAckDuration();
+simtime_t MacUtils::getAckFullTimeout(Ieee80211Frame *dataFrame) const {
+    return params->getSifsTime() + params->getSlotTime() + getAckDuration(dataFrame);
 }
 
 simtime_t MacUtils::getCtsEarlyTimeout() const {
@@ -58,8 +58,8 @@ simtime_t MacUtils::getCtsEarlyTimeout() const {
             + params->getPhyRxStartDelay(); // see getAckEarlyTimeout()
 }
 
-simtime_t MacUtils::getCtsFullTimeout() const {
-    return params->getSifsTime() + params->getSlotTime() + getCtsDuration();
+simtime_t MacUtils::getCtsFullTimeout(Ieee80211Frame *rtsFrame) const {
+    return params->getSifsTime() + params->getSlotTime() + getCtsDuration(rtsFrame);
 }
 
 Ieee80211RTSFrame *MacUtils::buildRtsFrame(
@@ -71,10 +71,10 @@ Ieee80211RTSFrame *MacUtils::buildRtsFrame(Ieee80211DataOrMgmtFrame *dataFrame,
         const IIeee80211Mode *dataFrameMode) const {
     // protect CTS + Data + ACK
     simtime_t duration = 3 * params->getSifsTime()
-            + rateSelection->getResponseControlFrameMode()->getDuration(
+            + rateSelection->getResponseControlFrameMode(nullptr)->getDuration( // TODO: pass rtsFrame
                     LENGTH_CTS)
             + dataFrameMode->getDuration(dataFrame->getBitLength())
-            + rateSelection->getResponseControlFrameMode()->getDuration(
+            + rateSelection->getResponseControlFrameMode(dataFrame)->getDuration(
                     LENGTH_ACK);
     return buildRtsFrame(dataFrame->getReceiverAddress(), duration);
 }
@@ -96,7 +96,7 @@ Ieee80211CTSFrame *MacUtils::buildCtsFrame(Ieee80211RTSFrame *rtsFrame) const {
     frame->setReceiverAddress(rtsFrame->getTransmitterAddress());
     frame->setDuration(
             rtsFrame->getDuration() - params->getSifsTime()
-                    - rateSelection->getResponseControlFrameMode()->getDuration(
+                    - rateSelection->getResponseControlFrameMode(rtsFrame)->getDuration(
                             LENGTH_CTS));
     Ieee80211DataOrMgmtFrame *dataFrame = new Ieee80211DataOrMgmtFrame("DATA");
     setFrameMode(frame,
@@ -114,7 +114,7 @@ Ieee80211ACKFrame *MacUtils::buildAckFrame(
     else
         ackFrame->setDuration(
                 dataFrame->getDuration() - params->getSifsTime()
-                        - rateSelection->getResponseControlFrameMode()->getDuration(
+                        - rateSelection->getResponseControlFrameMode(dataFrame)->getDuration(
                                 LENGTH_ACK));
     setFrameMode(ackFrame,
             rateSelection->getModeForControlFrame(dataFrame, ackFrame));
