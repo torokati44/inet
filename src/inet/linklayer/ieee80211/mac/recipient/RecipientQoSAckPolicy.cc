@@ -87,7 +87,8 @@ bool RecipientQoSAckPolicy::isBlockAckNeeded(Ieee80211BlockAckReq* blockAckReq, 
 //
 simtime_t RecipientQoSAckPolicy::computeAckDurationField(Ieee80211DataOrMgmtFrame* frame) const
 {
-    return frame->getDuration() - modeSet->getSifsTime() - computeAckDuration(frame);
+    simtime_t duration = frame->getDuration() - modeSet->getSifsTime() - computeAckDuration(frame);
+    return duration < 0 ? 0 : duration;
 }
 
 //

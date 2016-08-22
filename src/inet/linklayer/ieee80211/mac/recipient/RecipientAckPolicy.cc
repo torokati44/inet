@@ -61,7 +61,11 @@ bool RecipientAckPolicy::isAckNeeded(Ieee80211DataOrMgmtFrame* frame) const
 //
 simtime_t RecipientAckPolicy::computeAckDurationField(Ieee80211DataOrMgmtFrame* frame) const
 {
-    return frame->getMoreFragments() ? ceil(frame->getDuration() - modeSet->getSifsTime() - computeAckDuration(frame)) : 0;
+    if (frame->getMoreFragments()) {
+        simtime_t duration = ceil(frame->getDuration() - modeSet->getSifsTime() - computeAckDuration(frame));
+        return duration < 0 ? 0 : duration;
+    }
+    return 0;
 }
 
 } /* namespace ieee80211 */

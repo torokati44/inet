@@ -41,13 +41,13 @@ class INET_API RateSelection : public IRateSelection, public cSimpleModule, publ
 {
     protected:
         IRateControl *dataOrMgmtRateControl = nullptr;
+        const IIeee80211Mode *fastestMandatoryMode = nullptr;
 
         const Ieee80211ModeSet *modeSet = nullptr;
         std::map<MACAddress, const IIeee80211Mode *> lastTransmittedFrameMode;
 
         // originator frame modes
         const IIeee80211Mode *multicastFrameMode = nullptr;
-        const IIeee80211Mode *fastestMandatoryMode = nullptr;
 
         const IIeee80211Mode *dataFrameMode = nullptr;
         const IIeee80211Mode *mgmtFrameMode = nullptr;

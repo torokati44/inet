@@ -62,34 +62,66 @@ const IIeee80211Mode* RateSelection::getMode(Ieee80211Frame* frame)
 }
 
 //
-// If a CTS or ACK control response frame is carried in a non-HT PPDU, the primary rate is defined to
-// be the highest rate in the BSSBasicRateSet parameter that is less than or equal to the rate (or non-HT
-// reference rate; see 9.7.9) of the previous frame. If no rate in the BSSBasicRateSet parameter meets
-// these conditions, the primary rate is defined to be the highest mandatory rate of the attached PHY
-// that is less than or equal to the rate (or non-HT reference rate; see 9.7.9) of the previous frame. The
-// STA may select an alternate rate according to the rules in 9.7.6.5.4. The STA shall transmit the
-// non-HT PPDU CTS or ACK control response frame at either the primary rate or the alternate rate, if
-// one exists.
+// In order to allow the transmitting STA to calculate the contents of the Duration/ID field, the responding STA
+// shall transmit its Control Response frame (either CTS or ACK) at the same rate as the immediately previous
+// frame in the frame exchange sequence (as defined in 9.7), if this rate belongs to the PHY mandatory rates, or
+// else at the highest possible rate belonging to the PHY rates in the BSSBasicRateSet.
 //
 const IIeee80211Mode* RateSelection::computeResponseAckFrameMode(Ieee80211DataOrMgmtFrame *dataOrMgmtFrame)
 {
-    // TODO: BSSBasicRateSet
-    return responseAckFrameMode ? responseAckFrameMode : getMode(dataOrMgmtFrame);}
+    auto mode = getMode(dataOrMgmtFrame);
+    ASSERT(modeSet->containsMode(mode));
+    if (responseAckFrameMode)
+        return responseAckFrameMode;
+    else
+        return  modeSet->getIsMandatory(mode) ? mode : fastestMandatoryMode; // TODO: BSSBasicRateSet
+}
 
 const IIeee80211Mode* RateSelection::computeResponseCtsFrameMode(Ieee80211RTSFrame *rtsFrame)
 {
-    // TODO: BSSBasicRateSet
-    return responseCtsFrameMode ? responseCtsFrameMode : getMode(rtsFrame);
+    auto mode = getMode(rtsFrame);
+    ASSERT(modeSet->containsMode(mode));
+    if (responseCtsFrameMode)
+        return responseCtsFrameMode;
+    else
+        return modeSet->getIsMandatory(mode) ? mode : fastestMandatoryMode; // TODO: BSSBasicRateSet
 }
 
+// 802.11-1999 Std.
+//
+// All frames with multicast and broadcast RA shall be transmitted at one of the rates included in the
+// BSSBasicRateSet, regardless of their type.
+//
+// TODO: Data and/or management MPDUs with a unicast immediate address shall be sent on any supported data rate
+// selected by the rate switching mechanism (whose output is an internal MAC variable called MACCurrentRate,
+// defined in units of 500 kbit/s, which is used for calculating the Duration/ID field of each frame). A STA shall
+// not transmit at a rate that is known not to be supported by the destination STA, as reported in the supported
+// rates element in the management frames. For frames of type Data+CF-ACK, Data+CF-Poll+CF-ACK, and CF-
+// Poll+CF-ACK, the rate chosen to transmit the frame must be supported by both the addressed recipient STA
+// and the STA to which the ACK is intended.
+//
 const IIeee80211Mode* RateSelection::computeDataOrMgmtFrameMode(Ieee80211DataOrMgmtFrame* dataOrMgmtFrame)
 {
-
+    if (dynamic_cast<Ieee80211DataFrame*>(dataOrMgmtFrame) && dataFrameMode)
+        return dataFrameMode;
+    if (dynamic_cast<Ieee80211ManagementFrame*>(dataOrMgmtFrame) && mgmtFrameMode)
+        return mgmtFrameMode;
+    if (dataOrMgmtRateControl)
+        return dataOrMgmtRateControl->getRate();
+    else
+        return fastestMandatoryMode;
 }
 
+// 802.11-1999 Std.
+//
+// All Control frames shall be transmitted at one of the rates in the BSSBasicRateSet
+// (see 10.3.10.1), or at one of the rates in the PHY mandatory rate set so they will
+// be understood by all STAs.
+//
 const IIeee80211Mode* RateSelection::computeControlFrameMode(Ieee80211Frame* frame)
 {
-
+    // TODO: BSSBasicRateSet
+    return fastestMandatoryMode;
 }
 
 const IIeee80211Mode* RateSelection::computeMode(Ieee80211Frame* frame)
@@ -103,8 +135,10 @@ const IIeee80211Mode* RateSelection::computeMode(Ieee80211Frame* frame)
 void RateSelection::receiveSignal(cComponent* source, simsignal_t signalID, cObject* obj, cObject* details)
 {
     Enter_Method("receiveModeSetChangeNotification");
-    if (signalID == NF_MODESET_CHANGED)
+    if (signalID == NF_MODESET_CHANGED) {
         modeSet = check_and_cast<Ieee80211ModeSet*>(obj);
+        fastestMandatoryMode = modeSet->getFastestMandatoryMode();
+    }
 }
 
 void RateSelection::frameTransmitted(Ieee80211Frame* frame)

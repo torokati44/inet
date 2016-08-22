@@ -45,7 +45,8 @@ simtime_t QoSCtsPolicy::computeCtsDuration(Ieee80211RTSFrame *rtsFrame) const
 //
 simtime_t QoSCtsPolicy::computeCtsDurationField(Ieee80211RTSFrame* rtsFrame) const
 {
-    return rtsFrame->getDuration() - modeSet->getSifsTime() - computeCtsDuration(rtsFrame);
+    simtime_t duration = rtsFrame->getDuration() - modeSet->getSifsTime() - computeCtsDuration(rtsFrame);
+    return duration < 0 ? 0 : duration;
 }
 
 //

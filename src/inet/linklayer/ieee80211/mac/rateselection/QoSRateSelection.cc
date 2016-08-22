@@ -77,14 +77,36 @@ bool QoSRateSelection::isControlResponseFrame(Ieee80211Frame* frame, TxopProcedu
 //
 const IIeee80211Mode* QoSRateSelection::computeResponseAckFrameMode(Ieee80211DataOrMgmtFrame *dataOrMgmtFrame)
 {
-    // TODO: BSSBasicRateSet
-    return responseAckFrameMode ? responseAckFrameMode : getMode(dataOrMgmtFrame);
+    // TODO: BSSBasicRateSet, alternate rate
+    auto mode = getMode(dataOrMgmtFrame);
+    ASSERT(modeSet->containsMode(mode));
+    if (!responseAckFrameMode) {
+        if (modeSet->getIsMandatory(mode))
+            return mode;
+        else if (auto slowerMode = modeSet->getSlowerMandatoryMode(mode))
+            return slowerMode;
+        else
+            throw cRuntimeError("Mandatory mode not found");
+    }
+    else
+        return responseAckFrameMode;
 }
 
 const IIeee80211Mode* QoSRateSelection::computeResponseCtsFrameMode(Ieee80211RTSFrame *rtsFrame)
 {
-    // TODO: BSSBasicRateSet
-    return responseCtsFrameMode ? responseCtsFrameMode : getMode(rtsFrame);
+    // TODO: BSSBasicRateSet, alternate rate
+    auto mode = getMode(rtsFrame);
+    ASSERT(modeSet->containsMode(mode));
+    if (!responseCtsFrameMode) {
+        if (modeSet->getIsMandatory(mode))
+            return mode;
+        else if (auto slowerMode = modeSet->getSlowerMandatoryMode(mode))
+            return slowerMode;
+        else
+            throw cRuntimeError("Mandatory mode not found");
+    }
+    else
+        return responseCtsFrameMode;
 }
 
 //
