@@ -41,17 +41,14 @@
       <items xsi:type="scave:ComputeScalar" scalarName="throughput_mbps" valueExpr="'throughput:mean'/1000000" moduleExpr="" groupByExpr=""/>
       <items xsi:type="scave:ScatterChart" name="Computed vs Simulated" xDataPattern="module(.) AND name(bitrate)" averageReplications="false">
         <filters xsi:type="scave:Select" filterPattern="name(computedthroughput_mbps) OR name(throughput_mbps) OR name(bitrate)   "/>
+        <properties name="Graph.Title" value="Computed vs simulated throughput"/>
+        <properties name="X.Axis.Title" value="Bitrate [Mbps]"/>
+        <properties name="Y.Axis.Title" value="Throughput [Mbps]"/>
         <isoDataPattern>attr:configname(*)</isoDataPattern>
-      </items>
-      <items xsi:type="scave:ScatterChart" name="" xDataPattern="module(.) AND name(bitrate_bps)" averageReplications="false">
-        <filters xsi:type="scave:Select" filterPattern="name(computedthroughput) OR name(throughput:mean) OR name(bitrate_bps) "/>
-      </items>
-      <items xsi:type="scave:ScatterChart" name="" xDataPattern="module(Throughput.destinationHost.udpApp[0]) AND name(throughput:mean)" averageReplications="false">
-        <filters xsi:type="scave:Select" filterPattern="name(throughput:mean) OR name(computedthroughput)"/>
       </items>
     </datasets>
   </datasets>
   <chartSheets>
-    <chartSheets name="default" charts="//@datasets/@datasets.0/@items.4 //@datasets/@datasets.2/@items.2 //@datasets/@datasets.3/@items.3 //@datasets/@datasets.4/@items.5 //@datasets/@datasets.4/@items.6 //@datasets/@datasets.4/@items.7"/>
+    <chartSheets name="default" charts="//@datasets/@datasets.0/@items.4 //@datasets/@datasets.2/@items.2 //@datasets/@datasets.3/@items.3 //@datasets/@datasets.4/@items.5"/>
   </chartSheets>
 </scave:Analysis>
