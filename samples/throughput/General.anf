@@ -36,19 +36,20 @@
     <datasets name="computed">
       <items xsi:type="scave:Add" filterPattern="file(/inet/samples/throughput/results/General-computed-throughput-8.sca) "/>
       <items xsi:type="scave:Add" filterPattern="name(bitrate) "/>
+      <items xsi:type="scave:ComputeScalar" scalarName="bitrate_bps" valueExpr="'bitrate'*1000000" moduleExpr="" groupByExpr=""/>
       <items xsi:type="scave:Add" filterPattern="name(throughput:mean) AND module(*.destinationHost.*) "/>
-      <items xsi:type="scave:ScatterChart" name="" xDataPattern="module(.) AND name(bitrate)" averageReplications="false">
-        <isoDataPattern>attr:configname(*)</isoDataPattern>
+      <items xsi:type="scave:ScatterChart" name="Computed vs Simulated" xDataPattern="module(.) AND name(bitrate_bps)" averageReplications="false">
+        <filters xsi:type="scave:Select" filterPattern="name(bitrate_bps) OR name(throughput:mean) OR name(computedthroughput)  "/>
       </items>
-      <items xsi:type="scave:ScatterChart" name="" xDataPattern="module(Throughput.destinationHost.udpApp[0]) AND name(computedthroughput)" averageReplications="false">
-        <filters xsi:type="scave:Select" filterPattern="name(computedthroughput) OR name(throughput:mean) OR name(bitrate) "/>
+      <items xsi:type="scave:ScatterChart" name="" xDataPattern="module(.) AND name(bitrate_bps)" averageReplications="false">
+        <filters xsi:type="scave:Select" filterPattern="name(computedthroughput) OR name(throughput:mean) OR name(bitrate_bps) "/>
       </items>
-      <items xsi:type="scave:ScatterChart" name="" xDataPattern="module(Throughput.destinationHost.udpApp[0]) AND name(computedthroughput)" averageReplications="false">
+      <items xsi:type="scave:ScatterChart" name="" xDataPattern="module(Throughput.destinationHost.udpApp[0]) AND name(throughput:mean)" averageReplications="false">
         <filters xsi:type="scave:Select" filterPattern="name(throughput:mean) OR name(computedthroughput)"/>
       </items>
     </datasets>
   </datasets>
   <chartSheets>
-    <chartSheets name="default" charts="//@datasets/@datasets.0/@items.4 //@datasets/@datasets.2/@items.2 //@datasets/@datasets.3/@items.3 //@datasets/@datasets.4/@items.3 //@datasets/@datasets.4/@items.4 //@datasets/@datasets.4/@items.5"/>
+    <chartSheets name="default" charts="//@datasets/@datasets.0/@items.4 //@datasets/@datasets.2/@items.2 //@datasets/@datasets.3/@items.3 //@datasets/@datasets.4/@items.4 //@datasets/@datasets.4/@items.5 //@datasets/@datasets.4/@items.6"/>
   </chartSheets>
 </scave:Analysis>
