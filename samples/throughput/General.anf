@@ -40,6 +40,7 @@
       <items xsi:type="scave:Add" filterPattern="name(throughput:mean) AND module(*.destinationHost.*) "/>
       <items xsi:type="scave:ScatterChart" name="Computed vs Simulated" xDataPattern="module(.) AND name(bitrate_bps)" averageReplications="false">
         <filters xsi:type="scave:Select" filterPattern="name(bitrate_bps) OR name(throughput:mean) OR name(computedthroughput)  "/>
+        <isoDataPattern>attr:configname(*)</isoDataPattern>
       </items>
       <items xsi:type="scave:ScatterChart" name="" xDataPattern="module(.) AND name(bitrate_bps)" averageReplications="false">
         <filters xsi:type="scave:Select" filterPattern="name(computedthroughput) OR name(throughput:mean) OR name(bitrate_bps) "/>
