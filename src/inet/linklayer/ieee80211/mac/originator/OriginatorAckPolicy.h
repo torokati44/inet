@@ -27,7 +27,6 @@ namespace ieee80211 {
 class INET_API OriginatorAckPolicy : public ModeSetListener, public IOriginatorAckPolicy
 {
     protected:
-        Ieee80211ModeSet *modeSet = nullptr;
         simtime_t ackTimeout = -1;
 
     protected:
