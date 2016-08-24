@@ -140,8 +140,10 @@ void Contention::handleWithFSM(EventType event)
         }
     }
     emit(stateChangedSignal, fsm.getState());
-    if (finallyReportChannelAccessGranted)
+    if (finallyReportChannelAccessGranted) {
         callback->channelAccessGranted();
+        callback = nullptr;
+    }
     if (hasGUI())
         updateDisplayString();
 }
