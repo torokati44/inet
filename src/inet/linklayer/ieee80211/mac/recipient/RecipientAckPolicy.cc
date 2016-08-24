@@ -44,7 +44,7 @@ simtime_t RecipientAckPolicy::computeAckDuration(Ieee80211DataOrMgmtFrame* dataO
 bool RecipientAckPolicy::isAckNeeded(Ieee80211DataOrMgmtFrame* frame) const
 {
     // TODO: add mgmt NoAck check
-    return !frame->getTransmitterAddress().isMulticast();
+    return !frame->getReceiverAddress().isMulticast();
 }
 
 //

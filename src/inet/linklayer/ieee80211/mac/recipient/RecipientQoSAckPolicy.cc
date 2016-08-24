@@ -52,7 +52,7 @@ bool RecipientQoSAckPolicy::isAckNeeded(Ieee80211DataOrMgmtFrame* frame) const
     if (auto dataFrame = dynamic_cast<Ieee80211DataFrame*>(frame))
         if (dataFrame->getAckPolicy() != NORMAL_ACK)
             return false;
-    return !frame->getTransmitterAddress().isMulticast();
+    return !frame->getReceiverAddress().isMulticast();
 }
 
 //
