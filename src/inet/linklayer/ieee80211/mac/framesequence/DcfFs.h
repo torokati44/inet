@@ -29,6 +29,7 @@ class INET_API DcfFs : public AlternativesFs {
 
         virtual int selectDcfSequence(AlternativesFs *frameSequence, FrameSequenceContext *context);
         virtual int selectSelfCtsOrRtsCts(AlternativesFs *frameSequence, FrameSequenceContext *context);
+        virtual int selectMulticastDataOrMgmt(AlternativesFs *frameSequence, FrameSequenceContext *context);
         virtual bool hasMoreFragments(RepeatingFs *frameSequence, FrameSequenceContext *context);
         virtual bool isSelfCtsNeeded(OptionalFs *frameSequence, FrameSequenceContext *context);
         virtual bool isRtsCtsNeeded(OptionalFs *frameSequence, FrameSequenceContext *context);

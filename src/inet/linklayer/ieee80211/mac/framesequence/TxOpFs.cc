@@ -21,6 +21,9 @@
 namespace inet {
 namespace ieee80211 {
 
+/*
+ * TODO: add [ RTS CTS ] (txop-part-requiring-ack txop-part-providing-ack )|
+ */
 TxOpFs::TxOpFs() :
     // Excerpt from G.3 EDCA and HCCA sequences
     // txop-sequence =
@@ -30,10 +33,10 @@ TxOpFs::TxOpFs() :
     //   [ RTS CTS ] (BlockAckReq BlockAck ) |
     //   ht-txop-sequence;
     AlternativesFs({new SequentialFs({new OptionalFs(new RtsCtsFs(), OPTIONALFS_PREDICATE(isRtsCtsNeeded)),
-                                      new DataFs(BLOCK_ACK)}),
+                                      new DataFs()}),
                     new SequentialFs({new OptionalFs(new RtsCtsFs(), OPTIONALFS_PREDICATE(isRtsCtsNeeded)),
-                                      new DataFs(NORMAL_ACK),
-                                      new AckFs()}),
+                                      new DataFs(),
+                                      new AckFs()}), // TODO: should be in txop-part-requiring-ack
                     new SequentialFs({new OptionalFs(new RtsCtsFs(), OPTIONALFS_PREDICATE(isBlockAckReqRtsCtsNeeded)),
                                       new BlockAckReqBlockAckFs()}),
                     new SequentialFs({new OptionalFs(new RtsCtsFs(), OPTIONALFS_PREDICATE(isRtsCtsNeeded)),

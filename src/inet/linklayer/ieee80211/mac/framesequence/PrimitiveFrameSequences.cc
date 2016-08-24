@@ -38,11 +38,6 @@ bool CtsFs::completeStep(FrameSequenceContext *context)
     return false;
 }
 
-DataFs::DataFs(int ackPolicy) :
-    ackPolicy(ackPolicy)
-{
-}
-
 void DataFs::startSequence(FrameSequenceContext *context, int firstStep)
 {
     this->firstStep = firstStep;
@@ -54,8 +49,6 @@ IFrameSequenceStep *DataFs::prepareStep(FrameSequenceContext *context)
     switch (step) {
         case 0: {
             auto frame = check_and_cast<Ieee80211DataFrame *>(context->getInProgressFrames()->getFrameToTransmit());
-            frame->setType(ST_DATA_WITH_QOS); // FIXME: KLUDGE!
-            frame->setAckPolicy(ackPolicy); // FIXME: KLUDGE!
             return new TransmitStep(frame, context->getIfs());
         }
         case 1:

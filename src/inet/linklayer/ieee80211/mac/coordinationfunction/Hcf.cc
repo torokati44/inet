@@ -501,6 +501,11 @@ void Hcf::transmitFrame(Ieee80211Frame* frame, simtime_t ifs)
     if (channelOwner) {
         AccessCategory ac = channelOwner->getAccessCategory();
         auto txop = edcaTxops[ac];
+        if (auto dataFrame = dynamic_cast<Ieee80211DataFrame*>(frame)) {
+            auto agreement = originatorBlockAckAgreementHandler->getAgreement(dataFrame->getReceiverAddress(), dataFrame->getTid());
+            auto ackPolicy = originatorAckPolicy->computeAckPolicy(dataFrame, agreement);
+            dataFrame->setAckPolicy(ackPolicy);
+        }
         setFrameMode(frame, rateSelection->computeMode(frame, txop));
         if (txop->getProtectionMechanism() == TxopProcedure::ProtectionMechanism::SINGLE_PROTECTION)
             frame->setDuration(singleProtectionMechanism->computeDurationField(frame, edcaInProgressFrames[ac]->getPendingFrameFor(frame), edcaTxops[ac], recipientAckPolicy));

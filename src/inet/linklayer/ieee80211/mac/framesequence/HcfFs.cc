@@ -34,7 +34,7 @@ HcfFs::HcfFs() :
     //   (* HC only, self TXOP delivery or termination *)
     //   Data + self + null + CF-Poll + QoS;
     AlternativesFs({new SequentialFs({new OptionalFs(new CtsFs(), OPTIONALFS_PREDICATE(isSelfCtsNeeded)),
-                                      new RepeatingFs(new AlternativesFs({new DataFs(NORMAL_ACK), new ManagementFs()}, ALTERNATIVESFS_SELECTOR(selectDataOrManagementSequence)),
+                                      new RepeatingFs(new AlternativesFs({new DataFs(), new ManagementFs()}, ALTERNATIVESFS_SELECTOR(selectDataOrManagementSequence)),
                                                       REPEATINGFS_PREDICATE(hasMoreTxOps))}),
                     new SequentialFs({new OptionalFs(new CtsFs(), OPTIONALFS_PREDICATE(isSelfCtsNeeded)),
                                       new RepeatingFs(new TxOpFs(), REPEATINGFS_PREDICATE(hasMoreTxOps))})},
@@ -44,7 +44,8 @@ HcfFs::HcfFs() :
 
 int HcfFs::selectHcfSequence(AlternativesFs *frameSequence, FrameSequenceContext *context)
 {
-    return 1;
+    auto frameToTransmit = context->getInProgressFrames()->getFrameToTransmit();
+    return frameToTransmit->getReceiverAddress().isMulticast() ? 0 : 1;
 }
 
 int HcfFs::selectDataOrManagementSequence(AlternativesFs *frameSequence, FrameSequenceContext *context)

@@ -45,8 +45,6 @@ class INET_API DataFs : public IFrameSequence {
         int ackPolicy = -1;
 
     public:
-        DataFs(int ackPolicy);
-
         virtual void startSequence(FrameSequenceContext *context, int firstStep) override;
         virtual IFrameSequenceStep *prepareStep(FrameSequenceContext *context) override;
         virtual bool completeStep(FrameSequenceContext *context) override;

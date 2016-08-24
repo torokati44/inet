@@ -92,7 +92,7 @@ class INET_API FrameSequenceContext
 
         virtual simtime_t getAckTimeout(Ieee80211DataOrMgmtFrame *dataOrMgmtframe) const;
         virtual simtime_t getCtsTimeout(Ieee80211RTSFrame *rtsFrame) const;
-        virtual simtime_t getIfs() const { return getNumSteps() == 0 ? 0 : modeSet->getSifsTime(); }
+        virtual simtime_t getIfs() const;
 };
 
 } // namespace ieee80211

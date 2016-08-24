@@ -30,6 +30,11 @@ FrameSequenceContext::FrameSequenceContext(Ieee80211ModeSet *modeSet, InProgress
 {
 }
 
+simtime_t FrameSequenceContext::getIfs() const
+{
+    return getNumSteps() == 0 ? 0 : modeSet->getSifsTime(); // TODO: pifs
+}
+
 simtime_t FrameSequenceContext::getAckTimeout(Ieee80211DataOrMgmtFrame* dataOrMgmtframe) const
 {
     return qosContext ? qosContext->ackPolicy->getAckTimeout(dataOrMgmtframe) : nonQoSContext->ackPolicy->getAckTimeout(dataOrMgmtframe);

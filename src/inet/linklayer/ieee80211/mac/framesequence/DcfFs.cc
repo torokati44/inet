@@ -27,7 +27,7 @@ DcfFs::DcfFs() :
     //   ( [ CTS ] ( Management + broadcast | Data + group ) ) |
     //   ( [ CTS | RTS CTS] {frag-frame ACK } last-frame ACK )
     AlternativesFs({new SequentialFs({new OptionalFs(new CtsFs(), OPTIONALFS_PREDICATE(isSelfCtsNeeded)),
-                                      new AlternativesFs({/*...*/}, nullptr)}), // TODO: broadcast
+                                      new AlternativesFs({new ManagementFs(), new DataFs()}, ALTERNATIVESFS_SELECTOR(selectMulticastDataOrMgmt))}),
                     new SequentialFs({new OptionalFs(new AlternativesFs({new CtsFs(), new RtsCtsFs(), /*...*/},
                                                                         ALTERNATIVESFS_SELECTOR(selectSelfCtsOrRtsCts)),
                                                      OPTIONALFS_PREDICATE(isCtsOrRtsCtsNeeded)),
@@ -39,9 +39,9 @@ DcfFs::DcfFs() :
 
 int DcfFs::selectDcfSequence(AlternativesFs *frameSequence, FrameSequenceContext *context)
 {
-    bool managementSequence = isBroadcastManagementOrGroupDataSequenceNeeded(frameSequence, context);
+    bool multicastMgmtOrDataSequence = isBroadcastManagementOrGroupDataSequenceNeeded(frameSequence, context);
     bool fragFrameSequence = isFragFrameSequenceNeeded(frameSequence, context);
-    if (managementSequence) return 0;
+    if (multicastMgmtOrDataSequence) return 0;
     else if (fragFrameSequence) return 1;
     else throw cRuntimeError("One alternative must be chosen");
 }
@@ -81,12 +81,17 @@ bool DcfFs::isCtsOrRtsCtsNeeded(OptionalFs *frameSequence, FrameSequenceContext 
 bool DcfFs::isBroadcastManagementOrGroupDataSequenceNeeded(AlternativesFs *frameSequence, FrameSequenceContext *context)
 {
     if (context->getInProgressFrames()->hasInProgressFrames()) {
-        auto frame = context->getInProgressFrames()->getFrameToTransmit();
-        return (dynamic_cast<Ieee80211ManagementFrame *>(frame) && frame->getReceiverAddress().isBroadcast()) ||
-               (dynamic_cast<Ieee80211DataFrame *>(frame) && frame->getReceiverAddress().isMulticast());
+        auto frameToTransmit = context->getInProgressFrames()->getFrameToTransmit();
+        return frameToTransmit->getReceiverAddress().isMulticast();
     }
     else
         return false;
+}
+
+int DcfFs::selectMulticastDataOrMgmt(AlternativesFs* frameSequence, FrameSequenceContext* context)
+{
+    auto frameToTransmit = context->getInProgressFrames()->getFrameToTransmit();
+    return dynamic_cast<Ieee80211ManagementFrame*>(frameToTransmit) ? 0 : 1;
 }
 
 bool DcfFs::isFragFrameSequenceNeeded(AlternativesFs *frameSequence, FrameSequenceContext *context)
@@ -96,4 +101,3 @@ bool DcfFs::isFragFrameSequenceNeeded(AlternativesFs *frameSequence, FrameSequen
 
 } // namespace ieee80211
 } // namespace inet
-
