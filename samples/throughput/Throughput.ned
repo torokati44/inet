@@ -28,7 +28,7 @@ network Throughput
             @display("p=327,160");
         }
         destinationHost: WirelessHost {
-            @display("p=477,160");
+            @display("p=328,160");
         }
         configurator: IPv4NetworkConfigurator {
             @display("p=100,100");

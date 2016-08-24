@@ -44,6 +44,9 @@
         <properties name="Graph.Title" value="Computed vs simulated throughput"/>
         <properties name="X.Axis.Title" value="Bitrate [Mbps]"/>
         <properties name="Y.Axis.Title" value="Throughput [Mbps]"/>
+        <properties name="Legend.Display" value="true"/>
+        <properties name="Line.Name/Throughput.destinationHost.udpApp[0] computedthroughput_mbps - configname=Computed" value="Computed"/>
+        <properties name="Line.Name/Throughput.destinationHost.udpApp[0] throughput_mbps - configname=General" value="Simulated"/>
         <isoDataPattern>attr:configname(*)</isoDataPattern>
       </items>
     </datasets>
