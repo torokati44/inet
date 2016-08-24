@@ -28,13 +28,13 @@
 	<p>
 		The network contains two <tt>wirelessHosts</tt>, with a distance of 1 meter. The <i>sourceHost</i> sends a UDP stream of 1000 byte packets
 		to <i>destinationHost</i> in ad-hoc mode. The UDP application in <i>sourceHost</i> is configured to saturate the channel when it is transmitting
-		with the fastest bitrate. There are no lost packets, because the hosts are close to each other. The path loss model is free space
+		with the highest bitrate. There are no lost packets, because the hosts are close to each other. The path loss model is free space
 		path loss.
 	</p>
 
 	<p>
 		The parameter study iterates all 802.11 mode a bitrates (6, 9, 12, 18, 24, 36, 48, 54 Mbps). Each simulation
-		runs for 1 second, and the throughput is averaged for this interval.
+		runs for 1 second, and the UDP throughput is averaged for this interval.
 	</p>
 
 	<h2>Results</h2>
@@ -52,6 +52,13 @@
 	</p>
 
 	<p><center><img src="throughput.png"></center></p>
+
+	<p>
+		The two curves match almost exactly. The curve is not linear, with increasing bitrates the throughput doesn't increase as fast.
+		Faster bitrates have more overhead. For example, at 54 Mbps the practical throughput is about 24.5 Mbps only (54% overhead), whereas at 6 Mbps the
+		throughput is 5 Mbps (16% overhead). Faster bitrates use more complex modulation, and in turn require more error correction codes, which
+		increases overhead.
+	</p>
 
 
 
