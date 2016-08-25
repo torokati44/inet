@@ -23,7 +23,7 @@
 		6, 12, 24, 36 and 54 mbps. This results in about 1500 short simulation runs.</p>
 
 	<p>
-		The channel model is free space path loss. The background noise level is set to -86 dBm, which is considered typical.
+		The hosts operate in 802.11g, in ad-hoc mode. The transmission power is 10mW. The channel model is free space path loss.
 	</p>
 
 	<p><b>Packet error rate</b></p>
@@ -32,27 +32,29 @@
 
 	<h2>Results</h2>
 
-	<p>SNIR is recorded from the simulation runs. From this, PER and throughput are computed. Throughput is the effective bitrate, the nominal bitrate decreased because of packet errors. </p>
+	<p>SNIR is recorded from the simulation runs. From this, PER and throughput are computed by the error model. Throughput is the net throughput, but takes
+	bit errors into account. It is equal to the nominal data bitrate unless it is decreased because of bit errors as the distance increases. </p>
+
 	<p>
-		SNIR is plotted against distance on the following chart.
+		SNIR is plotted against distance on the following chart. SNIR is measured at the receiver, and depends on the power of the noise and hte power of the signal. The signal power decreases exponentially
+		with distance, but the noise power is uniform everywhere (<tt>IsotropicScalarBackgroundNoise</tt>). Thus SNIR decreases exponentially with
+		distance. It is also independent of modulations and coding schemes, so it is the same for all bitrates.
 	</p>
 
 	<p><center><img src="SNIR_distance.png"></center></p>
 
-	<p>SNIR decreases exponentially with distance, and is the same for all bitrates. SNIR is measured at the receiver, and depends on the power of noise and the power of the signal.
-		The noise is uniform everywhere (<tt>IsotropicScalarBackgroundNoise</tt>). The signal decreases exponentially with distance.
-	</p>
 
 	<p>
-		The next chart shows how packet error rate decreases with SNIR. After a certain SNIR value, the packet error rate is very small, about 10^-14, which can be taken as 0.
-		There is difference between the various bitrates. Slower bitrates use simpler modulation like binary phase shift keying, which is more tolerant to noise than more complex
-		modulations used by faster bitrates. Note that the zigzags in the graph are double arithmetic anomalies.
+		The next chart shows how packet error rate decreases with SNIR. After a certain SNIR value, the packet error rate is very small, about 10^-14, which can be taken as 0. Slower bitrates use simpler modulation like binary phase shift keying, which is more tolerant to noise than more complex
+		modulations used by faster bitrates, hence the difference on the graph between the different bitrates.
 	</p>
 
 	<p><center><img src="PER_SNIR.png"></center></p>
 
-	<p>The following chart shows the packet error rate vs distance. PER increases exponentially with distance. 
+	<p>The following chart shows the packet error rate vs distance. Note that the scale is logarithmic. 
 		Again, slower bitrates show less packet errors as the distance increases because of the simpler modulation.</p>
+
+	<p>! acceptable packet error rate</p>
 
 	<p><center><img src="PER_distance.png"></center></p>
 
@@ -64,9 +66,12 @@
 
 	<p><b>Conclusion</b></p>
 
-	<p>Packet error rate increases exponentially with distance. Slower bitrates are less sensitive to increasing distance, because they use simpler modulation. Faster bitrate modes
+	<p>Packet error rate increases quickly as the distance approaches the critical point. Slower bitrates are less sensitive to increasing distance, because they use simpler modulation. Faster bitrate modes
 		are advantageous in short distances because of the increased throughput, but slower modes work better at longer distances. Furthermode, using rate adaptation, a host can use fast modes
-		in short distances and slower modes for larger ones.
+		in short distances and slower modes for larger ones. When the number of lost packets increases and throughput drops, it becomes more
+		viable to change to a lower bitrate mode. The rate control algorithm changes to the slower bitrate at around the critical point,
+		about where the curves for two adjacent bitrate modes intersect. Note that not all bitrates of 802.11a are simulated in this model,
+		the only two adjacent bitrate modes are the 24 and 36 Mbps ones.
 	</p>
 
 </body>
