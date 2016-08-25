@@ -6,33 +6,6 @@
     <inputs name="/inet/samples/throughput/results/General-computed-throughput-*.sca"/>
   </inputs>
   <datasets>
-    <datasets name="throughput">
-      <items xsi:type="scave:Add" filterPattern="name(throughput:vector)" type="VECTOR"/>
-      <items xsi:type="scave:ComputeScalar" scalarName="xxxx" valueExpr="mean(&quot;throughput:vector&quot;)" moduleExpr="" groupByExpr=""/>
-      <items xsi:type="scave:Apply" operation="mean"/>
-      <items xsi:type="scave:Compute" operation="expression">
-        <params name="expression" value="24577573"/>
-      </items>
-      <items xsi:type="scave:LineChart"/>
-    </datasets>
-    <datasets name="analytical vs simulated">
-      <items xsi:type="scave:Compute"/>
-      <items xsi:type="scave:Add" filterPattern="name(throughput:vector)" type="VECTOR"/>
-      <items xsi:type="scave:ComputeScalar"/>
-    </datasets>
-    <datasets name="throughput mean">
-      <items xsi:type="scave:Add" filterPattern="name(bitrate) AND module(*.destinationHost.*) "/>
-      <items xsi:type="scave:Add" filterPattern="name(throughput:mean) AND module(*.destinationHost.*) "/>
-      <items xsi:type="scave:ScatterChart" name="" averageReplications="false"/>
-    </datasets>
-    <datasets name="throughput bitrate">
-      <items xsi:type="scave:Add" filterPattern="name(bitrate)"/>
-      <items xsi:type="scave:Add" filterPattern="name(throughput:mean) AND module(*.destinationHost.*) "/>
-      <items xsi:type="scave:Add" filterPattern="name(computedthroughput) "/>
-      <items xsi:type="scave:ScatterChart" name="" xDataPattern="module(.) AND name(bitrate)" averageReplications="false">
-        <properties name="Line.Type" value="Dots"/>
-      </items>
-    </datasets>
     <datasets name="computed">
       <items xsi:type="scave:Add" filterPattern="file(/inet/samples/throughput/results/General-computed-throughput-8.sca) "/>
       <items xsi:type="scave:Add" filterPattern="name(bitrate) "/>
@@ -53,6 +26,6 @@
     </datasets>
   </datasets>
   <chartSheets>
-    <chartSheets name="default" charts="//@datasets/@datasets.0/@items.4 //@datasets/@datasets.2/@items.2 //@datasets/@datasets.3/@items.3 //@datasets/@datasets.4/@items.5"/>
+    <chartSheets name="default" charts="//@datasets/@datasets.0/@items.5"/>
   </chartSheets>
 </scave:Analysis>
