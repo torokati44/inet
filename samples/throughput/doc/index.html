@@ -20,7 +20,7 @@
 
 	<p>
 		802.11 modes are denoted by the nominal data bitrate (e.g. 54 Mbps). However, the bitrate available for an application
-		is less because of various protocol overheads, like preamble, physical and mac headers. In this model, the actual application level throughput is measured.
+		is less because of various protocol overheads, like preamble, physical and mac headers, and error correction codes. In this model, the actual application level throughput is measured.
 	</p>
 
 	<p><b>Configuration</b></p>
@@ -28,7 +28,8 @@
 	<p>
 		The network contains two <tt>wirelessHosts</tt>, with a distance of 1 meter. The <i>sourceHost</i> sends a UDP stream of 1000 byte packets
 		to <i>destinationHost</i> in ad-hoc mode. The UDP application in <i>sourceHost</i> is configured to saturate the channel when it is transmitting
-		with the highest bitrate. There are no lost packets, because the hosts are close to each other. The path loss model is free space
+		with the highest bitrate. There are no lost packets, because the hosts are close to each other, and background noise is low (-110 dBm).
+		Hosts transmit with 20 mW. The path loss model is free space
 		path loss.
 	</p>
 
@@ -42,8 +43,7 @@
 	<p>
 		The results are compared to theoretical computed values for the throughput. The frame exchange duration can be calculated from the
 		nominal bitrate and the payload size. For example, the excel sheet 
-		<a href="https://sarwiki.informatik.hu-berlin.de/Packet_transmission_time_in_802.11" target="_blank">here</a> can be used for this purpose. It takes the data frame, the
-		ack frame, and the interframe gap between them into account. By assuming an average back off time that is half of the minimal contention window, the theoretical throughput can
+		<a href="https://sarwiki.informatik.hu-berlin.de/Packet_transmission_time_in_802.11" target="_blank">here</a> can be used for this purpose. It takes the data frame, the following SIFS, the ack frame, and the following DIFS into account (but not the back off period). By assuming an average back off time that is half of the minimal contention window, the theoretical throughput can
 		be calculated.
 	</p>
 
@@ -57,7 +57,7 @@
 		The two curves match almost exactly. The curve is not linear, with increasing bitrates the throughput doesn't increase as fast.
 		Faster bitrates have more overhead. For example, at 54 Mbps the practical throughput is about 24.5 Mbps only (54% overhead), whereas at 6 Mbps the
 		throughput is 5 Mbps (16% overhead). Faster bitrates use more complex modulation, and in turn require more error correction codes, which
-		increases overhead.
+		increase overhead.
 	</p>
 
 
