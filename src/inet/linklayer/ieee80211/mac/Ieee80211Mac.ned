@@ -139,6 +139,7 @@ module Ieee80211Mac extends MACProtocolBase like IIeee80211Mac
 module Ieee80211CompatibleMac extends Ieee80211Mac
 {
     parameters:
+        string rateControlType;
         string opMode @enum("a","b","g","n","p") = default("g");
         double bitrate @unit("bps");
         double basicBitrate @unit("bps") = default(-1bps);
@@ -165,6 +166,7 @@ module Ieee80211CompatibleMac extends Ieee80211Mac
         //upperMac.typename = EDCA ? "EdcaUpperMac" : "DcfUpperMac";
 
         modeSet = opMode; // BasicRateSelection
+        *.rateControlType = rateControlType;
         *.rateSelection.multicastFrameBitrate = basicBitrate; // BasicRateSelection
         *.rateSelection.dataFrameBitrate = bitrate; // BasicRateSelection
         *.rateSelection.mgmtFrameBitrate = basicBitrate;

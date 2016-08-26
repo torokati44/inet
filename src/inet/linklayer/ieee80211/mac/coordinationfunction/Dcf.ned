@@ -40,7 +40,7 @@ module Dcf
 
         string rxModule;
         string txModule;
-        string rateControlModuleType = default("");
+        string rateControlType = default("");
 
         *.rateSelectionModule = "^.rateSelection";
         *.rxModule = "^." + rxModule;
@@ -58,7 +58,7 @@ module Dcf
                 rateControlModule = "^.rateControl";
                 @display("p=60.088,435.12");
         }
-        rateControl: <rateControlModuleType> like IRateControl if rateControlModuleType != "" {
+        rateControl: <rateControlType> like IRateControl if rateControlType != "" {
             @display("p=185.444,435.12");
         }
 

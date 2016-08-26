@@ -43,7 +43,7 @@ module Hcf
     parameters:
         int numEdcafs = default(4);
         int maxQueueSize = default(100);
-        string rateControlModuleType = default("");
+        string rateControlType = default("");
 
         string rxModule;
         string txModule;
@@ -69,7 +69,7 @@ module Hcf
                 rateControlModule = "^.rateControl";
                 @display("p=170.95001,534.21875");
         }
-        rateControl: <rateControlModuleType> like IRateControl if rateControlModuleType != "" {
+        rateControl: <rateControlType> like IRateControl if rateControlType != "" {
             parameters:
                 @display("p=170.95001,675.5813");
         }
