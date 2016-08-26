@@ -64,7 +64,7 @@ void Tx::transmitFrame(Ieee80211Frame *frame, simtime_t ifs, ITx::ICallback *txC
     auto frameToTransmit = inet::utils::dupPacketAndControlInfo(frame);
     this->frame = frameToTransmit;
     if (auto twoAddrFrame = dynamic_cast<Ieee80211TwoAddressFrame*>(frameToTransmit))
-        frameToTransmit->setTransmitterAddress(address);
+        twoAddrFrame->setTransmitterAddress(address);
     ASSERT(!endIfsTimer->isScheduled() && !transmitting);    // we are idle
     scheduleAt(simTime() + ifs, endIfsTimer);
     if (hasGUI())
