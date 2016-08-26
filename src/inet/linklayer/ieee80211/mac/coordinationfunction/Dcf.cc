@@ -96,6 +96,7 @@ void Dcf::transmitControlResponseFrame(Ieee80211Frame* responseFrame, Ieee80211F
         throw cRuntimeError("Unknown received frame type");
     setFrameMode(responseFrame, responseMode);
     tx->transmitFrame(responseFrame, modeSet->getSifsTime(), this);
+    delete responseFrame;
 }
 
 void Dcf::processMgmtFrame(Ieee80211ManagementFrame* mgmtFrame)
@@ -232,6 +233,7 @@ void Dcf::originatorProcessReceivedFrame(Ieee80211Frame* frame, Ieee80211Frame* 
         recoveryProcedure->ctsFrameReceived(stationRetryCounters);
     else
         throw cRuntimeError("Unknown frame type");
+    delete frame;
 }
 
 void Dcf::originatorProcessFailedFrame(Ieee80211DataOrMgmtFrame* failedFrame)
@@ -271,6 +273,7 @@ Dcf::~Dcf()
     delete ackHandler;
     delete stationRetryCounters;
     delete frameSequenceHandler;
+    delete ctsProcedure;
 }
 
 } // namespace ieee80211

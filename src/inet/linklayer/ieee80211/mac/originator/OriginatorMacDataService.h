@@ -50,6 +50,8 @@ class INET_API OriginatorMacDataService : public IOriginatorMacDataService, publ
         virtual Fragments *fragmentIfNeeded(Ieee80211DataOrMgmtFrame *frame);
 
     public:
+        virtual ~OriginatorMacDataService();
+
         virtual Fragments *extractFramesToTransmit(PendingQueue *pendingQueue) override;
 
 };

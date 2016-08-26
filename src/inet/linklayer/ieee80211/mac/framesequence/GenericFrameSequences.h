@@ -39,6 +39,7 @@ class INET_API SequentialFs : public IFrameSequence {
         std::vector<IFrameSequence *> elements;
 
     public:
+        virtual ~SequentialFs();
         SequentialFs(std::vector<IFrameSequence*> elements);
 
         virtual void startSequence(FrameSequenceContext *context, int firstStep) override;
@@ -57,6 +58,7 @@ class INET_API OptionalFs : public IFrameSequence {
         std::function<bool (OptionalFs *, FrameSequenceContext *)> predicate;
 
     public:
+        virtual ~OptionalFs() { delete element; }
         OptionalFs(IFrameSequence *element, std::function<bool(OptionalFs*, FrameSequenceContext*)> predicate = nullptr);
 
         virtual int getStep() { return firstStep + step; }
@@ -80,6 +82,7 @@ class INET_API RepeatingFs : public IFrameSequence {
         std::vector<std::string> histories;
 
     public:
+        virtual ~RepeatingFs() { delete element; }
         RepeatingFs(IFrameSequence *element, std::function<bool(RepeatingFs*, FrameSequenceContext*)> predicate = nullptr);
 
         virtual int getCount() { return count; }
@@ -102,6 +105,7 @@ class INET_API AlternativesFs : public IFrameSequence {
         std::function<int (AlternativesFs *, FrameSequenceContext *)> selector;
 
     public:
+        virtual ~AlternativesFs();
         AlternativesFs(std::vector<IFrameSequence*> elements, std::function<int(AlternativesFs*, FrameSequenceContext*)> selector);
 
         virtual int getStep() { return firstStep + step; }

@@ -50,6 +50,8 @@ class INET_API RecipientMacDataService : public cSimpleModule, public IRecipient
         virtual std::vector<Ieee80211Frame *> dataOrMgmtFrameReceived(Ieee80211DataOrMgmtFrame *frame);
 
     public:
+        virtual ~RecipientMacDataService();
+
         virtual std::vector<Ieee80211Frame *> dataFrameReceived(Ieee80211DataFrame *dataFrame) override;
         virtual std::vector<Ieee80211Frame *> managementFrameReceived(Ieee80211ManagementFrame *mgmtFrame) override;
         virtual std::vector<Ieee80211Frame *> controlFrameReceived(Ieee80211Frame *controlFrame) override;

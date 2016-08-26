@@ -77,6 +77,12 @@ void Edca::releaseChannelAccess(AccessCategory ac, IChannelAccess::ICallback* ca
     edcafs[ac]->releaseChannel(callback);
 }
 
+Edca::~Edca()
+{
+    for (int i = 0; i < numEdcafs; i++)
+        delete edcafs[i];
+    delete[] edcafs;
+}
+
 } // namespace ieee80211
 } // namespace inet
-

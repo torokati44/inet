@@ -26,7 +26,7 @@ namespace ieee80211 {
 class INET_API ISequenceNumberAssignment
 {
     public:
-        ~ISequenceNumberAssignment() { }
+        virtual ~ISequenceNumberAssignment() { }
 
         virtual void assignSequenceNumber(Ieee80211DataOrMgmtFrame *frame) = 0;
 };

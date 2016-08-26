@@ -409,6 +409,7 @@ void Hcf::originatorProcessReceivedFrame(Ieee80211Frame* frame, Ieee80211Frame* 
     }
     else
         throw cRuntimeError("Hcca is unimplemented!");
+    delete frame;
 }
 
 void Hcf::originatorProcessReceivedManagementFrame(Ieee80211ManagementFrame* frame, Ieee80211Frame* lastTransmittedFrame, AccessCategory ac)
@@ -534,6 +535,7 @@ void Hcf::transmitControlResponseFrame(Ieee80211Frame* responseFrame, Ieee80211F
         throw cRuntimeError("Unknown received frame type");
     setFrameMode(responseFrame, responseMode);
     tx->transmitFrame(responseFrame, modeSet->getSifsTime(), this);
+    delete responseFrame;
 }
 
 void Hcf::recipientProcessTransmittedControlResponseFrame(Ieee80211Frame* frame)
@@ -587,6 +589,8 @@ Hcf::~Hcf()
         delete pendingQueue;
     for (auto ackHandler : edcaAckHandlers)
         delete ackHandler;
+    for (auto retryCounter : stationRetryCounters)
+        delete retryCounter;
 }
 
 } // namespace ieee80211

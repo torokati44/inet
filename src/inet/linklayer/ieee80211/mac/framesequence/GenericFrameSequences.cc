@@ -65,6 +65,14 @@ std::string SequentialFs::getHistory()
     return history;
 }
 
+
+SequentialFs::~SequentialFs()
+{
+    for (auto element : elements)
+        delete element;
+}
+
+
 OptionalFs::OptionalFs(IFrameSequence *element, std::function<bool(OptionalFs*, FrameSequenceContext*)> predicate) :
     element(element),
     predicate(predicate)
@@ -188,6 +196,12 @@ std::string AlternativesFs::getHistory()
 {
     ASSERT(step != -1);
     return elements[elementIndex]->getHistory();
+}
+
+AlternativesFs::~AlternativesFs()
+{
+    for (auto element : elements)
+        delete element;
 }
 
 } // namespace ieee80211

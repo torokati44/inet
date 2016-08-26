@@ -54,6 +54,8 @@ class INET_API OriginatorQoSMacDataService : public IOriginatorMacDataService, p
         virtual Ieee80211DataOrMgmtFrame *aMsduAggregateIfNeeded(PendingQueue *pendingQueue);
 
     public:
+        virtual ~OriginatorQoSMacDataService();
+
         virtual Fragments *extractFramesToTransmit(PendingQueue *pendingQueue) override;
 };
 

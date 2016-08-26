@@ -63,5 +63,11 @@ std::vector<Ieee80211Frame*> RecipientMacDataService::controlFrameReceived(Ieee8
     return std::vector<Ieee80211Frame*>(); // has nothing to do
 }
 
+RecipientMacDataService::~RecipientMacDataService()
+{
+    delete duplicateRemoval;
+    delete basicReassembly;
+}
+
 } /* namespace ieee80211 */
 } /* namespace inet */

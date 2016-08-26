@@ -73,5 +73,12 @@ OriginatorMacDataService::Fragments* OriginatorMacDataService::extractFramesToTr
     }
 }
 
+OriginatorMacDataService::~OriginatorMacDataService()
+{
+    delete sequenceNumberAssigment;
+    delete fragmentation;
+}
+
+
 } /* namespace ieee80211 */
 } /* namespace inet */

@@ -99,5 +99,12 @@ OriginatorQoSMacDataService::Fragments* OriginatorQoSMacDataService::extractFram
     }
 }
 
+OriginatorQoSMacDataService::~OriginatorQoSMacDataService()
+{
+    delete aMsduAggregation;
+    delete sequenceNumberAssigment;
+    delete fragmentation;
+}
+
 } /* namespace ieee80211 */
 } /* namespace inet */
