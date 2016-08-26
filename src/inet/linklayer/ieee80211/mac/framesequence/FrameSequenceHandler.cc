@@ -168,12 +168,6 @@ void FrameSequenceHandler::abortFrameSequence()
     else if (auto blockAckReq = dynamic_cast<Ieee80211BlockAckReq *>(frameToTransmit))
         delete blockAckReq;
     else ; // TODO: etc ?
-
-    for (int i = 0; i < context->getNumSteps(); i++) {
-        if (auto txStep = dynamic_cast<ITransmitStep*>(context->getStep(i)))
-            if (txStep != failedTxStep)
-                delete txStep->getFrameToTransmit();
-    }
     finishFrameSequence(false);
 }
 
