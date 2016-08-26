@@ -31,6 +31,9 @@ namespace ieee80211 {
 // References: 9.19.2.6 Retransmit procedures (IEEE 802.11-2012 STD)
 //             802.11 Reference Design: Recovery Procedures and Retransmit Limits
 //             (https://warpproject.org/trac/wiki/802.11/MAC/Lower/Retransmissions)
+/*
+ * TODO: stationRetryCounter
+ */
 class INET_API QoSRecoveryProcedure : public cSimpleModule, public IRecoveryProcedure
 {
 

@@ -25,6 +25,9 @@
 namespace inet {
 namespace ieee80211 {
 
+/*
+ * TODO: processFailedFrame
+ */
 class INET_API QoSAckHandler : public IAckHandler
 {
     public:
