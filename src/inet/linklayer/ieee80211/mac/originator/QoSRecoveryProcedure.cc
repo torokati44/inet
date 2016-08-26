@@ -112,10 +112,17 @@ void QoSRecoveryProcedure::blockAckFrameReceived()
 //
 void QoSRecoveryProcedure::ackFrameReceived(Ieee80211DataFrame *ackedFrame)
 {
-    if (ackedFrame->getByteLength() >= rtsThreshold)
-        resetStationLrc();
-    else
-        resetStationSrc();
+    auto id = std::make_pair(ackedFrame->getTid(), SequenceControlField(ackedFrame->getSequenceNumber(), ackedFrame->getFragmentNumber()));
+    if (ackedFrame->getByteLength() >= rtsThreshold) {
+        auto it = longRetryCounter.find(id);
+        if (it != longRetryCounter.end())
+            longRetryCounter.erase(it);
+    }
+    else {
+        auto it = shortRetryCounter.find(id);
+        if (it != shortRetryCounter.end())
+            shortRetryCounter.erase(it);
+    }
 //
 // The CW shall be reset to aCWmin after every successful attempt to transmit a frame containing
 // all or part of an MSDU or MMPDU

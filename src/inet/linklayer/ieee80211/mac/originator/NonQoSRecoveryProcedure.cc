@@ -111,10 +111,20 @@ void NonQoSRecoveryProcedure::ctsFrameReceived(StationRetryCounters *stationCoun
 //
 void NonQoSRecoveryProcedure::ackFrameReceived(Ieee80211DataOrMgmtFrame *ackedFrame, StationRetryCounters *stationCounters)
 {
-    if (ackedFrame->getByteLength() >= rtsThreshold)
+    auto id = SequenceControlField(ackedFrame->getSequenceNumber(), ackedFrame->getFragmentNumber());
+    if (ackedFrame->getByteLength() >= rtsThreshold) {
         stationCounters->resetStationLongRetryCount();
-    else
+        auto it = longRetryCounter.find(id);
+        if (it != longRetryCounter.end())
+            longRetryCounter.erase(it);
+    }
+    else {
         stationCounters->resetStationShortRetryCount();
+        auto it = shortRetryCounter.find(id);
+        if (it != shortRetryCounter.end())
+            shortRetryCounter.erase(it);
+    }
+
 //
 // The CW shall be reset to aCWmin after every successful attempt to transmit a frame containing
 // all or part of an MSDU or MMPDU
