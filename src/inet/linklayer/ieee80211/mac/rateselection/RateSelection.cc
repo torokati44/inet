@@ -102,6 +102,8 @@ const IIeee80211Mode* RateSelection::computeResponseCtsFrameMode(Ieee80211RTSFra
 //
 const IIeee80211Mode* RateSelection::computeDataOrMgmtFrameMode(Ieee80211DataOrMgmtFrame* dataOrMgmtFrame)
 {
+    if (dataOrMgmtFrame->getReceiverAddress().isMulticast() && multicastFrameMode)
+        return multicastFrameMode;
     if (dynamic_cast<Ieee80211DataFrame*>(dataOrMgmtFrame) && dataFrameMode)
         return dataFrameMode;
     if (dynamic_cast<Ieee80211ManagementFrame*>(dataOrMgmtFrame) && mgmtFrameMode)
