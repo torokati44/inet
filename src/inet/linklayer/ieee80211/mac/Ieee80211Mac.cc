@@ -255,10 +255,12 @@ void Ieee80211Mac::processLowerFrame(Ieee80211Frame* frame)
         EV_INFO << "This frame is not for us\n";
         delete frame;
     }
-    if (qosSta)
-        hcf->processLowerFrame(frame);
-    else
-        dcf->processLowerFrame(frame);
+    else {
+        if (qosSta)
+            hcf->processLowerFrame(frame);
+        else
+            dcf->processLowerFrame(frame);
+    }
 }
 
 // FIXME
