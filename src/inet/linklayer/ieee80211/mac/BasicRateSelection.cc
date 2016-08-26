@@ -76,25 +76,25 @@ const IIeee80211Mode *BasicRateSelection::getModeForMulticastDataOrMgmtFrame(Iee
 
 const IIeee80211Mode *BasicRateSelection::getModeForControlFrame(Ieee80211DataOrMgmtFrame *dataFrame, Ieee80211Frame *controlFrame)
 {
-    if (dynamic_cast<Ieee80211ACKFrame *>(controlFrame) && dataFrame != nullptr) {
-        auto controlInfo = check_and_cast<Ieee80211ReceptionIndication *>(dataFrame->getControlInfo());
-        auto dataMode = controlInfo->getMode();
-        auto ackMode = modeSet->getIsMandatory(dataMode) ? dataMode : modeSet->getSlowerMandatoryMode(dataMode);
-        return ackMode != nullptr ? ackMode : controlFrameMode;
-    }
-    else
+//    if (dynamic_cast<Ieee80211ACKFrame *>(controlFrame) && dataFrame != nullptr) {
+//        auto controlInfo = check_and_cast<Ieee80211ReceptionIndication *>(dataFrame->getControlInfo());
+//        auto dataMode = controlInfo->getMode();
+//        auto ackMode = modeSet->getIsMandatory(dataMode) ? dataMode : modeSet->getSlowerMandatoryMode(dataMode);
+//        return ackMode != nullptr ? ackMode : controlFrameMode;
+//    }
+//    else
         return controlFrameMode;
 }
 
 const IIeee80211Mode *BasicRateSelection::getResponseControlFrameMode(Ieee80211Frame *frame)
 {
-    if (frame != nullptr) {
-        auto controlInfo = check_and_cast<Ieee80211TransmissionRequest *>(frame->getControlInfo());
-        auto frameMode = controlInfo->getMode();
-        auto responseMode = modeSet->getIsMandatory(frameMode) ? frameMode : modeSet->getSlowerMandatoryMode(controlInfo->getMode());
-        return responseMode != nullptr ? responseMode : controlFrameMode;
-    }
-    else
+//    if (frame != nullptr) {
+//        auto controlInfo = check_and_cast<Ieee80211TransmissionRequest *>(frame->getControlInfo());
+//        auto frameMode = controlInfo->getMode();
+//        auto responseMode = modeSet->getIsMandatory(frameMode) ? frameMode : modeSet->getSlowerMandatoryMode(controlInfo->getMode());
+//        return responseMode != nullptr ? responseMode : controlFrameMode;
+//    }
+//    else
         return controlFrameMode;
 }
 

@@ -63,7 +63,7 @@ APSKPhyFrame *APSKPhyFrameSerializer::deserialize(const BitVector *bits) const
     APSKPhyFrame *phyFrame = new APSKPhyFrame();
     cPacket *macFrame = nullptr;
     if (bytes.size() < APSK_PHY_FRAME_HEADER_BYTE_LENGTH) {
-        macFrame = new cPacket();
+        macFrame = new Ieee80211Frame();
         phyFrame->setBitError(true);
         macFrame->setBitError(true);
     }
