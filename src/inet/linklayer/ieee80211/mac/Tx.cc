@@ -61,15 +61,10 @@ void Tx::transmitFrame(Ieee80211Frame *frame, simtime_t ifs, ITx::ICallback *txC
     this->txCallback = txCallback;
     Enter_Method("transmitFrame(\"%s\")", frame->getName());
     take(frame);
-    if (auto twoAddrFrame = dynamic_cast<Ieee80211TwoAddressFrame*>(frame)) {
-        auto frameToTransmit = inet::utils::dupPacketAndControlInfo(twoAddrFrame);
+    auto frameToTransmit = inet::utils::dupPacketAndControlInfo(frame);
+    this->frame = frameToTransmit;
+    if (auto twoAddrFrame = dynamic_cast<Ieee80211TwoAddressFrame*>(frameToTransmit))
         frameToTransmit->setTransmitterAddress(address);
-        this->frame = frameToTransmit;
-    }
-    else {
-        auto frameToTransmit = inet::utils::dupPacketAndControlInfo(frame);
-        this->frame = frameToTransmit;
-    }
     ASSERT(!endIfsTimer->isScheduled() && !transmitting);    // we are idle
     scheduleAt(simTime() + ifs, endIfsTimer);
     if (hasGUI())
