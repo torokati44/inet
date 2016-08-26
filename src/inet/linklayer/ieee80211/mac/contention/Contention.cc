@@ -78,6 +78,7 @@ void Contention::startContention(int cw, simtime_t ifs, simtime_t eifs, simtime_
     this->slotTime = slotTime;
     this->callback = callback;
     backoffSlots = intrand(cw + 1);
+    EV_DETAIL << "Starting contention: cw = " << cw << ", slots = " << backoffSlots << endl;
     handleWithFSM(START);
 }
 
