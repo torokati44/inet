@@ -65,13 +65,15 @@ APSKPhyFrame *APSKPhyFrameSerializer::deserialize(const BitVector *bits) const
     if (bytes.size() < APSK_PHY_FRAME_HEADER_BYTE_LENGTH) {
         macFrame = new cPacket();
         phyFrame->setBitError(true);
+        macFrame->setBitError(true);
     }
     else {
         uint16_t macFrameLength = (bytes[0] << 8) + bytes[1];
         uint32_t receivedCrc = (bytes[2] << 24) + (bytes[3] << 16) + (bytes[4] << 8) + bytes[5];
         if (macFrameLength > bytes.size() - APSK_PHY_FRAME_HEADER_BYTE_LENGTH) {
-            macFrame = new cPacket();
+            macFrame = new Ieee80211Frame();
             phyFrame->setBitError(true);
+            macFrame->setBitError(true);
         }
         else {
             unsigned char *buffer = new unsigned char[macFrameLength];
@@ -80,8 +82,9 @@ APSKPhyFrame *APSKPhyFrameSerializer::deserialize(const BitVector *bits) const
             uint32_t computedCrc = ethernetCRC(buffer, macFrameLength);
             if (receivedCrc != computedCrc) {
                 EV_ERROR << "CRC check failed" << endl;
-                macFrame = new cPacket();
+                macFrame = new Ieee80211Frame();
                 phyFrame->setBitError(true);
+                macFrame->setBitError(true);
             }
             else {
                 Ieee80211Serializer deserializer;
