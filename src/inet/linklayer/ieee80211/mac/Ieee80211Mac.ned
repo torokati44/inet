@@ -164,10 +164,12 @@ module Ieee80211CompatibleMac extends Ieee80211Mac
 
         //upperMac.typename = EDCA ? "EdcaUpperMac" : "DcfUpperMac";
 
-        //        rateSelection.modeSet = opMode; // BasicRateSelection
-        rateSelection.dataBitrate = bitrate; // BasicRateSelection
-        rateSelection.multicastBitrate = basicBitrate;
-        rateSelection.controlBitrate = controlBitrate;
+        modeSet = opMode; // BasicRateSelection
+        *.rateSelection.multicastFrameBitrate = basicBitrate; // BasicRateSelection
+        *.rateSelection.dataFrameBitrate = bitrate; // BasicRateSelection
+        *.rateSelection.mgmtFrameBitrate = basicBitrate;
+        *.rateSelection.controlFrameBitrate = controlBitrate;
+        *.rateSelection.responseAckFrameBitrate = controlBitrate;
         upperMac.rtsThreshold = rtsThresholdBytes; // DcfUpperMac, EdcaUpperMac
         upperMac.shortRetryLimit = retryLimit; // DcfUpperMac, EdcaUpperMac
         upperMac.maxQueueSize = maxQueueSize; // DcfUpperMac, EdcaUpperMac
@@ -183,7 +185,7 @@ module Ieee80211CompatibleMac extends Ieee80211Mac
         //TODO upperMac.difsn =  AIFSN;
         upperMac.prioritizeMulticast = prioritizeMulticast; // DcfUpperMac, EdcaUpperMac
         upperMac.slotTime = slotTime; // DcfUpperMac, EdcaUpperMac
-        upperMac.cwMin = cwMinData; // DcfUpperMac
-        upperMac.cwMax = cwMaxData; // DcfUpperMac
+        dcf.channelAccess.cwMin = cwMinData; // DcfUpperMac
+        dcf.channelAccess.cwMax = cwMaxData; // DcfUpperMac
         upperMac.cwMinMulticast = cwMulticast; // DcfUpperMac, EdcaUpperMac
 }
