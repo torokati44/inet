@@ -223,7 +223,11 @@ void Dcf::originatorProcessReceivedFrame(Ieee80211Frame* frame, Ieee80211Frame* 
         ackHandler->processReceivedAck(check_and_cast<Ieee80211ACKFrame *>(frame), check_and_cast<Ieee80211DataOrMgmtFrame*>(lastTransmittedFrame));
         inProgressFrames->dropFrame(check_and_cast<Ieee80211DataOrMgmtFrame*>(lastTransmittedFrame));
         if (dataAndMgmtRateControl) {
-            int retryCount = recoveryProcedure->getRetryCount(check_and_cast<Ieee80211DataOrMgmtFrame*>(lastTransmittedFrame));
+            int retryCount;
+            if (lastTransmittedFrame->getRetry())
+                retryCount = recoveryProcedure->getRetryCount(check_and_cast<Ieee80211DataOrMgmtFrame*>(lastTransmittedFrame));
+            else
+                retryCount = 0;
             dataAndMgmtRateControl->frameTransmitted(frame, retryCount, true, false);
         }
     }

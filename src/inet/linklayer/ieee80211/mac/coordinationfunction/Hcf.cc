@@ -423,7 +423,11 @@ void Hcf::originatorProcessReceivedControlFrame(Ieee80211Frame* frame, Ieee80211
         if (auto dataFrame = dynamic_cast<Ieee80211DataFrame *>(lastTransmittedFrame)) {
             edcaDataRecoveryProcedures[ac]->ackFrameReceived(dataFrame);
             if (dataAndMgmtRateControl) {
-                int retryCount = edcaDataRecoveryProcedures[ac]->getRetryCount(dataFrame);
+                int retryCount;
+                if (dataFrame->getRetry())
+                    retryCount = edcaDataRecoveryProcedures[ac]->getRetryCount(dataFrame);
+                else
+                    retryCount = 0;
                 dataAndMgmtRateControl->frameTransmitted(dataFrame, retryCount, true, false);
             }
         }
