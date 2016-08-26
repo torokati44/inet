@@ -58,8 +58,10 @@ void Dcf::initialize(int stage)
 
 void Dcf::handleMessage(cMessage* msg)
 {
-    if (msg == startRxTimer && !isReceptionInProgress())
-        frameSequenceHandler->handleStartRxTimeout();
+    if (msg == startRxTimer) {
+        if (!isReceptionInProgress())
+            frameSequenceHandler->handleStartRxTimeout();
+    }
     else
         throw cRuntimeError("Unknown msg type");
 }
@@ -235,8 +237,9 @@ void Dcf::originatorProcessReceivedFrame(Ieee80211Frame* frame, Ieee80211Frame* 
 void Dcf::originatorProcessFailedFrame(Ieee80211DataOrMgmtFrame* failedFrame)
 {
     ASSERT(failedFrame->getType() != ST_DATA_WITH_QOS);
-    ASSERT(ackHandler->getAckStatus(failedFrame) == AckHandler::Status::WAITING_FOR_NORMAL_ACK);
+    ASSERT(ackHandler->getAckStatus(failedFrame) == AckHandler::Status::WAITING_FOR_ACK);
     EV_INFO << "Data/Mgmt frame transmission failed\n";
+    ackHandler->processFailedFrame(failedFrame);
     recoveryProcedure->dataOrMgmtFrameTransmissionFailed(failedFrame, stationRetryCounters);
     bool retryLimitReached = recoveryProcedure->isRetryLimitReached(failedFrame);
     if (dataAndMgmtRateControl) {
@@ -252,7 +255,7 @@ void Dcf::originatorProcessFailedFrame(Ieee80211DataOrMgmtFrame* failedFrame)
 void Dcf::setFrameMode(Ieee80211Frame *frame, const IIeee80211Mode *mode) const
 {
     ASSERT(mode != nullptr);
-    ASSERT(frame->getControlInfo() == nullptr);
+    delete frame->removeControlInfo();
     Ieee80211TransmissionRequest *ctrl = new Ieee80211TransmissionRequest();
     ctrl->setMode(mode);
     frame->setControlInfo(ctrl);

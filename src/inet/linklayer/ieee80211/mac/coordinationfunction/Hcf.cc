@@ -74,8 +74,10 @@ void Hcf::initialize(int stage)
 
 void Hcf::handleMessage(cMessage* msg)
 {
-    if (msg == startRxTimer && !isReceptionInProgress())
-        frameSequenceHandler->handleStartRxTimeout();
+    if (msg == startRxTimer) {
+        if (!isReceptionInProgress())
+            frameSequenceHandler->handleStartRxTimeout();
+    }
     else if (msg == inactivityTimer) {
         originatorBlockAckAgreementHandler->blockAckAgreementExpired(this, this);
         recipientBlockAckAgreementHandler->blockAckAgreementExpired(this, this);
@@ -555,7 +557,7 @@ void Hcf::processMgmtFrame(Ieee80211ManagementFrame* mgmtFrame)
 void Hcf::setFrameMode(Ieee80211Frame *frame, const IIeee80211Mode *mode) const
  {
     ASSERT(mode != nullptr);
-    ASSERT(frame->getControlInfo() == nullptr);
+    delete frame->removeControlInfo();
     Ieee80211TransmissionRequest *ctrl = new Ieee80211TransmissionRequest();
     ctrl->setMode(mode);
     frame->setControlInfo(ctrl);
