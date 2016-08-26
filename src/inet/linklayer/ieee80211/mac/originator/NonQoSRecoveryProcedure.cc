@@ -134,11 +134,11 @@ void NonQoSRecoveryProcedure::ackFrameReceived(Ieee80211DataOrMgmtFrame *ackedFr
 void NonQoSRecoveryProcedure::dataOrMgmtFrameTransmissionFailed(Ieee80211DataOrMgmtFrame *failedFrame, StationRetryCounters *stationCounters)
 {
     if (failedFrame->getByteLength() >= rtsThreshold) {
-        stationCounters->resetStationLongRetryCount();
+        incrementStationLrc(stationCounters);
         incrementCounter(failedFrame, longRetryCounter);
     }
     else {
-        stationCounters->resetStationShortRetryCount();
+        incrementStationSrc(stationCounters);
         incrementCounter(failedFrame, shortRetryCounter);
     }
 }
@@ -148,7 +148,7 @@ void NonQoSRecoveryProcedure::dataOrMgmtFrameTransmissionFailed(Ieee80211DataOrM
 //
 void NonQoSRecoveryProcedure::rtsFrameTransmissionFailed(Ieee80211DataOrMgmtFrame* protectedFrame, StationRetryCounters *stationCounters)
 {
-    stationCounters->resetStationShortRetryCount();
+    incrementStationSrc(stationCounters);
     incrementCounter(protectedFrame, shortRetryCounter);
 }
 
