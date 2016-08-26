@@ -31,9 +31,9 @@ class INET_API AckHandler : public IAckHandler
         enum class Status {
             FRAME_NOT_YET_TRANSMITTED,
             NO_ACK_REQUIRED,
-            WAITING_FOR_NORMAL_ACK,
-            NORMAL_ACK_NOT_ARRIVED,
-            NORMAL_ACK_ARRIVED,
+            WAITING_FOR_ACK,
+            ACK_NOT_ARRIVED,
+            ACK_ARRIVED,
         };
     protected:
         std::map<SequenceControlField, Status> ackStatuses;
@@ -55,6 +55,7 @@ class INET_API AckHandler : public IAckHandler
         virtual bool isEligibleToTransmit(Ieee80211DataOrMgmtFrame *frame) override;
         virtual bool isOutstandingFrame(Ieee80211DataOrMgmtFrame *frame) override;
         virtual int getNumberOfFramesWithStatus(Status status);
+        virtual void processFailedFrame(Ieee80211DataOrMgmtFrame *dataOrMgmtFrame);
 };
 
 } /* namespace ieee80211 */

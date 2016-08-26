@@ -47,28 +47,28 @@ void AckHandler::processReceivedAck(Ieee80211ACKFrame* ack, Ieee80211DataOrMgmtF
     Status &status = getAckStatus(id);
     if (status == Status::FRAME_NOT_YET_TRANSMITTED)
         throw cRuntimeError("ackedFrame = %s is not yet transmitted", ackedFrame->getName());
-    status = Status::NORMAL_ACK_ARRIVED;
+    status = Status::ACK_ARRIVED;
 }
 
 void AckHandler::processTransmittedDataOrMgmtFrame(Ieee80211DataOrMgmtFrame* frame)
 {
     // TODO: mgmt with NoAck subfield?
     auto id = SequenceControlField(frame->getSequenceNumber(),frame->getFragmentNumber());
-    ackStatuses[id] = Status::WAITING_FOR_NORMAL_ACK;
+    ackStatuses[id] = Status::WAITING_FOR_ACK;
 }
 
 void AckHandler::frameGotInProgress(Ieee80211DataOrMgmtFrame* dataOrMgmtFrame)
 {
     auto id = SequenceControlField(dataOrMgmtFrame->getSequenceNumber(), dataOrMgmtFrame->getFragmentNumber());
     Status& status = getAckStatus(id);
-    ASSERT(status != Status::WAITING_FOR_NORMAL_ACK);
+    ASSERT(status != Status::WAITING_FOR_ACK);
     ackStatuses[id] = Status::FRAME_NOT_YET_TRANSMITTED;
 }
 
 bool AckHandler::isEligibleToTransmit(Ieee80211DataOrMgmtFrame* frame)
 {
     auto status = getAckStatus(frame);
-    return status == AckHandler::Status::NORMAL_ACK_NOT_ARRIVED || status == AckHandler::Status::FRAME_NOT_YET_TRANSMITTED;
+    return status == AckHandler::Status::ACK_NOT_ARRIVED || status == AckHandler::Status::FRAME_NOT_YET_TRANSMITTED;
 }
 
 bool AckHandler::isOutstandingFrame(Ieee80211DataOrMgmtFrame* frame)
@@ -85,14 +85,22 @@ int AckHandler::getNumberOfFramesWithStatus(Status status)
     return count;
 }
 
+
+void AckHandler::processFailedFrame(Ieee80211DataOrMgmtFrame* dataOrMgmtFrame)
+{
+    ASSERT(getAckStatus(dataOrMgmtFrame) == Status::WAITING_FOR_ACK);
+    auto id = SequenceControlField(dataOrMgmtFrame->getSequenceNumber(), dataOrMgmtFrame->getFragmentNumber());
+    ackStatuses[id] = Status::ACK_NOT_ARRIVED;
+}
+
 std::string AckHandler::getStatusString(Status status)
 {
     switch (status) {
         case Status::FRAME_NOT_YET_TRANSMITTED : return "FRAME_NOT_YET_TRANSMITTED";
         case Status::NO_ACK_REQUIRED : return "NO_ACK_REQUIRED";
-        case Status::WAITING_FOR_NORMAL_ACK : return "WAITING_FOR_NORMAL_ACK";
-        case Status::NORMAL_ACK_NOT_ARRIVED : return "NORMAL_ACK_NOT_ARRIVED";
-        case Status::NORMAL_ACK_ARRIVED  : return "NORMAL_ACK_ARRIVED";
+        case Status::WAITING_FOR_ACK : return "WAITING_FOR_NORMAL_ACK";
+        case Status::ACK_NOT_ARRIVED : return "NORMAL_ACK_NOT_ARRIVED";
+        case Status::ACK_ARRIVED  : return "NORMAL_ACK_ARRIVED";
         default: throw cRuntimeError("Unknown status");
     }
 }
@@ -108,4 +116,3 @@ void AckHandler::printAckStatuses()
 
 } /* namespace ieee80211 */
 } /* namespace inet */
-
