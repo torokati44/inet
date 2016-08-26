@@ -38,6 +38,8 @@ void AARFRateControl::initialize(int stage)
         WATCH(interval);
         WATCH(probing);
         WATCH(numberOfConsSuccTransmissions);
+    }
+    else if (stage == INITSTAGE_LINK_LAYER_2) {
         updateDisplayString();
     }
 }
