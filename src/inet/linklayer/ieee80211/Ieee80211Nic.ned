@@ -44,7 +44,7 @@ module Ieee80211Nic like IWirelessNic
         string radioType = default("Ieee80211ScalarRadio");
         string macType = default("Ieee80211CompatibleMac");   // choose from Ieee80211OldMac, Ieee80211Mac, Ieee80211CompatibleMac
         string opMode @enum("a","b","g","n","p") = default("g");
-        double bitrate @unit("bps") = default(opMode == "b" ? 11Mbps : opMode == "p" ? 27Mbps : 54Mbps);
+        double bitrate @unit("bps") = default(-1bps);
         bool _agentNeeded = (mgmtType == "Ieee80211MgmtSTA");   // internal par. do not use, shows if optional agent module is needed
         **.opMode = opMode;
         **.bitrate = bitrate;

@@ -141,9 +141,10 @@ module Ieee80211CompatibleMac extends Ieee80211Mac
     parameters:
         string rateControlType;
         string opMode @enum("a","b","g","n","p") = default("g");
-        double bitrate @unit("bps");
+        double bitrate @unit("bps") = default(-1bps);
         double basicBitrate @unit("bps") = default(-1bps);
         double controlBitrate @unit("bps") = default(-1bps);
+        double initialRateControlRate @unit("bps") = default(-1bps);
         int rtsThresholdBytes @unit("B") = default(2346B);
         int retryLimit = default(-1);
         bool EDCA = default(false);
@@ -172,6 +173,7 @@ module Ieee80211CompatibleMac extends Ieee80211Mac
         *.rateSelection.mgmtFrameBitrate = basicBitrate;
         *.rateSelection.controlFrameBitrate = controlBitrate;
         *.rateSelection.responseAckFrameBitrate = controlBitrate;
+        *.rateControl.initialRate = initialRateControlRate;
         upperMac.rtsThreshold = rtsThresholdBytes; // DcfUpperMac, EdcaUpperMac
         upperMac.shortRetryLimit = retryLimit; // DcfUpperMac, EdcaUpperMac
         upperMac.maxQueueSize = maxQueueSize; // DcfUpperMac, EdcaUpperMac
