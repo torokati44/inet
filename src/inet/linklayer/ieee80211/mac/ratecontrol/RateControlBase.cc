@@ -28,13 +28,13 @@ void RateControlBase::initialize(int stage)
 
 const IIeee80211Mode* RateControlBase::increaseRateIfPossible(const IIeee80211Mode* currentMode)
 {
-    const IIeee80211Mode *newMode = modeSet->getFasterMandatoryMode(currentMode);
+    const IIeee80211Mode *newMode = modeSet->getFasterMode(currentMode);
     return newMode == nullptr ? currentMode : newMode;
 }
 
 const IIeee80211Mode* RateControlBase::decreaseRateIfPossible(const IIeee80211Mode* currentMode)
 {
-    const IIeee80211Mode *newMode = modeSet->getSlowerMandatoryMode(currentMode);
+    const IIeee80211Mode *newMode = modeSet->getSlowerMode(currentMode);
     return newMode == nullptr ? currentMode : newMode;
 }
 
