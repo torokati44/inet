@@ -43,7 +43,8 @@ void RateControlBase::receiveSignal(cComponent* source, simsignal_t signalID, cO
     Enter_Method("receiveModeSetChangeNotification");
     if (signalID == NF_MODESET_CHANGED) {
         modeSet = check_and_cast<Ieee80211ModeSet*>(obj);
-        currentMode = modeSet->getFastestMandatoryMode();
+        double initRate = par("initialRate");
+        currentMode = initRate == -1 ? modeSet->getFastestMandatoryMode() : modeSet->getMode(bps(initRate));
     }
 }
 
