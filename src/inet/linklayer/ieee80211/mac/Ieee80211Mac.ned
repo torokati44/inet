@@ -114,7 +114,7 @@ module Ieee80211Mac extends MACProtocolBase like IIeee80211Mac
     submodules:
         statistics: <default("BasicStatistics")> like IStatistics {
             parameters:
-                @display("p=50,47");
+                @display("p=50,47;i=block/table2");
         }
         dcf: Dcf {
             @display("p=205,47");
@@ -124,11 +124,11 @@ module Ieee80211Mac extends MACProtocolBase like IIeee80211Mac
         }
         rx: <default("Rx")> like IRx {
             parameters:
-                @display("p=205,161");
+                @display("p=205,161;i=block/rx");
         }
         tx: <default("Tx")> like ITx {
             parameters:
-                @display("p=317,161");
+                @display("p=317,161;i=block/tx");
         }
 }
 

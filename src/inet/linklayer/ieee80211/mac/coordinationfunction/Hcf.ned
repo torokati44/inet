@@ -58,16 +58,16 @@ module Hcf
 
         edca: Edca {
             numEdcafs = numEdcafs;
-            @display("p=83.83125,230.125");
+            @display("p=83.83125,230.125;i=block/star");
         }
         hcca: Hcca {
-            @display("p=83.83125,368.2");
+            @display("p=83.83125,368.2;i=block/star");
         }
 
         rateSelection: QoSRateSelection {
             parameters:
                 rateControlModule = "^.rateControl";
-                @display("p=170.95001,534.21875");
+                @display("p=170.95001,534.21875;i=block/cogwheel");
         }
         rateControl: <rateControlType> like IRateControl if rateControlType != "" {
             parameters:
@@ -75,46 +75,46 @@ module Hcf
         }
 
         originatorMacDataService: OriginatorQoSMacDataService {
-            @display("p=522.7125,534.21875");
+            @display("p=522.7125,534.21875;i=block/fork");
         }
         recipientMacDataService: RecipientQoSMacDataService {
-            @display("p=522.7125,675.5813");
+            @display("p=522.7125,675.5813;i=block/join");
         }
         singleProtectionMechanism: SingleProtectionMechanism {
-            @display("p=220.26251,69.0375");
+            @display("p=220.26251,69.0375;i=block/encrypt");
         }
         edcaMgmtAndNonQoSRecoveryProcedure: NonQoSRecoveryProcedure {
             cwCalculatorModule = "^.edca.edcaf[1]"; // best effort
             rtsPolicyModule = "^.rtsPolicy";
-            @display("p=616.40625,304.09375");
+            @display("p=616.40625,304.09375;i=block/cogwheel");
         }
         edcaDataRecoveryProcedures[numEdcafs]: QoSRecoveryProcedure {
             cwCalculatorModule = "^.edca.edcaf[" + string(index) + "]";
             rtsPolicyModule = "^.rtsPolicy";
-            @display("p=616.40625,187.38751,row,50");
+            @display("p=616.40625,187.38751,row,50;i=block/cogwheel");
         }
         edcaTxopProcedures[numEdcafs]: TxopProcedure {
-            @display("p=616.40625,78.9,row,50");
+            @display("p=616.40625,78.9,row,50;i=block/timer");
         }
 
         recipientAckPolicy: RecipientQoSAckPolicy {
-            @display("p=1017.48126,187.38751");
+            @display("p=1017.48126,187.38751;i=block/control");
         }
         originatorAckPolicy: OriginatorQoSAckPolicy {
             @display("p=1017.48126,78.9");
         }
         rtsPolicy: QoSRtsPolicy {
-            @display("p=1017.48126,304.09375");
+            @display("p=1017.48126,304.09375;i=block/control");
         }
         ctsPolicy: QoSCtsPolicy {
-            @display("p=1017.48126,424.08752");
+            @display("p=1017.48126,424.08752;i=block/control");
         }
         originatorBlockAckAgreementPolicy: OriginatorBlockAckAgreementPolicy {
             originatorAckPolicyModule = "^.originatorAckPolicy";
-            @display("p=1017.48126,535.8625");
+            @display("p=1017.48126,535.8625;i=block/control");
         }
         recipientBlockAckAgreementPolicy: RecipientBlockAckAgreementPolicy {
-            @display("p=1017.48126,652.5688");
+            @display("p=1017.48126,652.5688;i=block/control");
         }
 
 }

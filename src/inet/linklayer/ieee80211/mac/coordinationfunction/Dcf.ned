@@ -50,7 +50,7 @@ module Dcf
 
     submodules:
         channelAccess: Dcaf {
-            @display("p=100.492,46.62");
+            @display("p=100.492,46.62;i=block/star");
         }
 
         rateSelection: RateSelection {
@@ -63,30 +63,30 @@ module Dcf
         }
 
         originatorMacDataService: OriginatorMacDataService {
-            @display("p=100.492,149.184");
+            @display("p=100.492,149.184;i=block/fork");
         }
         recipientMacDataService: RecipientMacDataService {
-            @display("p=100.492,245.532");
+            @display("p=100.492,245.532;i=block/join");
         }
         originatorProtectionMechanism: OriginatorProtectionMechanism {
-            @display("p=130.284,360.866");
+            @display("p=100.298004,340.186;i=block/encrypt");
         }
         recoveryProcedure: NonQoSRecoveryProcedure {
             cwCalculatorModule = "^.channelAccess";
             rtsPolicyModule = "^.rtsPolicy";
-            @display("p=320.124,435.12");
+            @display("p=320.124,435.12;i=block/cogwheel");
         }
 
         originatorAckPolicy: OriginatorAckPolicy {
-            @display("p=320.124,34.188");
+            @display("p=320.124,34.188;i=block/control");
         }
         recipientAckPolicy: RecipientAckPolicy {
-            @display("p=320.124,119.14");
+            @display("p=320.124,119.14;i=block/control");
         }
         rtsPolicy: RtsPolicy {
-            @display("p=320.124,205.128");
+            @display("p=320.124,205.128;i=block/control");
         }
         ctsPolicy: CtsPolicy {
-            @display("p=320.124,292.152");
+            @display("p=320.124,292.152;i=block/control");
         }
 }

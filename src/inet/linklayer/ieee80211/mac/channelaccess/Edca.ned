@@ -32,7 +32,7 @@ module Edca
         *.rateSelectionModule = "^." + rateSelectionModule;
         *.rxModule = "^." + rxModule;
         *.collisionControllerModule = "^.collisionController";
-        
+
         edcaf[0].accessCategory = "AC_BK";
         edcaf[1].accessCategory = "AC_BE";
         edcaf[2].accessCategory = "AC_VI";
