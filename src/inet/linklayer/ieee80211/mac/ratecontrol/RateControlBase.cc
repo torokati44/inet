@@ -28,7 +28,7 @@ void RateControlBase::initialize(int stage)
 
 const IIeee80211Mode* RateControlBase::increaseRateIfPossible(const IIeee80211Mode* currentMode)
 {
-    const IIeee80211Mode *newMode = modeSet->getSlowerMandatoryMode(currentMode);
+    const IIeee80211Mode *newMode = modeSet->getFasterMandatoryMode(currentMode);
     return newMode == nullptr ? currentMode : newMode;
 }
 
@@ -37,6 +37,7 @@ const IIeee80211Mode* RateControlBase::decreaseRateIfPossible(const IIeee80211Mo
     const IIeee80211Mode *newMode = modeSet->getSlowerMandatoryMode(currentMode);
     return newMode == nullptr ? currentMode : newMode;
 }
+
 void RateControlBase::receiveSignal(cComponent* source, simsignal_t signalID, cObject* obj, cObject* details)
 {
     Enter_Method("receiveModeSetChangeNotification");
@@ -48,4 +49,3 @@ void RateControlBase::receiveSignal(cComponent* source, simsignal_t signalID, cO
 
 } /* namespace ieee80211 */
 } /* namespace inet */
-
