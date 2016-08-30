@@ -33,10 +33,10 @@ HcfFs::HcfFs() :
     //   cf-ack-piggybacked-qos-poll-sequence |
     //   (* HC only, self TXOP delivery or termination *)
     //   Data + self + null + CF-Poll + QoS;
-    AlternativesFs({new SequentialFs({new OptionalFs(new CtsFs(), OPTIONALFS_PREDICATE(isSelfCtsNeeded)),
+    AlternativesFs({new SequentialFs({new OptionalFs(new SelfCtsFs(), OPTIONALFS_PREDICATE(isSelfCtsNeeded)),
                                       new RepeatingFs(new AlternativesFs({new DataFs(), new ManagementFs()}, ALTERNATIVESFS_SELECTOR(selectDataOrManagementSequence)),
                                                       REPEATINGFS_PREDICATE(hasMoreTxOps))}),
-                    new SequentialFs({new OptionalFs(new CtsFs(), OPTIONALFS_PREDICATE(isSelfCtsNeeded)),
+                    new SequentialFs({new OptionalFs(new SelfCtsFs(), OPTIONALFS_PREDICATE(isSelfCtsNeeded)),
                                       new RepeatingFs(new TxOpFs(), REPEATINGFS_PREDICATE(hasMoreTxOps))})},
                    ALTERNATIVESFS_SELECTOR(selectHcfSequence))
 {

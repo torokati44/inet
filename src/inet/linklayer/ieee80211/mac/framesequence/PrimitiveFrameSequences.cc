@@ -20,22 +20,88 @@
 namespace inet {
 namespace ieee80211 {
 
-void CtsFs::startSequence(FrameSequenceContext *context, int firstStep)
+void SelfCtsFs::startSequence(FrameSequenceContext *context, int firstStep)
 {
     this->firstStep = firstStep;
     step = 0;
 }
 
-IFrameSequenceStep *CtsFs::prepareStep(FrameSequenceContext *context)
+IFrameSequenceStep *SelfCtsFs::prepareStep(FrameSequenceContext *context)
 {
     // TODO: Implement
     return nullptr;
 }
 
-bool CtsFs::completeStep(FrameSequenceContext *context)
+bool SelfCtsFs::completeStep(FrameSequenceContext *context)
 {
     // TODO: Implement
     return false;
+}
+
+void RtsFs::startSequence(FrameSequenceContext* context, int firstStep)
+{
+    this->firstStep = firstStep;
+    step = 0;
+}
+
+IFrameSequenceStep* RtsFs::prepareStep(FrameSequenceContext* context)
+{
+    switch (step) {
+        case 0: {
+            auto dataOrMgmtFrame = check_and_cast<Ieee80211DataOrMgmtFrame *>(context->getInProgressFrames()->getFrameToTransmit());
+            auto rtsFrame = context->getRtsProcedure()->buildRtsFrame(dataOrMgmtFrame);
+            return new RtsTransmitStep(dataOrMgmtFrame, rtsFrame, context->getIfs());
+        }
+        case 1:
+            return nullptr;
+        default:
+            throw cRuntimeError("Unknown step");
+    }
+}
+
+bool RtsFs::completeStep(FrameSequenceContext* context)
+{
+    switch (step) {
+        case 0:
+            step++;
+            return true;
+        default:
+            throw cRuntimeError("Unknown step");
+    }
+}
+
+void CtsFs::startSequence(FrameSequenceContext* context, int firstStep)
+{
+    this->firstStep = firstStep;
+    step = 0;
+}
+
+IFrameSequenceStep* CtsFs::prepareStep(FrameSequenceContext* context)
+{
+    switch (step) {
+        case 0: {
+            auto txStep = check_and_cast<RtsTransmitStep *>(context->getLastStep());
+            auto rtsFrame = check_and_cast<Ieee80211RTSFrame*>(txStep->getFrameToTransmit());
+            return new ReceiveStep(context->getCtsTimeout(rtsFrame));
+        }
+        case 1:
+            return nullptr;
+        default:
+            throw cRuntimeError("Unknown step");
+    }
+}
+
+bool CtsFs::completeStep(FrameSequenceContext* context)
+{
+    switch (step) {
+        case 0: {
+            auto receiveStep = check_and_cast<IReceiveStep *>(context->getStep(firstStep + step));
+            step++;
+            return receiveStep->getReceivedFrame()->getType() == ST_CTS;
+        }
+        default:
+            throw cRuntimeError("Unknown step");
+    }
 }
 
 void DataFs::startSequence(FrameSequenceContext *context, int firstStep)

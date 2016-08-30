@@ -69,7 +69,7 @@ module Dcf
             @display("p=100.492,245.532;i=block/join");
         }
         originatorProtectionMechanism: OriginatorProtectionMechanism {
-            @display("p=100.298004,340.186;i=block/encrypt");
+            @display("p=140.62401,342.254;i=block/encrypt");
         }
         recoveryProcedure: NonQoSRecoveryProcedure {
             cwCalculatorModule = "^.channelAccess";

@@ -25,7 +25,7 @@
 namespace inet {
 namespace ieee80211 {
 
-class INET_API CtsFs : public IFrameSequence {
+class INET_API SelfCtsFs : public IFrameSequence {
     protected:
         int firstStep = -1;
         int step = -1;
@@ -90,6 +90,34 @@ class INET_API RtsCtsFs : public IFrameSequence {
 
         virtual std::string getHistory() override { return std::string("RTS") + (step == 2 ? " CTS" : ""); } // TODO: completeStep = true?
 };
+
+class INET_API RtsFs : public IFrameSequence {
+    protected:
+        int firstStep = -1;
+        int step = -1;
+
+    public:
+        virtual void startSequence(FrameSequenceContext *context, int firstStep) override;
+        virtual IFrameSequenceStep *prepareStep(FrameSequenceContext *context) override;
+        virtual bool completeStep(FrameSequenceContext *context) override;
+
+        virtual std::string getHistory() override { return "TODO"; } // TODO: completeStep = true?
+};
+
+
+class INET_API CtsFs : public IFrameSequence {
+    protected:
+        int firstStep = -1;
+        int step = -1;
+
+    public:
+        virtual void startSequence(FrameSequenceContext *context, int firstStep) override;
+        virtual IFrameSequenceStep *prepareStep(FrameSequenceContext *context) override;
+        virtual bool completeStep(FrameSequenceContext *context) override;
+
+        virtual std::string getHistory() override { return "TODO"; } // TODO: completeStep = true?
+};
+
 
 class INET_API FragFrameAckFs : public IFrameSequence {
     protected:

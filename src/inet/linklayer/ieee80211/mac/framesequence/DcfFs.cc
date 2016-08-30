@@ -26,9 +26,9 @@ DcfFs::DcfFs() :
     // frame-sequence =
     //   ( [ CTS ] ( Management + broadcast | Data + group ) ) |
     //   ( [ CTS | RTS CTS] {frag-frame ACK } last-frame ACK )
-    AlternativesFs({new SequentialFs({new OptionalFs(new CtsFs(), OPTIONALFS_PREDICATE(isSelfCtsNeeded)),
+    AlternativesFs({new SequentialFs({new OptionalFs(new SelfCtsFs(), OPTIONALFS_PREDICATE(isSelfCtsNeeded)),
                                       new AlternativesFs({new ManagementFs(), new DataFs()}, ALTERNATIVESFS_SELECTOR(selectMulticastDataOrMgmt))}),
-                    new SequentialFs({new OptionalFs(new AlternativesFs({new CtsFs(), new RtsCtsFs(), /*...*/},
+                    new SequentialFs({new OptionalFs(new AlternativesFs({new SelfCtsFs(), new SequentialFs({new RtsFs(), new CtsFs()})},
                                                                         ALTERNATIVESFS_SELECTOR(selectSelfCtsOrRtsCts)),
                                                      OPTIONALFS_PREDICATE(isCtsOrRtsCtsNeeded)),
                                       new RepeatingFs(new FragFrameAckFs(), REPEATINGFS_PREDICATE(hasMoreFragments)),

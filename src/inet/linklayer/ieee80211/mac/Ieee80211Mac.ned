@@ -102,7 +102,7 @@ module Ieee80211Mac extends MACProtocolBase like IIeee80211Mac
         *.rateControlModule = "^.rateControl";
         *.statisticsModule = "^.statistics";
 
-        @display("i=block/layer");
+        @display("i=block/layer;bgb=389,221");
         @nic;
         @class(Ieee80211Mac);
         @statistic[passedUpPk](title="packets passed to higher layer"; source=packetSentToUpper; record=count,"sum(packetBytes)","vector(packetBytes)"; interpolationmode=none);
