@@ -26,6 +26,8 @@ network LevelofDetail
 {
     parameters:
         int numHosts;
+        @signal[dummy];
+		@statistic[a](source=dummy;record=elapsedTime);
     submodules:
         visualizer: IntegratedCanvasVisualizer {
             parameters:
