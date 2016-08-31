@@ -34,6 +34,7 @@ class INET_API OriginatorAckPolicy : public ModeSetListener, public IOriginatorA
         virtual void initialize(int stage) override;
 
     public:
+        virtual bool isAckNeeded(Ieee80211DataOrMgmtFrame *dataOrMgmtFrame) const override;
         virtual simtime_t getAckTimeout(Ieee80211DataOrMgmtFrame *dataOrMgmtFrame) const override;
 };
 

@@ -29,6 +29,11 @@ void OriginatorAckPolicy::initialize(int stage)
         ackTimeout = par("ackTimeout");
 }
 
+bool OriginatorAckPolicy::isAckNeeded(Ieee80211DataOrMgmtFrame* dataOrMgmtFrame) const
+{
+    return !dataOrMgmtFrame->getReceiverAddress().isMulticast(); // TODO: + mgmt with NoAck check
+}
+
 //
 // After transmitting an MPDU that requires an ACK frame as a response (see Annex G), the STA shall wait for an
 // ACKTimeout interval, with a value of aSIFSTime + aSlotTime + aPHY-RX-START-Delay, starting at the

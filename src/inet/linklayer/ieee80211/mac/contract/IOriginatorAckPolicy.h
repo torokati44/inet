@@ -27,10 +27,11 @@ class INET_API IOriginatorAckPolicy
 {
     public:
         virtual ~IOriginatorAckPolicy() { }
+        virtual bool isAckNeeded(Ieee80211DataOrMgmtFrame *dataOrMgmtFrame) const = 0;
         virtual simtime_t getAckTimeout(Ieee80211DataOrMgmtFrame *dataOrMgmtFrame) const = 0;
 };
 
 } /* namespace ieee80211 */
 } /* namespace inet */
 
-#endif /* INET_LINKLAYER_IEEE80211_MAC_CONTRACT_IORIGINATORACKPOLICY_H_ */
+#endif // ifndef __INET_IORIGINATORACKPOLICY_H
