@@ -15,6 +15,8 @@
 // along with this program; if not, see http://www.gnu.org/licenses/.
 //
 
+#include "inet/linklayer/ieee80211/mac/coordinationfunction/Dcf.h"
+#include "inet/linklayer/ieee80211/mac/rateselection/RateSelection.h"
 #include "OriginatorProtectionMechanism.h"
 
 namespace inet {
@@ -38,7 +40,9 @@ void OriginatorProtectionMechanism::initialize(int stage)
 //
 simtime_t OriginatorProtectionMechanism::computeRtsDurationField(Ieee80211RTSFrame* rtsFrame, Ieee80211DataOrMgmtFrame* pendingFrame)
 {
-    simtime_t pendingFrameDuration = rateSelection->computeMode(pendingFrame)->getDuration(pendingFrame->getBitLength());
+    auto pendingFrameMode = rateSelection->computeMode(pendingFrame);
+    RateSelection::setFrameMode(pendingFrame, pendingFrameMode);
+    simtime_t pendingFrameDuration = pendingFrameMode->getDuration(pendingFrame->getBitLength());
     simtime_t ctsFrameDuration = rateSelection->computeResponseCtsFrameMode(rtsFrame)->getDuration(LENGTH_CTS);
     simtime_t ackFrameDuration = rateSelection->computeResponseAckFrameMode(pendingFrame)->getDuration(LENGTH_ACK);
     simtime_t durationId = ctsFrameDuration + pendingFrameDuration + ackFrameDuration;
@@ -57,14 +61,17 @@ simtime_t OriginatorProtectionMechanism::computeRtsDurationField(Ieee80211RTSFra
 //
 simtime_t OriginatorProtectionMechanism::computeDataFrameDurationField(Ieee80211DataFrame* dataFrame, Ieee80211DataOrMgmtFrame* pendingFrame)
 {
-    simtime_t ackFrameDuration = rateSelection->computeResponseAckFrameMode(dataFrame)->getDuration(LENGTH_ACK);
+    simtime_t ackToDataFrameDuration = rateSelection->computeResponseAckFrameMode(dataFrame)->getDuration(LENGTH_ACK);
     if (dataFrame->getReceiverAddress().isMulticast())
         return 0;
     if (!dataFrame->getMoreFragments())
-        return ackFrameDuration + modeSet->getSifsTime();
+        return ackToDataFrameDuration + modeSet->getSifsTime();
     else {
         simtime_t pendingFrameDuration = rateSelection->computeMode(pendingFrame)->getDuration(pendingFrame->getBitLength());
-        return pendingFrameDuration + 2 * ackFrameDuration + 3 * modeSet->getSifsTime();
+        auto pendingFrameMode = rateSelection->computeMode(pendingFrame);
+        RateSelection::setFrameMode(pendingFrame, pendingFrameMode);
+        simtime_t ackToPendingFrame = pendingFrameMode->getDuration(LENGTH_ACK);
+        return pendingFrameDuration + ackToDataFrameDuration + ackToPendingFrame + 3 * modeSet->getSifsTime();
     }
 }
 
