@@ -149,5 +149,15 @@ void RateSelection::frameTransmitted(Ieee80211Frame* frame)
     lastTransmittedFrameMode[receiverAddr] = getMode(frame);
 }
 
+void RateSelection::setFrameMode(Ieee80211Frame *frame, const IIeee80211Mode *mode)
+{
+    ASSERT(mode != nullptr);
+    delete frame->removeControlInfo();
+    Ieee80211TransmissionRequest *ctrl = new Ieee80211TransmissionRequest();
+    ctrl->setMode(mode);
+    frame->setControlInfo(ctrl);
+}
+
+
 } // namespace ieee80211
 } // namespace inet

@@ -19,6 +19,7 @@
 #include "inet/linklayer/ieee80211/mac/coordinationfunction/Dcf.h"
 #include "inet/linklayer/ieee80211/mac/framesequence/DcfFs.h"
 #include "inet/linklayer/ieee80211/mac/Ieee80211Mac.h"
+#include "inet/linklayer/ieee80211/mac/rateselection/RateSelection.h"
 #include "inet/linklayer/ieee80211/mac/recipient/RecipientAckProcedure.h"
 
 namespace inet {
@@ -94,7 +95,7 @@ void Dcf::transmitControlResponseFrame(Ieee80211Frame* responseFrame, Ieee80211F
         responseMode = rateSelection->computeResponseAckFrameMode(dataOrMgmtFrame);
     else
         throw cRuntimeError("Unknown received frame type");
-    setFrameMode(responseFrame, responseMode);
+    RateSelection::setFrameMode(responseFrame, responseMode);
     tx->transmitFrame(responseFrame, modeSet->getSifsTime(), this);
     delete responseFrame;
 }
@@ -133,7 +134,7 @@ void Dcf::processLowerFrame(Ieee80211Frame* frame)
 
 void Dcf::transmitFrame(Ieee80211Frame* frame, simtime_t ifs)
 {
-    setFrameMode(frame, rateSelection->computeMode(frame));
+    RateSelection::setFrameMode(frame, rateSelection->computeMode(frame));
     frame->setDuration(originatorProtectionMechanism->computeDurationField(frame, inProgressFrames->getPendingFrameFor(frame)));
     tx->transmitFrame(frame, ifs, this);
 }
@@ -256,15 +257,6 @@ void Dcf::originatorProcessFailedFrame(Ieee80211DataOrMgmtFrame* failedFrame)
         inProgressFrames->dropFrame(failedFrame);
         delete failedFrame;
     }
-}
-
-void Dcf::setFrameMode(Ieee80211Frame *frame, const IIeee80211Mode *mode) const
-{
-    ASSERT(mode != nullptr);
-    delete frame->removeControlInfo();
-    Ieee80211TransmissionRequest *ctrl = new Ieee80211TransmissionRequest();
-    ctrl->setMode(mode);
-    frame->setControlInfo(ctrl);
 }
 
 Dcf::~Dcf()

@@ -111,8 +111,6 @@ class INET_API Dcf : public ICoordinationFunction, public IFrameSequenceHandler:
         virtual void recipientProcessControlFrame(Ieee80211Frame *frame);
         virtual void recipientProcessTransmittedControlResponseFrame(Ieee80211Frame *frame);
 
-        void setFrameMode(Ieee80211Frame *frame, const IIeee80211Mode *mode) const;
-
     protected:
         // IChannelAccess::ICallback
         virtual void channelGranted(IChannelAccess *channelAccess) override;

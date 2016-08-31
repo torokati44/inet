@@ -66,6 +66,8 @@ class INET_API RateSelection : public IRateSelection, public cSimpleModule, publ
         virtual const IIeee80211Mode *computeDataOrMgmtFrameMode(Ieee80211DataOrMgmtFrame *dataOrMgmtFrame);
 
     public:
+        static void setFrameMode(Ieee80211Frame *frame, const IIeee80211Mode *mode);
+
         // A control response frame is a control frame that is transmitted as a response to the reception of a frame a SIFS
         // time after the PPDU containing the frame that elicited the response, e.g. a CTS in response to an RTS
         // reception, an ACK in response to a DATA reception, a BlockAck in response to a BlockAckReq reception. In
@@ -77,7 +79,6 @@ class INET_API RateSelection : public IRateSelection, public cSimpleModule, publ
         virtual const IIeee80211Mode *computeMode(Ieee80211Frame* frame) override;
 
         virtual void frameTransmitted(Ieee80211Frame *frame);
-
 };
 
 } // namespace ieee80211
