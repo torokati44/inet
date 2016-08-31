@@ -37,5 +37,5 @@ simple AARFRateControl like IRateControl
                                             // needed to increase the rate
         double increaseThresholdFactor = default(2); // When the transmission of probing packet fails, we multiply by "increaseThresholdFactor" the increaseThreshold.
         int maxIncreaseThreshold = default(50); // Upper bound for increaseThreshold.
-        @display("i=block/control");
+        @display("i=block/cogwheel");
 }

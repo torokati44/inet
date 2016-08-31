@@ -31,8 +31,10 @@ module Dcaf
         string rxModule;
 
         @class("Dcaf");
+        @display("i=block/star");
     submodules:
         contention: Contention {
-            @display("p=210,82;i=block/timer");
+            parameters:
+	            @display("p=100,100");
         }
 }

@@ -19,4 +19,5 @@ simple OriginatorAckPolicy
 {
     parameters:
         double ackTimeout @unit("s") = default(-1s);
+        @display("i=block/control");
 }

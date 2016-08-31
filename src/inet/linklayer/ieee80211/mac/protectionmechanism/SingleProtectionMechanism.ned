@@ -21,4 +21,5 @@ simple SingleProtectionMechanism
 {
     parameters:
         string rateSelectionModule;
+        @display("i=block/encrypt");
 }

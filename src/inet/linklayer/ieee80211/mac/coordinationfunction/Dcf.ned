@@ -29,7 +29,6 @@ import inet.linklayer.ieee80211.mac.recipient.CtsPolicy;
 import inet.linklayer.ieee80211.mac.recipient.RecipientAckPolicy;
 import inet.linklayer.ieee80211.mac.recipient.RecipientMacDataService;
 
-
 //
 // IEEE 802.11 Distributed Coordination Function
 //
@@ -46,47 +45,54 @@ module Dcf
         *.rxModule = "^." + rxModule;
 
         @class(Dcf);
-        @display("i=block/queue;bgb=399.896,513.856");
+        @display("i=block/queue");
 
     submodules:
         channelAccess: Dcaf {
-            @display("p=100.492,46.62;i=block/star");
+            parameters:
+                @display("p=150,100");
         }
-
+        originatorMacDataService: OriginatorMacDataService {
+            parameters:
+                @display("p=150,200");
+        }
+        recipientMacDataService: RecipientMacDataService {
+            parameters:
+                @display("p=150,300");
+        }
         rateSelection: RateSelection {
             parameters:
                 rateControlModule = "^.rateControl";
-                @display("p=60.088,435.12");
+                @display("p=400,100");
         }
         rateControl: <rateControlType> like IRateControl if rateControlType != "" {
-            @display("p=185.444,435.12");
-        }
-
-        originatorMacDataService: OriginatorMacDataService {
-            @display("p=100.492,149.184;i=block/fork");
-        }
-        recipientMacDataService: RecipientMacDataService {
-            @display("p=100.492,245.532;i=block/join");
-        }
-        originatorProtectionMechanism: OriginatorProtectionMechanism {
-            @display("p=140.62401,342.254;i=block/encrypt");
+            parameters:
+                @display("p=400,200");
         }
         recoveryProcedure: NonQoSRecoveryProcedure {
-            cwCalculatorModule = "^.channelAccess";
-            rtsPolicyModule = "^.rtsPolicy";
-            @display("p=320.124,435.12;i=block/cogwheel");
+            parameters:
+                cwCalculatorModule = "^.channelAccess";
+                rtsPolicyModule = "^.rtsPolicy";
+                @display("p=400,300");
         }
-
+        originatorProtectionMechanism: OriginatorProtectionMechanism {
+            parameters:
+                @display("p=400,400");
+        }
         originatorAckPolicy: OriginatorAckPolicy {
-            @display("p=320.124,34.188;i=block/control");
+            parameters:
+                @display("p=650,100");
         }
         recipientAckPolicy: RecipientAckPolicy {
-            @display("p=320.124,119.14;i=block/control");
+            parameters:
+                @display("p=650,200");
         }
         rtsPolicy: RtsPolicy {
-            @display("p=320.124,205.128;i=block/control");
+            parameters:
+                @display("p=650,300");
         }
         ctsPolicy: CtsPolicy {
-            @display("p=320.124,292.152;i=block/control");
+            parameters:
+                @display("p=650,400");
         }
 }

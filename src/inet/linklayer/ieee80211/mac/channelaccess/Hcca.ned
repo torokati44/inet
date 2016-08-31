@@ -20,5 +20,5 @@ package inet.linklayer.ieee80211.mac.channelaccess;
 simple Hcca
 {
     parameters:
-        
+		@display("i=block/star");        
 }

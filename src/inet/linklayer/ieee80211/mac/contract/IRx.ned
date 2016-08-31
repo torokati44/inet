@@ -30,5 +30,5 @@ package inet.linklayer.ieee80211.mac.contract;
 moduleinterface IRx
 {
     parameters:
-        @display("i=block/uparrow");
+        @display("i=block/rx");
 }

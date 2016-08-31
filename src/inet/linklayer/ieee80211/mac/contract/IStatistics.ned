@@ -23,5 +23,5 @@ package inet.linklayer.ieee80211.mac.contract;
 moduleinterface IStatistics
 {
     parameters:
-        @display("i=block/control");
+        @display("i=block/table2");
 }

@@ -48,7 +48,7 @@ module Ieee80211Nic like IWirelessNic
         bool _agentNeeded = (mgmtType == "Ieee80211MgmtSTA");   // internal par. do not use, shows if optional agent module is needed
         **.opMode = opMode;
         **.bitrate = bitrate;
-        @display("i=block/ifcard;bgb=336,357");
+        @display("i=block/ifcard");
         *.interfaceTableModule = default(absPath(interfaceTableModule));
         *.energySourceModule = default(absPath(energySourceModule));
     gates:
@@ -57,24 +57,25 @@ module Ieee80211Nic like IWirelessNic
         input radioIn @labels(IRadioFrame); // to receive radio frames
     submodules:
         classifier: <classifierType> like IIeee8021dQoSClassifier if classifierType != "" {
-            @display("p=110,59");
+            parameters:
+	            @display("p=200,100");
         }
         agent: Ieee80211AgentSTA if _agentNeeded {
             parameters:
-                @display("p=261,131");
+                @display("p=200,200");
         }
         mgmt: <mgmtType> like IIeee80211Mgmt {
             parameters:
                 macModule = "^.mac";
-                @display("p=157,131");
+                @display("p=100,100");
         }
         mac: <macType> like IIeee80211Mac {
             parameters:
-                @display("p=157,217");
+                @display("p=100,200");
         }
         radio: <radioType> like IRadio {
             parameters:
-                @display("p=157,302");
+                @display("p=100,300");
         }
     connections:
         radioIn --> { @display("m=s"); } --> radio.radioIn;

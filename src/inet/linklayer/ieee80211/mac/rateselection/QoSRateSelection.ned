@@ -31,4 +31,5 @@ simple QoSRateSelection
         double dataFrameBitrate @unit("bps") = default(-1bps); // fastest
         double mgmtFrameBitrate @unit("bps") = default(-1bps); // fastest
         double controlFrameBitrate @unit("bps") = default(-1bps);
+        @display("i=block/cogwheel");
 }

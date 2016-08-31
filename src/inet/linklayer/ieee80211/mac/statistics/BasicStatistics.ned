@@ -25,5 +25,5 @@ import inet.linklayer.ieee80211.mac.contract.IStatistics;
 simple BasicStatistics like IStatistics
 {
     parameters:
-        @display("i=block/control");
+        @display("i=block/table2");
 }

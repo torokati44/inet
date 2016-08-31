@@ -24,12 +24,11 @@ module OriginatorMacDataService
 {
     parameters:
         string fragmentationPolicyModuleType = "BasicFragmentationPolicy";
-
         @class("OriginatorMacDataService");
-
+        @display("i=block/fork");
     submodules:
         fragmentationPolicy: <fragmentationPolicyModuleType> like IFragmentationPolicy if fragmentationPolicyModuleType != "" {
             parameters:
-                @display("p=100,200");
+                @display("p=100,100");
         }
 }

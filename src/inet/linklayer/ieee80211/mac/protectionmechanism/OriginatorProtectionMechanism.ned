@@ -21,4 +21,5 @@ simple OriginatorProtectionMechanism
 {
     parameters:
         string rateSelectionModule;
+        @display("i=block/encrypt");
 }

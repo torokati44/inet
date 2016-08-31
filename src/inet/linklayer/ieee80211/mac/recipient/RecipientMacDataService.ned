@@ -21,4 +21,5 @@ module RecipientMacDataService
 {
     parameters:
         @class("RecipientMacDataService");
+        @display("i=block/join");
 }

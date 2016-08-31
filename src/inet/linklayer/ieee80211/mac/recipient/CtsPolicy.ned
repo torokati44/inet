@@ -22,4 +22,5 @@ simple CtsPolicy
     parameters:
         string rxModule;
         string rateSelectionModule;
+		@display("i=block/control");
 }

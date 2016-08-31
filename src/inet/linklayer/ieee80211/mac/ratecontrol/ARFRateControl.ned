@@ -21,5 +21,5 @@ simple ARFRateControl extends AARFRateControl
 {
     parameters:
         increaseThresholdFactor = default(1);
-        @display("i=block/control");
+        @display("i=block/cogwheel");
 }

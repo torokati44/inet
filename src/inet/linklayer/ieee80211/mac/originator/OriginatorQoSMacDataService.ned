@@ -26,15 +26,15 @@ module OriginatorQoSMacDataService
     parameters:
         string aMsduAggregationPolicyType = default("BasicMsduAggregationPolicy");
         string fragmentationPolicyType = default("BasicFragmentationPolicy");
-
         @class("OriginatorQoSMacDataService");
+        @display("i=block/fork");
     submodules:
         msduAggregationPolicy: <aMsduAggregationPolicyType> like IMsduAggregationPolicy if aMsduAggregationPolicyType != "" {
             parameters:
-                @display("p=100,100");
+                @display("p=150,100");
         }
         fragmentationPolicy: <fragmentationPolicyType> like IFragmentationPolicy if fragmentationPolicyType != "" {
             parameters:
-                @display("p=100,200");
+                @display("p=150,200");
         }
 }

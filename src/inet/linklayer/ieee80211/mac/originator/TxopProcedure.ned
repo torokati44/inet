@@ -21,4 +21,5 @@ simple TxopProcedure
 {
     parameters:
         double txopLimit @unit("s") = default(-1s);
+        @display("i=block/timer");
 }

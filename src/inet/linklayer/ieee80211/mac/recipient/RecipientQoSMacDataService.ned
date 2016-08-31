@@ -21,4 +21,5 @@ module RecipientQoSMacDataService
 {
     parameters:
         @class("RecipientQoSMacDataService");
+        @display("i=block/join");
 }

@@ -27,7 +27,7 @@ simple Contention like IContention
     parameters:
         bool initialChannelBusy = default(true); // assume that channel was busy before the simulation started
         bool backoffOptimization = default(true);    // we can pretend the frame has arrived into the queue a little bit earlier, and may be able to start transmitting immediately
-        @display("i=block/control");
+        @display("i=block/timer");
         @signal[stateChanged](type=long); // TODO: enum=inet::ieee80211::Contention::State
         @statistic[state](title="contention state"; source=stateChanged; record=vector; interpolationmode=none);
 }

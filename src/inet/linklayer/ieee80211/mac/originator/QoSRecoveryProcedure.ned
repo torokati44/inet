@@ -26,4 +26,5 @@ simple QoSRecoveryProcedure
 
         int shortRetryLimit = default(7);
         int longRetryLimit = default(4);
+        @display("i=block/cogwheel");
 }

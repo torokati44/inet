@@ -23,5 +23,5 @@ import inet.linklayer.ieee80211.mac.contract.ICollisionController;
 simple EdcaCollisionController like ICollisionController
 {
     parameters:
-        
+        @display("i=block/switch");
 }

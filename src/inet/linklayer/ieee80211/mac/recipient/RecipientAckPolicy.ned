@@ -21,4 +21,5 @@ simple RecipientAckPolicy
 {
     parameters:
         string rateSelectionModule;
+        @display("i=block/control");
 }

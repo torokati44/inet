@@ -102,7 +102,7 @@ module Ieee80211Mac extends MACProtocolBase like IIeee80211Mac
         *.rateControlModule = "^.rateControl";
         *.statisticsModule = "^.statistics";
 
-        @display("i=block/layer;bgb=389,221");
+        @display("i=block/layer");
         @nic;
         @class(Ieee80211Mac);
         @statistic[passedUpPk](title="packets passed to higher layer"; source=packetSentToUpper; record=count,"sum(packetBytes)","vector(packetBytes)"; interpolationmode=none);
@@ -112,23 +112,25 @@ module Ieee80211Mac extends MACProtocolBase like IIeee80211Mac
 
         @signal[NF_MODESET_CHANGED](type=inet::physicallayer::Ieee80211ModeSet);
     submodules:
-        statistics: <default("BasicStatistics")> like IStatistics {
-            parameters:
-                @display("p=50,47;i=block/table2");
-        }
         dcf: Dcf {
-            @display("p=205,47");
+            parameters:
+                @display("p=100,100");
         }
         hcf: Hcf {
-            @display("p=317,47;i=block/queue");
+            parameters:
+                @display("p=200,100");
         }
         rx: <default("Rx")> like IRx {
             parameters:
-                @display("p=205,161;i=block/rx");
+                @display("p=100,200");
         }
         tx: <default("Tx")> like ITx {
             parameters:
-                @display("p=317,161;i=block/tx");
+                @display("p=200,200");
+        }
+        statistics: <default("BasicStatistics")> like IStatistics {
+            parameters:
+                @display("p=300,100");
         }
 }
 

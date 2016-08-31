@@ -39,11 +39,14 @@ module Edca
         edcaf[3].accessCategory = "AC_VO";
 
         @class("Edca");
+        @display("i=block/star");
     submodules:
-        collisionController: <default("EdcaCollisionController")> like ICollisionController {
-            @display("p=100,222");
-        }
         edcaf[numEdcafs]: Edcaf {
-            @display("p=100,129,row,50");
+            parameters:
+	            @display("p=100,100,row,100");
+        }
+        collisionController: <default("EdcaCollisionController")> like ICollisionController {
+			parameters:
+	            @display("p=100,200");
         }
 }

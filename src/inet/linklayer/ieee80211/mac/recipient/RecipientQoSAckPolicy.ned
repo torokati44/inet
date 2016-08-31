@@ -21,4 +21,5 @@ simple RecipientQoSAckPolicy
 {
     parameters:
         string rateSelectionModule;
+        @display("i=block/control");
 }

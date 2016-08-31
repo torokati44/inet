@@ -52,69 +52,78 @@ module Hcf
         *.rxModule = "^." + rxModule;
 
         @class(Hcf);
-        @display("i=block/queue;bgb=1311.142,783.852");
+        @display("i=block/queue");
 
     submodules:
-
         edca: Edca {
-            numEdcafs = numEdcafs;
-            @display("p=83.83125,230.125;i=block/star");
+            parameters:
+                numEdcafs = numEdcafs;
+                @display("p=150,100");
         }
         hcca: Hcca {
-            @display("p=83.83125,368.2;i=block/star");
+            parameters:
+                @display("p=150,200");
         }
-
+        originatorMacDataService: OriginatorQoSMacDataService {
+            parameters:
+                @display("p=150,300");
+        }
+        recipientMacDataService: RecipientQoSMacDataService {
+            parameters:
+                @display("p=150,400");
+        }
         rateSelection: QoSRateSelection {
             parameters:
                 rateControlModule = "^.rateControl";
-                @display("p=170.95001,534.21875;i=block/cogwheel");
+                @display("p=400,100");
         }
         rateControl: <rateControlType> like IRateControl if rateControlType != "" {
             parameters:
-                @display("p=170.95001,675.5813");
-        }
-
-        originatorMacDataService: OriginatorQoSMacDataService {
-            @display("p=522.7125,534.21875;i=block/fork");
-        }
-        recipientMacDataService: RecipientQoSMacDataService {
-            @display("p=522.7125,675.5813;i=block/join");
+                @display("p=400,200");
         }
         singleProtectionMechanism: SingleProtectionMechanism {
-            @display("p=220.26251,69.0375;i=block/encrypt");
+            parameters:
+                @display("p=400,300");
         }
         edcaMgmtAndNonQoSRecoveryProcedure: NonQoSRecoveryProcedure {
-            cwCalculatorModule = "^.edca.edcaf[1]"; // best effort
-            rtsPolicyModule = "^.rtsPolicy";
-            @display("p=616.40625,304.09375;i=block/cogwheel");
+            parameters:
+                cwCalculatorModule = "^.edca.edcaf[1]"; // best effort
+                rtsPolicyModule = "^.rtsPolicy";
+                @display("p=700,300");
         }
         edcaDataRecoveryProcedures[numEdcafs]: QoSRecoveryProcedure {
-            cwCalculatorModule = "^.edca.edcaf[" + string(index) + "]";
-            rtsPolicyModule = "^.rtsPolicy";
-            @display("p=616.40625,187.38751,row,50;i=block/cogwheel");
+            parameters:
+                cwCalculatorModule = "^.edca.edcaf[" + string(index) + "]";
+                rtsPolicyModule = "^.rtsPolicy";
+                @display("p=700,400,column,100");
         }
         edcaTxopProcedures[numEdcafs]: TxopProcedure {
-            @display("p=616.40625,78.9,row,50;i=block/timer");
-        }
-
-        recipientAckPolicy: RecipientQoSAckPolicy {
-            @display("p=1017.48126,187.38751;i=block/control");
+            parameters:
+                @display("p=400,400,column,100");
         }
         originatorAckPolicy: OriginatorQoSAckPolicy {
-            @display("p=1017.48126,78.9");
+            parameters:
+                @display("p=1000,100");
+        }
+        recipientAckPolicy: RecipientQoSAckPolicy {
+            parameters:
+                @display("p=1000,200");
         }
         rtsPolicy: QoSRtsPolicy {
-            @display("p=1017.48126,304.09375;i=block/control");
+            parameters:
+                @display("p=1000,300");
         }
         ctsPolicy: QoSCtsPolicy {
-            @display("p=1017.48126,424.08752;i=block/control");
+            parameters:
+                @display("p=1000,400");
         }
         originatorBlockAckAgreementPolicy: OriginatorBlockAckAgreementPolicy {
-            originatorAckPolicyModule = "^.originatorAckPolicy";
-            @display("p=1017.48126,535.8625;i=block/control");
+            parameters:
+                originatorAckPolicyModule = "^.originatorAckPolicy";
+                @display("p=1000,500");
         }
         recipientBlockAckAgreementPolicy: RecipientBlockAckAgreementPolicy {
-            @display("p=1017.48126,652.5688;i=block/control");
+            parameters:
+                @display("p=1000,600");
         }
-
 }

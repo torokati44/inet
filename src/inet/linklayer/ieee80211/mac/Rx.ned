@@ -27,5 +27,5 @@ simple Rx like IRx
 {
     parameters:
         string statisticsModule;
-        @display("i=block/uparrow");
+        @display("i=block/rx");
 }

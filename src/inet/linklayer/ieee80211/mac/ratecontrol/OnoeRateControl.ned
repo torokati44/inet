@@ -24,5 +24,5 @@ simple OnoeRateControl like IRateControl
     parameters:
         double initialRate @unit("bps") = default(-1bps); // -1 means fastest mandatory rate
         double interval @unit("s") = default(1s);
-        @display("i=block/control");
+        @display("i=block/cogwheel");
 }
