@@ -176,6 +176,7 @@ module Ieee80211CompatibleMac extends Ieee80211Mac
         *.rateSelection.controlFrameBitrate = controlBitrate;
         *.rateSelection.responseAckFrameBitrate = controlBitrate;
         *.rateControl.initialRate = initialRateControlRate;
+        dcf.rtsPolicy.rtsThreshold = rtsThresholdBytes;
         upperMac.rtsThreshold = rtsThresholdBytes; // DcfUpperMac, EdcaUpperMac
         upperMac.shortRetryLimit = retryLimit; // DcfUpperMac, EdcaUpperMac
         upperMac.maxQueueSize = maxQueueSize; // DcfUpperMac, EdcaUpperMac
