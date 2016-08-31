@@ -11,6 +11,7 @@
         <filters xsi:type="scave:Select" filterPattern="distance OR &quot;ping loss rate (%)&quot;"/>
         <properties name="X.Axis.Title" value="distance [m]"/>
         <properties name="Y.Axis.Title" value="Packet loss [%]"/>
+        <properties name="Legend.Display" value="true"/>
         <properties name="X.Axis.Min" value="110.0"/>
         <properties name="X.Axis.Max" value="610.0"/>
         <properties name="Line.Name/LevelofDetail.host[1].pingApp[0] ping loss rate (%) - detail=&quot;bit&quot; fecType=&quot;&quot; modulation=&quot;BPSK&quot;" value="bit - no FEC - BPSK"/>
