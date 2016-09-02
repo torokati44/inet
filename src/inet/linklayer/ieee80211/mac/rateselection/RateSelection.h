@@ -18,6 +18,7 @@
 #ifndef __INET_RATESELECTION_H
 #define __INET_RATESELECTION_H
 
+#include "inet/linklayer/ieee80211/mac/contract/IRateControl.h"
 #include "inet/linklayer/ieee80211/mac/contract/IRateSelection.h"
 #include "inet/physicallayer/ieee80211/mode/Ieee80211ModeSet.h"
 

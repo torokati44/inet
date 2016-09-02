@@ -16,6 +16,7 @@
 // 
 
 #include "inet/common/ModuleAccess.h"
+#include "inet/linklayer/ieee80211/mac/rateselection/RateSelection.h"
 #include "inet/linklayer/ieee80211/mac/recipient/RecipientAckProcedure.h"
 #include "SingleProtectionMechanism.h"
 
@@ -42,11 +43,13 @@ void SingleProtectionMechanism::initialize(int stage)
 simtime_t SingleProtectionMechanism::computeRtsDurationField(Ieee80211RTSFrame* rtsFrame, Ieee80211DataOrMgmtFrame *pendingFrame, TxopProcedure *txop, IRecipientQoSAckPolicy *ackPolicy)
 {
     // TODO: We assume that the RTS frame is not part of a dual clear-to-send
-    simtime_t pendingFrameDuration = rateSelection->computeMode(pendingFrame, txop)->getDuration(pendingFrame->getBitLength());
+    auto pendingFrameMode = rateSelection->computeMode(pendingFrame, txop);
+    simtime_t pendingFrameDuration = pendingFrameMode->getDuration(pendingFrame->getBitLength());
     simtime_t ctsFrameDuration = rateSelection->computeResponseCtsFrameMode(rtsFrame)->getDuration(LENGTH_CTS);
     simtime_t durationId = ctsFrameDuration + modeSet->getSifsTime() + pendingFrameDuration + modeSet->getSifsTime();
     if (auto dataOrMgmtFrame = dynamic_cast<Ieee80211DataOrMgmtFrame*>(pendingFrame)) {
         if (ackPolicy->isAckNeeded(dataOrMgmtFrame)) {
+            RateSelection::setFrameMode(dataOrMgmtFrame, pendingFrameMode); // FIXME: KLUDGE
             simtime_t ackFrameDuration = rateSelection->computeResponseAckFrameMode(dataOrMgmtFrame)->getDuration(LENGTH_ACK);
             durationId += ackFrameDuration + modeSet->getSifsTime();
         }
@@ -139,10 +142,13 @@ simtime_t SingleProtectionMechanism::computeDataOrMgmtFrameDurationField(Ieee802
             simtime_t ackFrameDuration = rateSelection->computeResponseAckFrameMode(dataOrMgmtFrame)->getDuration(LENGTH_ACK);
             simtime_t duration = ackFrameDuration + modeSet->getSifsTime();
             if (pendingFrame) {
-                simtime_t pendingFrameDuration = rateSelection->computeMode(pendingFrame, txop)->getDuration(pendingFrame->getBitLength());
+                auto pendingFrameMode = rateSelection->computeMode(pendingFrame, txop);
+                simtime_t pendingFrameDuration = pendingFrameMode->getDuration(pendingFrame->getBitLength());
                 duration += pendingFrameDuration + modeSet->getSifsTime();
                 if (ackPolicy->isAckNeeded(pendingFrame)) {
-                    duration += ackFrameDuration + modeSet->getSifsTime();
+                    RateSelection::setFrameMode(pendingFrame, pendingFrameMode); // FIXME: Kludge
+                    simtime_t ackToPendingFrameDuration = rateSelection->computeResponseAckFrameMode(pendingFrame)->getDuration(LENGTH_ACK);
+                    duration += ackToPendingFrameDuration + modeSet->getSifsTime();
                 }
             }
             return duration;
@@ -154,11 +160,14 @@ simtime_t SingleProtectionMechanism::computeDataOrMgmtFrameDurationField(Ieee802
         else {
             simtime_t duration = 0;
             if (pendingFrame) {
-                simtime_t pendingFrameDuration = rateSelection->computeMode(pendingFrame, txop)->getDuration(pendingFrame->getBitLength());
+                auto pendingFrameMode = rateSelection->computeMode(pendingFrame, txop);
+                simtime_t pendingFrameDuration = pendingFrameMode->getDuration(pendingFrame->getBitLength());
                 duration = pendingFrameDuration + modeSet->getSifsTime();
                 if (ackPolicy->isAckNeeded(pendingFrame)) {
+                    RateSelection::setFrameMode(pendingFrame, pendingFrameMode); // FIXME: Kludge
+                    simtime_t ackToPendingFrameDuration = rateSelection->computeResponseAckFrameMode(pendingFrame)->getDuration(LENGTH_ACK);
                     simtime_t ackFrameDuration = rateSelection->computeResponseAckFrameMode(dataOrMgmtFrame)->getDuration(LENGTH_ACK);
-                    duration += ackFrameDuration + modeSet->getSifsTime();
+                    duration += ackToPendingFrameDuration + modeSet->getSifsTime();
                 }
             }
             return duration;
