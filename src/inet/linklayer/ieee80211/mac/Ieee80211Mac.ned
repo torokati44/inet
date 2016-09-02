@@ -141,7 +141,7 @@ module Ieee80211Mac extends MACProtocolBase like IIeee80211Mac
 module Ieee80211CompatibleMac extends Ieee80211Mac
 {
     parameters:
-        string rateControlType;
+        string rateControlType = default("");
         string opMode @enum("a","b","g","n","p") = default("g");
         double bitrate @unit("bps") = default(-1bps);
         double basicBitrate @unit("bps") = default(-1bps);
