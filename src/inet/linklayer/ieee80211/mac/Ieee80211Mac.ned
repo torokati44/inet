@@ -167,6 +167,7 @@ module Ieee80211CompatibleMac extends Ieee80211Mac
         //upperMac.typename = EDCA ? "EdcaUpperMac" : "DcfUpperMac";
 
         modeSet = opMode; // BasicRateSelection
+        *.maxQueueSize = maxQueueSize; // TODO: validation
         *.rateControlType = rateControlType;
         *.rateSelection.multicastFrameBitrate = basicBitrate; // BasicRateSelection
         *.rateSelection.dataFrameBitrate = dataBitrate; // BasicRateSelection
