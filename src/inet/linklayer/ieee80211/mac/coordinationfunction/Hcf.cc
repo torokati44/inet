@@ -88,6 +88,8 @@ void Hcf::handleMessage(cMessage* msg)
 
 void Hcf::processUpperFrame(Ieee80211DataOrMgmtFrame* frame)
 {
+    Enter_Method("processUpperFrame(%s)", frame->getName());
+    EV_INFO << "Processing upper frame: " << frame->getName() << endl;
     AccessCategory ac = AccessCategory(-1);
     if (dynamic_cast<Ieee80211ManagementFrame *>(frame)) // TODO: + non-QoS frames
         ac = AccessCategory::AC_BE;
@@ -95,11 +97,14 @@ void Hcf::processUpperFrame(Ieee80211DataOrMgmtFrame* frame)
         ac = edca->classifyFrame(dataFrame);
     else
         throw cRuntimeError("Unknown message type");
+    EV_INFO << "The upper frame has been classified as a " << printAccessCategory(ac) << " frame." << endl;
     if (edcaPendingQueues[ac]->insert(frame)) {
         EV_INFO << "Frame " << frame->getName() << " has been inserted into the PendingQueue." << endl;
         auto edcaf = edca->getChannelOwner();
-        if (edcaf == nullptr || edcaf->getAccessCategory() != ac)
+        if (edcaf == nullptr || edcaf->getAccessCategory() != ac) {
+            EV_DETAIL << "Requesting channel for access category " << printAccessCategory(ac) << endl;
             edca->requestChannelAccess(ac, this);
+        }
     }
     else {
         EV_INFO << "Frame " << frame->getName() << " has been dropped because the PendingQueue is full." << endl;
