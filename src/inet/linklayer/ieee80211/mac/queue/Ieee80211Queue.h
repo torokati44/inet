@@ -27,7 +27,7 @@ namespace ieee80211 {
 class INET_API Ieee80211Queue : public cQueue
 {
     protected:
-        int maxQueueSize = -1;
+        int maxQueueSize = -1; // -1 means unlimited queue
 
     public:
         virtual ~Ieee80211Queue() { }

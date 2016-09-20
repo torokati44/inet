@@ -28,7 +28,7 @@ Ieee80211Queue::Ieee80211Queue(int maxQueueSize, const char *name) :
 
 bool Ieee80211Queue::insert(Ieee80211DataOrMgmtFrame *frame)
 {
-    if (getLength() == maxQueueSize)
+    if (maxQueueSize != -1 && getLength() == maxQueueSize)
         return false;
     cQueue::insert(frame);
     return true;
@@ -36,7 +36,7 @@ bool Ieee80211Queue::insert(Ieee80211DataOrMgmtFrame *frame)
 
 bool Ieee80211Queue::insertBefore(Ieee80211DataOrMgmtFrame *where, Ieee80211DataOrMgmtFrame *frame)
 {
-    if (getLength() == maxQueueSize)
+    if (maxQueueSize != -1 && getLength() == maxQueueSize)
         return false;
     cQueue::insertBefore(where, frame);
     return true;
@@ -44,7 +44,7 @@ bool Ieee80211Queue::insertBefore(Ieee80211DataOrMgmtFrame *where, Ieee80211Data
 
 bool Ieee80211Queue::insertAfter(Ieee80211DataOrMgmtFrame *where, Ieee80211DataOrMgmtFrame *frame)
 {
-    if (getLength() == maxQueueSize)
+    if (maxQueueSize != -1 && getLength() == maxQueueSize)
         return false;
     cQueue::insertAfter(where, frame);
     return true;
@@ -108,4 +108,3 @@ int PendingQueue::cmpMgmtOverMulticastOverUnicast(Ieee80211DataOrMgmtFrame *a, I
 
 } /* namespace inet */
 } /* namespace ieee80211 */
-

@@ -42,7 +42,7 @@ module Hcf
 {
     parameters:
         int numEdcafs = default(4);
-        int maxQueueSize = default(100);
+        int maxQueueSize = default(100); // -1 means unlimited
         string rateControlType = default("");
 
         string rxModule;

@@ -35,7 +35,7 @@ import inet.linklayer.ieee80211.mac.recipient.RecipientMacDataService;
 module Dcf
 {
     parameters:
-        int maxQueueSize = default(100);
+        int maxQueueSize = default(100); // -1 means unlimited
 
         string rxModule;
         string txModule;
