@@ -35,6 +35,17 @@ enum AccessCategory
     AC_NUMCATEGORIES
 };
 
+static std::string printAccessCategory(AccessCategory ac)
+{
+    switch(ac) {
+        case AC_BK : return "Background";
+        case AC_BE : return "Best effort";
+        case AC_VI : return "Video";
+        case AC_VO : return "Voice";
+        default: throw cRuntimeError("Unknown access category");
+    }
+}
+
 } // namespace ieee80211
 } // namespace inet
 
