@@ -34,8 +34,8 @@ class INET_API Mcf : public ICoordinationFunction, public cSimpleModule
         virtual int numInitStages() const override { return NUM_INIT_STAGES; }
 
     public:
-        virtual void processUpperFrame(Ieee80211DataOrMgmtFrame *frame) { throw cRuntimeError("Unimplemented!"); }
-        virtual void processLowerFrame(Ieee80211Frame *frame) { throw cRuntimeError("Unimplemented!"); };
+        virtual void processUpperFrame(Ieee80211DataOrMgmtFrame *frame) override { throw cRuntimeError("Unimplemented!"); }
+        virtual void processLowerFrame(Ieee80211Frame *frame) override { throw cRuntimeError("Unimplemented!"); };
 };
 
 } /* namespace ieee80211 */
