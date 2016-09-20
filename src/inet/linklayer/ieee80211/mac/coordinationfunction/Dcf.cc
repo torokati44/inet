@@ -76,8 +76,11 @@ void Dcf::channelGranted(IChannelAccess *channelAccess)
 
 void Dcf::processUpperFrame(Ieee80211DataOrMgmtFrame* frame)
 {
+    Enter_Method("processUpperFrame(%s)", frame->getName());
+    EV_INFO << "Processing upper frame: " << frame->getName() << endl;
     if (pendingQueue->insert(frame)) {
         EV_INFO << "Frame " << frame->getName() << " has been inserted into the PendingQueue." << endl;
+        EV_DETAIL << "Requesting channel" << endl;
         dcfChannelAccess->requestChannel(this);
     }
     else {
