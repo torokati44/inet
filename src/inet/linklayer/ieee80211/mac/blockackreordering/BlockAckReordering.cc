@@ -47,9 +47,8 @@ BlockAckReordering::ReorderBuffer BlockAckReordering::processReceivedQoSFrame(Re
             // A-MSDU in the buffer with the lowest sequence number is equal to the NextExpectedSequenceNumber for
             // that Block Ack agreement, then the MPDU shall be passed up to the next MAC process.
             else if (earliestSequenceNumber == receiveBuffer->getNextExpectedSequenceNumber()) {
-                int seqNum = dataFrame->getSequenceNumber();
-                passedUp(receiveBuffer, seqNum);
-                return ReorderBuffer({std::make_pair(seqNum, Fragments(earliestCompleteMsduOrAMsdu))});
+                passedUp(receiveBuffer, earliestSequenceNumber);
+                return ReorderBuffer({std::make_pair(earliestSequenceNumber, Fragments(earliestCompleteMsduOrAMsdu))});
             }
         }
     }
