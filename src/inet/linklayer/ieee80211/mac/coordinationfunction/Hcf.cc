@@ -115,7 +115,6 @@ void Hcf::processUpperFrame(Ieee80211DataOrMgmtFrame* frame)
 void Hcf::scheduleStartRxTimer(simtime_t timeout)
 {
     Enter_Method_Silent();
-    std::cout << startRxTimer->getOwner()->getFullPath().c_str() << std::endl;
     scheduleAt(simTime() + timeout, startRxTimer);
 }
 
