@@ -36,6 +36,7 @@ class INET_API RecipientBlockAckAgreement
 
     public:
         RecipientBlockAckAgreement(MACAddress originatorAddress, Tid tid, SequenceNumber startingSequenceNumber, int bufferSize, simtime_t blockAckTimeoutValue);
+        virtual ~RecipientBlockAckAgreement() { }
 
         virtual void blockAckPolicyFrameReceived(Ieee80211DataFrame *frame);
 
@@ -47,9 +48,10 @@ class INET_API RecipientBlockAckAgreement
         virtual void addbaResposneSent() { isAddbaResponseSent = true; }
         virtual void renewExpirationTime() { expirationTime = blockAckTimeoutValue == 0 ? SIMTIME_MAX : simTime() + blockAckTimeoutValue; }
         virtual simtime_t getExpirationTime() { return expirationTime; }
+        friend std::ostream& operator<<(std::ostream& os, const RecipientBlockAckAgreement& agreement);
 };
 
 } /* namespace ieee80211 */
 } /* namespace inet */
 
-#endif // __INET_RECIPIENTBLOCKACKAGREEMENT_H
+#endif // ifndef __INET_RECIPIENTBLOCKACKAGREEMENT_H
