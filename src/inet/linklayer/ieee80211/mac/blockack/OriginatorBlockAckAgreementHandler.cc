@@ -128,6 +128,7 @@ void OriginatorBlockAckAgreementHandler::processTransmittedDataFrame(Ieee80211Da
     auto agreement = getAgreement(dataFrame->getReceiverAddress(), dataFrame->getTid());
     if (blockAckAgreementPolicy->isAddbaReqNeeded(dataFrame) && agreement == nullptr) {
         auto addbaReq = buildAddbaRequest(dataFrame->getReceiverAddress(), dataFrame->getTid(), dataFrame->getSequenceNumber() + 1, blockAckAgreementPolicy);
+        createAgreement(addbaReq);
         callback->processMgmtFrame(addbaReq);
     }
 }
@@ -153,7 +154,11 @@ void OriginatorBlockAckAgreementHandler::updateAgreement(OriginatorBlockAckAgree
 
 void OriginatorBlockAckAgreementHandler::processTransmittedAddbaReq(Ieee80211AddbaRequest* addbaReq)
 {
-    createAgreement(addbaReq);
+    auto agreement = getAgreement(addbaReq->getReceiverAddress(), addbaReq->getTid());
+    if (agreement)
+        agreement->setIsAddbaRequestSent(true);
+    else
+        throw cRuntimeError("Block Ack Agreement should have already been added");
 }
 
 void OriginatorBlockAckAgreementHandler::processTransmittedDelba(Ieee80211Delba* delba)

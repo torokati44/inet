@@ -36,6 +36,7 @@ class OriginatorBlockAckAgreement
         bool isAMsduSupported = false;
         bool isDelayedBlockAckPolicySupported = false;
         bool isAddbaResponseReceived = false;
+        bool isAddbaRequestSent = false;
         simtime_t blockAckTimeoutValue = -1;
         simtime_t expirationTime = -1;
 
@@ -55,6 +56,7 @@ class OriginatorBlockAckAgreement
         virtual int getBufferSize() const { return bufferSize; }
         virtual SequenceNumber getStartingSequenceNumber() { return startingSequenceNumber; }
         virtual bool getIsAddbaResponseReceived() const { return isAddbaResponseReceived; }
+        virtual bool getIsAddbaRequestSent() const { return isAddbaRequestSent; }
         virtual bool getIsAMsduSupported() const { return isAMsduSupported; }
         virtual bool getIsDelayedBlockAckPolicySupported() const { return isDelayedBlockAckPolicySupported; }
         virtual MACAddress getReceiverAddr() const { return receiverAddr; }
@@ -64,6 +66,7 @@ class OriginatorBlockAckAgreement
 
         virtual void setBufferSize(int bufferSize) { this->bufferSize = bufferSize; }
         virtual void setIsAddbaResponseReceived(bool isAddbaResponseReceived) { this->isAddbaResponseReceived = isAddbaResponseReceived; }
+        virtual void setIsAddbaRequestSent(bool isAddbaRequestSent) { this->isAddbaRequestSent = isAddbaRequestSent; }
         virtual void setIsAMsduSupported(bool isAMsduSupported) { this->isAMsduSupported = isAMsduSupported; }
         virtual void setIsDelayedBlockAckPolicySupported(bool isDelayedBlockAckPolicySupported) { this->isDelayedBlockAckPolicySupported = isDelayedBlockAckPolicySupported; }
         virtual void setBlockAckTimeoutValue(const simtime_t blockAckTimeoutValue) { this->blockAckTimeoutValue = blockAckTimeoutValue; }
@@ -71,6 +74,7 @@ class OriginatorBlockAckAgreement
         virtual void baPolicyFrameSent() { numSentBaPolicyFrames++; }
         virtual void renewExpirationTime() { expirationTime = blockAckTimeoutValue == 0 ? SIMTIME_MAX : simTime() + blockAckTimeoutValue; }
         virtual simtime_t getExpirationTime() { return expirationTime; }
+
 };
 
 } /* namespace ieee80211 */
