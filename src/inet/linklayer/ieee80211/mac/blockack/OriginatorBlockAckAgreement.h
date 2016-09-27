@@ -50,6 +50,7 @@ class OriginatorBlockAckAgreement
         {
             renewExpirationTime();
         }
+        virtual ~OriginatorBlockAckAgreement() { }
 
         virtual int getBufferSize() const { return bufferSize; }
         virtual SequenceNumber getStartingSequenceNumber() { return startingSequenceNumber; }

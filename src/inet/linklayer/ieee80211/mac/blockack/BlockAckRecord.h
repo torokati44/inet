@@ -38,6 +38,7 @@ class INET_API BlockAckRecord
 
     public:
         BlockAckRecord(MACAddress originatorAddress, Tid tid);
+        virtual ~BlockAckRecord() { }
 
         void blockAckPolicyFrameReceived(Ieee80211DataFrame* frame);
         bool getAckState(SequenceNumber sequenceNumber, FragmentNumber fragmentNumber);
