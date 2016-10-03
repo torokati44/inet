@@ -46,7 +46,7 @@ class INET_API RecipientBlockAckAgreement
         virtual int getStartingSequenceNumber() const { return startingSequenceNumber; }
 
         virtual void addbaResposneSent() { isAddbaResponseSent = true; }
-        virtual void renewExpirationTime() { expirationTime = blockAckTimeoutValue == 0 ? SIMTIME_MAX : simTime() + blockAckTimeoutValue; }
+        virtual void calculateExpirationTime() { expirationTime = blockAckTimeoutValue == 0 ? SIMTIME_MAX : simTime() + blockAckTimeoutValue; }
         virtual simtime_t getExpirationTime() { return expirationTime; }
         friend std::ostream& operator<<(std::ostream& os, const RecipientBlockAckAgreement& agreement);
 };
