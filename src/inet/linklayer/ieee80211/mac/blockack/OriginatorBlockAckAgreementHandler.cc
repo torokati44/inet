@@ -33,7 +33,11 @@ simtime_t OriginatorBlockAckAgreementHandler::computeEarliestExpirationTime()
     simtime_t earliestTime = SIMTIME_MAX;
     for (auto id : blockAckAgreements) {
         auto agreement = id.second;
-        earliestTime = std::min(earliestTime, agreement->getExpirationTime());
+        if (agreement->getIsAddbaResponseReceived()) {
+            ASSERT(earliestTime >= 0);
+            ASSERT(agreement->getExpirationTime() >= 0);
+            earliestTime = std::min(earliestTime, agreement->getExpirationTime());
+        }
     }
     return earliestTime;
 }
@@ -79,7 +83,7 @@ void OriginatorBlockAckAgreementHandler::processReceivedBlockAck(Ieee80211BlockA
     if (auto basicBlockAck = dynamic_cast<Ieee80211BasicBlockAck*>(blockAck)) {
         auto agreement = getAgreement(basicBlockAck->getTransmitterAddress(), basicBlockAck->getTidInfo());
         if (agreement) {
-            agreement->renewExpirationTime();
+            agreement->calculateExpirationTime();
             scheduleInactivityTimer(callback);
         }
     }
@@ -150,6 +154,7 @@ void OriginatorBlockAckAgreementHandler::updateAgreement(OriginatorBlockAckAgree
     agreement->setIsAddbaResponseReceived(true);
     agreement->setBufferSize(addbaResp->getBufferSize());
     agreement->setBlockAckTimeoutValue(addbaResp->getBlockAckTimeoutValue());
+    agreement->calculateExpirationTime();
 }
 
 void OriginatorBlockAckAgreementHandler::processTransmittedAddbaReq(Ieee80211AddbaRequest* addbaReq)

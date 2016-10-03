@@ -49,8 +49,8 @@ class OriginatorBlockAckAgreement
             isAMsduSupported(isAMsduSupported),
             isDelayedBlockAckPolicySupported(isDelayedBlockAckPolicySupported)
         {
-            renewExpirationTime();
         }
+
         virtual ~OriginatorBlockAckAgreement() { }
 
         virtual int getBufferSize() const { return bufferSize; }
@@ -72,7 +72,7 @@ class OriginatorBlockAckAgreement
         virtual void setBlockAckTimeoutValue(const simtime_t blockAckTimeoutValue) { this->blockAckTimeoutValue = blockAckTimeoutValue; }
 
         virtual void baPolicyFrameSent() { numSentBaPolicyFrames++; }
-        virtual void renewExpirationTime() { expirationTime = blockAckTimeoutValue == 0 ? SIMTIME_MAX : simTime() + blockAckTimeoutValue; }
+        virtual void calculateExpirationTime() { expirationTime = blockAckTimeoutValue == 0 ? SIMTIME_MAX : simTime() + blockAckTimeoutValue; }
         virtual simtime_t getExpirationTime() { return expirationTime; }
 
 };
