@@ -58,7 +58,7 @@ std::vector<Ieee80211Frame*> RecipientQoSMacDataService::dataFrameReceived(Ieee8
         return std::vector<Ieee80211Frame*>();
     BlockAckReordering::ReorderBuffer frames;
     frames[dataFrame->getSequenceNumber()].push_back(dataFrame);
-    if (blockAckReordering) {
+    if (blockAckReordering && blockAckAgreementHandler) {
         Tid tid = dataFrame->getTid();
         MACAddress originatorAddr = dataFrame->getTransmitterAddress();
         RecipientBlockAckAgreement *agreement = blockAckAgreementHandler->getAgreement(tid, originatorAddr);

@@ -51,16 +51,18 @@ void Hcf::initialize(int stage)
         originatorAckPolicy = check_and_cast<IOriginatorQoSAckPolicy*>(getSubmodule("originatorAckPolicy"));
         recipientAckPolicy = check_and_cast<IRecipientQoSAckPolicy*>(getSubmodule("recipientAckPolicy"));
         edcaMgmtAndNonQoSRecoveryProcedure = check_and_cast<NonQoSRecoveryProcedure *>(getSubmodule("edcaMgmtAndNonQoSRecoveryProcedure"));
-        recipientBlockAckAgreementHandler = new RecipientBlockAckAgreementHandler();
-        originatorBlockAckAgreementHandler = new OriginatorBlockAckAgreementHandler();
         singleProtectionMechanism = check_and_cast<SingleProtectionMechanism*>(getSubmodule("singleProtectionMechanism"));
         rtsProcedure = new RtsProcedure();
         rtsPolicy = check_and_cast<IRtsPolicy*>(getSubmodule("rtsPolicy"));
         recipientAckProcedure = new RecipientAckProcedure();
         ctsProcedure = new CtsProcedure();
         ctsPolicy = check_and_cast<ICtsPolicy*>(getSubmodule("ctsPolicy"));
-        originatorBlockAckProcedure = new OriginatorBlockAckProcedure();
-        recipientBlockAckProcedure = new RecipientBlockAckProcedure();
+        if (originatorBlockAckAgreementPolicy && recipientBlockAckAgreementPolicy) {
+            recipientBlockAckAgreementHandler = new RecipientBlockAckAgreementHandler();
+            originatorBlockAckAgreementHandler = new OriginatorBlockAckAgreementHandler();
+            originatorBlockAckProcedure = new OriginatorBlockAckProcedure();
+            recipientBlockAckProcedure = new RecipientBlockAckProcedure();
+        }
         for (int ac = 0; ac < numEdcafs; ac++) {
             edcaPendingQueues.push_back(new PendingQueue(par("maxQueueSize"), nullptr));
             edcaDataRecoveryProcedures.push_back(check_and_cast<QoSRecoveryProcedure *>(getSubmodule("edcaDataRecoveryProcedures", ac)));
@@ -79,8 +81,12 @@ void Hcf::handleMessage(cMessage* msg)
             frameSequenceHandler->handleStartRxTimeout();
     }
     else if (msg == inactivityTimer) {
-        originatorBlockAckAgreementHandler->blockAckAgreementExpired(this, this);
-        recipientBlockAckAgreementHandler->blockAckAgreementExpired(this, this);
+        if (originatorBlockAckAgreementHandler && recipientBlockAckAgreementHandler) {
+            originatorBlockAckAgreementHandler->blockAckAgreementExpired(this, this);
+            recipientBlockAckAgreementHandler->blockAckAgreementExpired(this, this);
+        }
+        else
+            throw cRuntimeError("Unknown event");
     }
     else
         throw cRuntimeError("Unknown msg type");
@@ -215,7 +221,7 @@ void Hcf::recipientProcessReceivedFrame(Ieee80211Frame* frame)
     if (auto dataOrMgmtFrame = dynamic_cast<Ieee80211DataOrMgmtFrame *>(frame))
         recipientAckProcedure->processReceivedFrame(dataOrMgmtFrame, check_and_cast<IRecipientAckPolicy*>(recipientAckPolicy), this);
     if (auto dataFrame = dynamic_cast<Ieee80211DataFrame*>(frame)) {
-        if (dataFrame->getType() == ST_DATA_WITH_QOS)
+        if (dataFrame->getType() == ST_DATA_WITH_QOS && recipientBlockAckAgreementHandler)
             recipientBlockAckAgreementHandler->qosFrameReceived(dataFrame, this);
         sendUp(recipientDataService->dataFrameReceived(dataFrame, recipientBlockAckAgreementHandler));
     }
@@ -233,23 +239,29 @@ void Hcf::recipientProcessReceivedControlFrame(Ieee80211Frame* frame)
 {
     if (auto rtsFrame = dynamic_cast<Ieee80211RTSFrame *>(frame))
         ctsProcedure->processReceivedRts(rtsFrame, ctsPolicy, this);
-    else if (auto blockAckRequest = dynamic_cast<Ieee80211BasicBlockAckReq*>(frame))
-        recipientBlockAckProcedure->processReceivedBlockAckReq(blockAckRequest, recipientAckPolicy, recipientBlockAckAgreementHandler, this);
+    else if (auto blockAckRequest = dynamic_cast<Ieee80211BasicBlockAckReq*>(frame)) {
+        if (recipientBlockAckProcedure)
+            recipientBlockAckProcedure->processReceivedBlockAckReq(blockAckRequest, recipientAckPolicy, recipientBlockAckAgreementHandler, this);
+    }
     else
         throw cRuntimeError("Unknown control frame");
 }
 
 void Hcf::recipientProcessReceivedManagementFrame(Ieee80211ManagementFrame* frame)
 {
-    if (auto addbaRequest = dynamic_cast<Ieee80211AddbaRequest *>(frame))
-        recipientBlockAckAgreementHandler->processReceivedAddbaRequest(addbaRequest, recipientBlockAckAgreementPolicy, this);
-    else if (auto addbaResp = dynamic_cast<Ieee80211AddbaResponse *>(frame))
-        originatorBlockAckAgreementHandler->processReceivedAddbaResp(addbaResp, originatorBlockAckAgreementPolicy, this);
-    else if (auto delba = dynamic_cast<Ieee80211Delba*>(frame)) {
-        if (delba->getInitiator())
-            recipientBlockAckAgreementHandler->processReceivedDelba(delba, recipientBlockAckAgreementPolicy);
+    if (recipientBlockAckAgreementHandler && originatorBlockAckAgreementHandler) {
+        if (auto addbaRequest = dynamic_cast<Ieee80211AddbaRequest *>(frame))
+            recipientBlockAckAgreementHandler->processReceivedAddbaRequest(addbaRequest, recipientBlockAckAgreementPolicy, this);
+        else if (auto addbaResp = dynamic_cast<Ieee80211AddbaResponse *>(frame))
+            originatorBlockAckAgreementHandler->processReceivedAddbaResp(addbaResp, originatorBlockAckAgreementPolicy, this);
+        else if (auto delba = dynamic_cast<Ieee80211Delba*>(frame)) {
+            if (delba->getInitiator())
+                recipientBlockAckAgreementHandler->processReceivedDelba(delba, recipientBlockAckAgreementPolicy);
+            else
+                originatorBlockAckAgreementHandler->processReceivedDelba(delba, originatorBlockAckAgreementPolicy);
+        }
         else
-            originatorBlockAckAgreementHandler->processReceivedDelba(delba, originatorBlockAckAgreementPolicy);
+            throw cRuntimeError("Unknown management frame");
     }
     else
         throw cRuntimeError("Unknown management frame");
@@ -316,7 +328,8 @@ void Hcf::originatorProcessTransmittedFrame(Ieee80211Frame* transmittedFrame)
 void Hcf::originatorProcessTransmittedDataFrame(Ieee80211DataFrame* dataFrame, AccessCategory ac)
 {
     edcaAckHandlers[ac]->processTransmittedDataOrMgmtFrame(dataFrame);
-    originatorBlockAckAgreementHandler->processTransmittedDataFrame(dataFrame, originatorBlockAckAgreementPolicy, this);
+    if (originatorBlockAckAgreementHandler)
+        originatorBlockAckAgreementHandler->processTransmittedDataFrame(dataFrame, originatorBlockAckAgreementPolicy, this);
     if (dataFrame->getAckPolicy() == NO_ACK)
         edcaInProgressFrames[ac]->dropFrame(dataFrame);
 }
@@ -325,7 +338,8 @@ void Hcf::originatorProcessTransmittedManagementFrame(Ieee80211ManagementFrame* 
 {
     if (auto addbaReq = dynamic_cast<Ieee80211AddbaRequest*>(mgmtFrame)) {
         edcaAckHandlers[ac]->processTransmittedDataOrMgmtFrame(addbaReq);
-        originatorBlockAckAgreementHandler->processTransmittedAddbaReq(addbaReq);
+        if (originatorBlockAckAgreementHandler)
+            originatorBlockAckAgreementHandler->processTransmittedAddbaReq(addbaReq);
     }
     else if (auto addbaResp = dynamic_cast<Ieee80211AddbaResponse*>(mgmtFrame)) {
         edcaAckHandlers[ac]->processTransmittedDataOrMgmtFrame(addbaResp);
@@ -451,7 +465,8 @@ void Hcf::originatorProcessReceivedControlFrame(Ieee80211Frame* frame, Ieee80211
         EV_INFO << "BasicBlockAck has arrived" << std::endl;
         edcaDataRecoveryProcedures[ac]->blockAckFrameReceived();
         auto ackedSeqAndFragNums = edcaAckHandlers[ac]->processReceivedBlockAck(blockAck);
-        originatorBlockAckAgreementHandler->processReceivedBlockAck(blockAck, this);
+        if (originatorBlockAckAgreementHandler)
+            originatorBlockAckAgreementHandler->processReceivedBlockAck(blockAck, this);
         EV_INFO << "It has acknowledged the following frames:" << std::endl;
         // FIXME
 //        for (auto seqCtrlField : ackedSeqAndFragNums)
@@ -513,7 +528,9 @@ void Hcf::transmitFrame(Ieee80211Frame* frame, simtime_t ifs)
         AccessCategory ac = channelOwner->getAccessCategory();
         auto txop = edcaTxops[ac];
         if (auto dataFrame = dynamic_cast<Ieee80211DataFrame*>(frame)) {
-            auto agreement = originatorBlockAckAgreementHandler->getAgreement(dataFrame->getReceiverAddress(), dataFrame->getTid());
+            OriginatorBlockAckAgreement *agreement = nullptr;
+            if (originatorBlockAckAgreementHandler)
+                agreement = originatorBlockAckAgreementHandler->getAgreement(dataFrame->getReceiverAddress(), dataFrame->getTid());
             auto ackPolicy = originatorAckPolicy->computeAckPolicy(dataFrame, agreement);
             dataFrame->setAckPolicy(ackPolicy);
         }
@@ -550,8 +567,10 @@ void Hcf::recipientProcessTransmittedControlResponseFrame(Ieee80211Frame* frame)
 {
     if (auto ctsFrame = dynamic_cast<Ieee80211CTSFrame*>(frame))
         ctsProcedure->processTransmittedCts(ctsFrame);
-    else if (auto blockAck = dynamic_cast<Ieee80211BlockAck*>(frame))
-        recipientBlockAckProcedure->processTransmittedBlockAck(blockAck);
+    else if (auto blockAck = dynamic_cast<Ieee80211BlockAck*>(frame)) {
+        if (recipientBlockAckProcedure)
+            recipientBlockAckProcedure->processTransmittedBlockAck(blockAck);
+    }
     else if (auto ackFrame = dynamic_cast<Ieee80211ACKFrame*>(frame))
         recipientAckProcedure->processTransmittedAck(ackFrame);
     else
