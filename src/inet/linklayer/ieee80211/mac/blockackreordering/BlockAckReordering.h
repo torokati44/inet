@@ -47,6 +47,7 @@ class INET_API BlockAckReordering
         void passedUp(ReceiveBuffer *receiveBuffer, int sequenceNumber);
         void releaseReceiveBuffer(ReceiveBuffer *receiveBuffer, const ReorderBuffer& reorderBuffer);
         ReceiveBuffer* createReceiveBufferIfNecessary(RecipientBlockAckAgreement *agreement);
+        bool addMsduIfComplete(ReceiveBuffer *receiveBuffer, ReorderBuffer &reorderBuffer, SequenceNumber seqNum);
 
     public:
         virtual ~BlockAckReordering();

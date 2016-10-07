@@ -119,8 +119,9 @@ BlockAckReordering::ReorderBuffer BlockAckReordering::collectCompletePrecedingMp
     for (auto it : buffer) { // collects complete preceding MPDUs
         int sequenceNumber = it.first;
         auto fragments = it.second;
-        if (sequenceNumber < startingSequenceNumber && isComplete(fragments))
-            completePrecedingMpdus[sequenceNumber] = fragments;
+        if (isSequenceNumberLess(sequenceNumber, startingSequenceNumber, receiveBuffer->getNextExpectedSequenceNumber(), receiveBuffer->getBufferSize()))
+            if (isComplete(fragments))
+                completePrecedingMpdus[sequenceNumber] = fragments;
     }
     return completePrecedingMpdus;
 }
@@ -134,23 +135,38 @@ BlockAckReordering::ReorderBuffer BlockAckReordering::collectConsecutiveComplete
 {
     ASSERT(startingSequenceNumber != -1);
     ReorderBuffer framesToPassUp;
-    const auto& buffer = receiveBuffer->getBuffer();
-    for (int i = startingSequenceNumber; i < startingSequenceNumber + receiveBuffer->getBufferSize(); i++) {
-        auto it = buffer.find(i);
-        if (it != buffer.end()) {
-            int sequenceNumber = it->first;
-            auto fragments = it->second;
-            if (isComplete(fragments))
-                framesToPassUp[sequenceNumber] = fragments;
-            else
-                return framesToPassUp; // incomplete
+    if (startingSequenceNumber + receiveBuffer->getBufferSize() > 4095) {
+        for (int i = startingSequenceNumber; i <= 4095; i++) {
+            if (!addMsduIfComplete(receiveBuffer, framesToPassUp, i))
+                return framesToPassUp;
         }
-        else
-            return framesToPassUp; // missing
+        for (int i = 0; i < (startingSequenceNumber + receiveBuffer->getBufferSize()) % 4096; i++) {
+            if (!addMsduIfComplete(receiveBuffer, framesToPassUp, i))
+                return framesToPassUp;
+        }
+    }
+    else {
+        for (int i = startingSequenceNumber; i < startingSequenceNumber + receiveBuffer->getBufferSize(); i++) {
+            if (!addMsduIfComplete(receiveBuffer, framesToPassUp, i))
+                return framesToPassUp;
+        }
     }
     return framesToPassUp;
 }
 
+bool BlockAckReordering::addMsduIfComplete(ReceiveBuffer *receiveBuffer, ReorderBuffer& reorderBuffer, SequenceNumber seqNum)
+{
+    const auto& buffer = receiveBuffer->getBuffer();
+    auto it = buffer.find(seqNum);
+    if (it != buffer.end()) {
+        auto fragments = it->second;
+        if (isComplete(fragments)) {
+            reorderBuffer[seqNum] = fragments;
+            return true;
+        }
+    }
+    return false;
+}
 
 void BlockAckReordering::releaseReceiveBuffer(ReceiveBuffer *receiveBuffer, const ReorderBuffer& reorderBuffer)
 {
@@ -215,13 +231,31 @@ void BlockAckReordering::passedUp(ReceiveBuffer *receiveBuffer, int sequenceNumb
 
 std::vector<Ieee80211DataFrame*> BlockAckReordering::getEarliestCompleteMsduOrAMsduIfExists(ReceiveBuffer *receiveBuffer)
 {
+    Fragments *earliestFragments = nullptr;
+    SequenceNumber earliestSeqNum = 0;
     const auto& buffer = receiveBuffer->getBuffer();
     for (auto it : buffer) {
-        auto &fragments = it.second;
-        if (isComplete(fragments))
-            return fragments;
+        if (isComplete(it.second)) {
+            earliestFragments = &it.second;
+            earliestSeqNum = earliestFragments->at(0)->getSequenceNumber();
+            break;
+        }
     }
-    return Fragments();
+    if (earliestFragments) {
+        for (auto it : buffer) {
+            Fragments *fragments = &it.second;
+            SequenceNumber currentSeqNum = fragments->at(0)->getSequenceNumber();
+            if (isSequenceNumberLess(currentSeqNum, earliestSeqNum, receiveBuffer->getNextExpectedSequenceNumber(), receiveBuffer->getBufferSize())) {
+                if (isComplete(*fragments)) {
+                    earliestFragments = fragments;
+                    earliestSeqNum = currentSeqNum;
+                }
+            }
+        }
+        return *earliestFragments;
+    }
+    else
+        return Fragments();
 }
 
 BlockAckReordering::~BlockAckReordering()
@@ -229,7 +263,6 @@ BlockAckReordering::~BlockAckReordering()
     for (auto receiveBuffer : receiveBuffers)
         delete receiveBuffer.second;
 }
-
 
 } /* namespace ieee80211 */
 } /* namespace inet */

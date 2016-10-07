@@ -37,7 +37,7 @@ bool ReceiveBuffer::insertFrame(Ieee80211DataFrame* dataFrame)
     int sequenceNumber = dataFrame->getSequenceNumber();
     // The total number of MPDUs in these MSDUs may not
     // exceed the reorder buffer size in the receiver.
-    if (length < bufferSize && nextExpectedSequenceNumber <= sequenceNumber) {
+    if (length < bufferSize && !isSequenceNumberTooOld(sequenceNumber, nextExpectedSequenceNumber, bufferSize)) {
         auto it = buffer.find(sequenceNumber);
         if (it != buffer.end()) {
             auto &fragments = it->second;
@@ -72,7 +72,6 @@ ReceiveBuffer::~ReceiveBuffer()
             delete fragment;
     }
 }
-
 
 } /* namespace ieee80211 */
 } /* namespace inet */
