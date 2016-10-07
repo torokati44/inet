@@ -36,4 +36,4 @@ class INET_API IProcedureCallback
 } /* namespace ieee80211 */
 } /* namespace inet */
 
-#endif /* INET_LINKLAYER_IEEE80211_MAC_CONTRACT_IPROCEDURECALLBACK_H_ */
+#endif // ifndef __INET_IPROCEDURECALLBACK_H
