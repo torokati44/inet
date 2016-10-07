@@ -231,31 +231,28 @@ void BlockAckReordering::passedUp(ReceiveBuffer *receiveBuffer, int sequenceNumb
 
 std::vector<Ieee80211DataFrame*> BlockAckReordering::getEarliestCompleteMsduOrAMsduIfExists(ReceiveBuffer *receiveBuffer)
 {
-    Fragments *earliestFragments = nullptr;
+    Fragments earliestFragments = Fragments();
     SequenceNumber earliestSeqNum = 0;
     const auto& buffer = receiveBuffer->getBuffer();
     for (auto it : buffer) {
         if (isComplete(it.second)) {
-            earliestFragments = &it.second;
-            earliestSeqNum = earliestFragments->at(0)->getSequenceNumber();
+            earliestFragments = it.second;
+            earliestSeqNum = earliestFragments.at(0)->getSequenceNumber();
             break;
         }
     }
-    if (earliestFragments) {
+    if (earliestFragments.size() > 0) {
         for (auto it : buffer) {
-            Fragments *fragments = &it.second;
-            SequenceNumber currentSeqNum = fragments->at(0)->getSequenceNumber();
+            SequenceNumber currentSeqNum = it.second.at(0)->getSequenceNumber();
             if (isSequenceNumberLess(currentSeqNum, earliestSeqNum, receiveBuffer->getNextExpectedSequenceNumber(), receiveBuffer->getBufferSize())) {
-                if (isComplete(*fragments)) {
-                    earliestFragments = fragments;
+                if (isComplete(it.second)) {
+                    earliestFragments = it.second;
                     earliestSeqNum = currentSeqNum;
                 }
             }
         }
-        return *earliestFragments;
     }
-    else
-        return Fragments();
+    return earliestFragments;
 }
 
 BlockAckReordering::~BlockAckReordering()
