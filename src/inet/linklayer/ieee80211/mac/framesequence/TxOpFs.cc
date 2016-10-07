@@ -61,7 +61,9 @@ int TxOpFs::selectTxOpSequence(AlternativesFs *frameSequence, FrameSequenceConte
         return 3;
     else {
         auto dataFrameToTransmit = check_and_cast<Ieee80211DataFrame*>(frameToTransmit);
-        auto agreement = context->getQoSContext()->blockAckAgreementHandler->getAgreement(dataFrameToTransmit->getReceiverAddress(), dataFrameToTransmit->getTid());
+        OriginatorBlockAckAgreement* agreement = nullptr;
+        if (context->getQoSContext()->blockAckAgreementHandler)
+            agreement = context->getQoSContext()->blockAckAgreementHandler->getAgreement(dataFrameToTransmit->getReceiverAddress(), dataFrameToTransmit->getTid());
         auto ackPolicy = context->getQoSContext()->ackPolicy->computeAckPolicy(dataFrameToTransmit, agreement);
         if (ackPolicy == AckPolicy::BLOCK_ACK)
             return 0;
