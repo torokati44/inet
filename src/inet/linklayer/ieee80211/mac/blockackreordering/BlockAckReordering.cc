@@ -93,7 +93,7 @@ BlockAckReordering::ReorderBuffer BlockAckReordering::processReceivedBlockAckReq
         // NextExpectedSequenceNumber for that Block Ack agreement, then the NextExpectedSequenceNumber for
         // that Block Ack agreement is set to the sequence number of the BlockAckReq frame.
         int numOfMsdusToPassUp = completePrecedingMpdus.size() + consecutiveCompleteFollowingMpdus.size();
-        if (numOfMsdusToPassUp == 0  && receiveBuffer->getNextExpectedSequenceNumber() < startingSequenceNumber)
+        if (numOfMsdusToPassUp == 0  && isSequenceNumberLess(receiveBuffer->getNextExpectedSequenceNumber(), startingSequenceNumber, receiveBuffer->getNextExpectedSequenceNumber(), receiveBuffer->getBufferSize()))
             receiveBuffer->setNextExpectedSequenceNumber(startingSequenceNumber);
         // The recipient shall then release any buffers held by preceding MPDUs.
         releaseReceiveBuffer(receiveBuffer, completePrecedingMpdus);
