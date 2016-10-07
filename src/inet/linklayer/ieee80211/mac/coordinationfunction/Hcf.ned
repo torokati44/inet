@@ -44,6 +44,7 @@ module Hcf
         int numEdcafs = default(4);
         int maxQueueSize = default(100); // -1 means unlimited
         string rateControlType = default("");
+        bool isBlockAckSupported = default(true);
 
         string rxModule;
         string txModule;
@@ -117,12 +118,12 @@ module Hcf
             parameters:
                 @display("p=1000,400");
         }
-        originatorBlockAckAgreementPolicy: OriginatorBlockAckAgreementPolicy {
+        originatorBlockAckAgreementPolicy: OriginatorBlockAckAgreementPolicy if isBlockAckSupported {
             parameters:
                 originatorAckPolicyModule = "^.originatorAckPolicy";
                 @display("p=1000,500");
         }
-        recipientBlockAckAgreementPolicy: RecipientBlockAckAgreementPolicy {
+        recipientBlockAckAgreementPolicy: RecipientBlockAckAgreementPolicy if isBlockAckSupported {
             parameters:
                 @display("p=1000,600");
         }
