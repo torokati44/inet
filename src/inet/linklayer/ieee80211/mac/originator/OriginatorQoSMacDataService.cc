@@ -27,10 +27,11 @@ Define_Module(OriginatorQoSMacDataService);
 
 void OriginatorQoSMacDataService::initialize()
 {
-    aMsduAggregationPolicy = check_and_cast<IMsduAggregationPolicy*>(getSubmodule("msduAggregationPolicy"));
-    aMsduAggregation = new MsduAggregation();
+    aMsduAggregationPolicy = dynamic_cast<IMsduAggregationPolicy*>(getSubmodule("msduAggregationPolicy"));
+    if (aMsduAggregationPolicy)
+        aMsduAggregation = new MsduAggregation();
     sequenceNumberAssigment = new QoSSequenceNumberAssignment();
-    fragmentationPolicy = check_and_cast<IFragmentationPolicy*>(getSubmodule("fragmentationPolicy"));
+    fragmentationPolicy = dynamic_cast<IFragmentationPolicy*>(getSubmodule("fragmentationPolicy"));
     fragmentation = new Fragmentation();
 }
 
