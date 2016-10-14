@@ -52,6 +52,7 @@ void Hcf::initialize(int stage)
         recipientAckPolicy = check_and_cast<IRecipientQoSAckPolicy*>(getSubmodule("recipientAckPolicy"));
         edcaMgmtAndNonQoSRecoveryProcedure = check_and_cast<NonQoSRecoveryProcedure *>(getSubmodule("edcaMgmtAndNonQoSRecoveryProcedure"));
         singleProtectionMechanism = check_and_cast<SingleProtectionMechanism*>(getSubmodule("singleProtectionMechanism"));
+        dummyProtectionMechanism = check_and_cast<DummyProtectionMechanism*>(getSubmodule("dummyProtectionMechanism"));
         rtsProcedure = new RtsProcedure();
         rtsPolicy = check_and_cast<IRtsPolicy*>(getSubmodule("rtsPolicy"));
         recipientAckProcedure = new RecipientAckProcedure();
@@ -535,12 +536,14 @@ void Hcf::transmitFrame(Ieee80211Frame* frame, simtime_t ifs)
             dataFrame->setAckPolicy(ackPolicy);
         }
         setFrameMode(frame, rateSelection->computeMode(frame, txop));
-        if (txop->getProtectionMechanism() == TxopProcedure::ProtectionMechanism::SINGLE_PROTECTION)
-            frame->setDuration(singleProtectionMechanism->computeDurationField(frame, edcaInProgressFrames[ac]->getPendingFrameFor(frame), edcaTxops[ac], recipientAckPolicy));
-        else if (txop->getProtectionMechanism() == TxopProcedure::ProtectionMechanism::MULTIPLE_PROTECTION)
-            throw cRuntimeError("Double protection is unsupported");
-        else
-            throw cRuntimeError("Undefined protection mechanism");
+        frame->setDuration(dummyProtectionMechanism->computeDurationField(frame, edcaInProgressFrames[ac]->getPendingFrameFor(frame), edcaTxops[ac], recipientAckPolicy));
+//        FIXME: validation
+//        if (txop->getProtectionMechanism() == TxopProcedure::ProtectionMechanism::SINGLE_PROTECTION)
+//            frame->setDuration(singleProtectionMechanism->computeDurationField(frame, edcaInProgressFrames[ac]->getPendingFrameFor(frame), edcaTxops[ac], recipientAckPolicy));
+//        else if (txop->getProtectionMechanism() == TxopProcedure::ProtectionMechanism::MULTIPLE_PROTECTION)
+//            throw cRuntimeError("Double protection is unsupported");
+//        else
+//            throw cRuntimeError("Undefined protection mechanism");
         tx->transmitFrame(frame, ifs, this);
     }
     else
