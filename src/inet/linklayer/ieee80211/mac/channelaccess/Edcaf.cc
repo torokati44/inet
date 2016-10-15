@@ -40,6 +40,8 @@ void Edcaf::initialize(int stage)
         auto rx = check_and_cast<IRx *>(getModuleByPath(par("rxModule")));
         rx->registerContention(contention);
         calculateTimingParameters();
+        if (hasGUI())
+            updateDisplayString();
     }
 }
 
@@ -109,6 +111,8 @@ void Edcaf::channelAccessGranted()
         callback->channelGranted(this);
     }
     contentionInProgress = false;
+    if (hasGUI())
+        updateDisplayString();
 }
 
 void Edcaf::releaseChannel(IChannelAccess::ICallback* callback)
@@ -117,6 +121,8 @@ void Edcaf::releaseChannel(IChannelAccess::ICallback* callback)
     owning = false;
     contentionInProgress = false;
     this->callback = nullptr;
+    if (hasGUI())
+        updateDisplayString();
 }
 
 void Edcaf::requestChannel(IChannelAccess::ICallback* callback)
@@ -129,6 +135,8 @@ void Edcaf::requestChannel(IChannelAccess::ICallback* callback)
         contention->startContention(cw, ifs, eifs, slotTime, this);
     }
     else ;
+    if (hasGUI())
+        updateDisplayString();
 }
 
 void Edcaf::expectedChannelAccess(simtime_t time)
@@ -174,6 +182,16 @@ void Edcaf::receiveSignal(cComponent* source, simsignal_t signalID, cObject* obj
     }
 }
 
+void Edcaf::updateDisplayString()
+{
+    std::string displayString(printAccessCategory(ac));
+    if (owning)
+        displayString += " (Channel owner)";
+    else if (contentionInProgress)
+        displayString += " (Contention in progress)";
+    getDisplayString().setTagArg("t", 0, displayString.c_str());
+}
 
 } // namespace ieee80211
 }// namespace inet
+
