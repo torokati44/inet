@@ -186,9 +186,9 @@ void Edcaf::updateDisplayString()
 {
     std::string displayString(printAccessCategory(ac));
     if (owning)
-        displayString += " (Channel owner)";
+        displayString += "\n(Channel owner)";
     else if (contentionInProgress)
-        displayString += " (Contention in progress)";
+        displayString += "\n(Contention in progress)";
     getDisplayString().setTagArg("t", 0, displayString.c_str());
 }
 

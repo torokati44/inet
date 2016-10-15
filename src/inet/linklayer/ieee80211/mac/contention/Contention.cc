@@ -250,7 +250,7 @@ void Contention::updateDisplayString(simtime_t expectedChannelAccess)
     if (expectedChannelAccess != -1) {
         std::ostringstream strs;
         strs << expectedChannelAccess;
-        displayString += ("\n Exp. access: " + strs.str());
+        displayString += ("\nExp. access: " + strs.str());
     }
     getDisplayString().setTagArg("t", 0, displayString.c_str());
 }
