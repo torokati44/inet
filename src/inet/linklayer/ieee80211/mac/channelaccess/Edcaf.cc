@@ -128,13 +128,15 @@ void Edcaf::releaseChannel(IChannelAccess::ICallback* callback)
 void Edcaf::requestChannel(IChannelAccess::ICallback* callback)
 {
     this->callback = callback;
-    if (owning)
-        callback->channelGranted(this);
-    else if (!contentionInProgress) {
+    ASSERT(!owning);
+    if (contentionInProgress)
+        EV_DETAIL << "Contention has already been started" << std::endl;
+    else {
+        EV_DETAIL << "Starting contention with cw = " << cw << ", ifs = " << ifs << ", eifs = "
+                  << eifs << ", slotTime = " << slotTime << std::endl;
         contentionInProgress = true;
         contention->startContention(cw, ifs, eifs, slotTime, this);
     }
-    else ;
     if (hasGUI())
         updateDisplayString();
 }
