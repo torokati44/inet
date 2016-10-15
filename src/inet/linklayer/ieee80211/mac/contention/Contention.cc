@@ -55,7 +55,7 @@ void Contention::initialize(int stage)
         WATCH(backoffOptimizationDelta);
         WATCH(mediumFree);
         WATCH(backoffOptimization);
-        updateDisplayString();
+        updateDisplayString(-1);
     }
     else if (stage == INITSTAGE_LAST) {
         if (!par("initialChannelBusy") && simTime() == 0)
@@ -145,8 +145,12 @@ void Contention::handleWithFSM(EventType event)
         callback->channelAccessGranted();
         callback = nullptr;
     }
-    if (hasGUI())
-        updateDisplayString();
+    if (hasGUI()) {
+        if (startTxEvent->isScheduled())
+            updateDisplayString(startTxEvent->getArrivalTime());
+        else
+            updateDisplayString(-1);
+    }
 }
 
 void Contention::mediumStateChanged(bool mediumFree)
@@ -173,12 +177,16 @@ void Contention::scheduleTransmissionRequestFor(simtime_t txStartTime)
 {
     scheduleAt(txStartTime, startTxEvent);
     callback->expectedChannelAccess(txStartTime);
+    if (hasGUI())
+        updateDisplayString(txStartTime);
 }
 
 void Contention::cancelTransmissionRequest()
 {
     cancelEvent(startTxEvent);
     callback->expectedChannelAccess(-1);
+    if (hasGUI())
+        updateDisplayString(-1);
 }
 
 void Contention::scheduleTransmissionRequest()
@@ -236,12 +244,15 @@ const char *Contention::getEventName(EventType event)
 #undef CASE
 }
 
-void Contention::updateDisplayString()
+void Contention::updateDisplayString(simtime_t expectedChannelAccess)
 {
-    const char *stateName = fsm.getStateName();
-    if (strcmp(stateName, "IFS_AND_BACKOFF") == 0)
-        stateName = "IFS+BKOFF";  // original text is too long
-    getDisplayString().setTagArg("t", 0, stateName);
+    std::string displayString(fsm.getStateName());
+    if (expectedChannelAccess != -1) {
+        std::ostringstream strs;
+        strs << expectedChannelAccess;
+        displayString += ("\n Exp. access: " + strs.str());
+    }
+    getDisplayString().setTagArg("t", 0, displayString.c_str());
 }
 
 } // namespace ieee80211
