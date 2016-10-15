@@ -152,6 +152,7 @@ void Hcf::channelGranted(IChannelAccess* channelAccess)
     auto edcaf = check_and_cast<Edcaf*>(channelAccess);
     if (edcaf) {
         AccessCategory ac = edcaf->getAccessCategory();
+        EV_DETAIL << "Channel access granted to the " << printAccessCategory(ac) << " queue" << std::endl;
         edcaTxops[ac]->startTxop(ac);
         startFrameSequence(ac);
         handleInternalCollision(edca->getInternallyCollidedEdcafs());
