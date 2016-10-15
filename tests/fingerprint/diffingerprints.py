@@ -42,8 +42,8 @@ def readFingerprints2(eventlogFile):
     return fingerprints
 
 def diffingerprint(elog1Fingerprints, elog2Fingerprints):
-    maxSize = max(len(elog1Fingerprints), len(elog2Fingerprints)) - 1
-    for i in range(0,maxSize):
+    minSize = min(len(elog1Fingerprints), len(elog2Fingerprints)) - 1
+    for i in range(0,minSize):
         elog1Fingerprint = elog1Fingerprints[i]
         elog2Fingerprint = elog2Fingerprints[i]
         if elog1Fingerprint[1] != elog2Fingerprint[1]:
