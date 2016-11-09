@@ -407,7 +407,7 @@ void Hcf::originatorProcessFailedFrame(Ieee80211DataOrMgmtFrame* failedFrame)
             else
                 throw cRuntimeError("Unimplemented!");
         }
-        else if (auto mgmtFrame = dynamic_cast<Ieee80211ManagementFrame*>(failedFrame)) {
+        else if (auto mgmtFrame = dynamic_cast<Ieee80211ManagementFrame*>(failedFrame)) { // TODO: + NonQoS frames
             EV_INFO << "Management frame transmission failed\n";
             edcaMgmtAndNonQoSRecoveryProcedure->dataOrMgmtFrameTransmissionFailed(mgmtFrame, stationRetryCounters[ac]);
             retryLimitReached = edcaMgmtAndNonQoSRecoveryProcedure->isRetryLimitReached(mgmtFrame);

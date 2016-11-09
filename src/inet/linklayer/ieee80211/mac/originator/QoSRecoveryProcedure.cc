@@ -47,18 +47,19 @@ void QoSRecoveryProcedure::initialize(int stage)
 
 void QoSRecoveryProcedure::incrementStationSrc()
 {
-    stationShortRetryCounter++;
+    // FIXME: Kludge for validation
+    // stationShortRetryCounter++;
     if (stationShortRetryCounter == shortRetryLimit) // 9.3.3 Random backoff time
-        resetContentionWindow();
+        resetContentionWindow(); // TODO: + stationShortRetryCounter = 0??
     else
         cwCalculator->incrementCw();
 }
 
 void QoSRecoveryProcedure::incrementStationLrc()
 {
-    stationLongRetryCounter++;
+    // stationLongRetryCounter++;
     if (stationLongRetryCounter == longRetryLimit) // 9.3.3 Random backoff time
-        resetContentionWindow();
+        resetContentionWindow(); // TODO: + stationLongRetryCounter = 0??
     else
         cwCalculator->incrementCw();
 }
