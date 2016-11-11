@@ -85,23 +85,12 @@ Ieee80211DataOrMgmtFrame* InProgressFrames::getPendingFrameFor(Ieee80211Frame *f
     }
 }
 
-void InProgressFrames::dropFrame(int seqNum, int fragNum)
-{
-    for (auto it = inProgressFrames.begin(); it != inProgressFrames.end(); it++) {
-        Ieee80211DataOrMgmtFrame *frame = *it;
-        if (frame->getSequenceNumber() == seqNum && frame->getFragmentNumber() == fragNum) {
-            inProgressFrames.erase(it);
-            return;
-        }
-    }
-}
-
 void InProgressFrames::dropFrame(Ieee80211DataOrMgmtFrame* frame)
 {
     inProgressFrames.remove(frame);
 }
 
-void InProgressFrames::dropFrames(std::set<std::pair<Tid, SequenceControlField>> seqAndFragNums)
+void InProgressFrames::dropFrames(std::set<std::pair<MACAddress, std::pair<Tid, SequenceControlField>>> seqAndFragNums)
 {
     SequenceControlPredicate predicate(seqAndFragNums);
     inProgressFrames.remove_if(predicate);

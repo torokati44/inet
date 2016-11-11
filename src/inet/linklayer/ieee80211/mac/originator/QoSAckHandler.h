@@ -43,12 +43,14 @@ class INET_API QoSAckHandler : public IAckHandler
             BLOCK_ACK_ARRIVED_ACKED
         };
     protected:
-        std::map<std::pair<Tid, SequenceControlField>, Status> ackStatuses;
-        std::map<SequenceControlField, Status> mgmtAckStatuses;
+        typedef std::pair<MACAddress, std::pair<Tid, SequenceControlField>> QoSKey;
+        typedef std::pair<MACAddress, SequenceControlField> Key;
+        std::map<QoSKey, Status> ackStatuses;
+        std::map<Key, Status> mgmtAckStatuses;
 
     protected:
-        virtual Status& getQoSDataAckStatus(std::pair<Tid,SequenceControlField> id);
-        virtual Status& getMgmtOrNonQoSAckStatus(SequenceControlField id);
+        virtual Status& getQoSDataAckStatus(const QoSKey& id);
+        virtual Status& getMgmtOrNonQoSAckStatus(const Key& id);
 
 
         std::string getStatusString(Status status);
@@ -58,7 +60,7 @@ class INET_API QoSAckHandler : public IAckHandler
         virtual ~QoSAckHandler() { }
 
         virtual void processReceivedAck(Ieee80211ACKFrame *ack, Ieee80211DataOrMgmtFrame *ackedFrame);
-        virtual std::set<std::pair<Tid, SequenceControlField>> processReceivedBlockAck(Ieee80211BlockAck *blockAck);
+        virtual std::set<std::pair<MACAddress, std::pair<Tid, SequenceControlField>>> processReceivedBlockAck(Ieee80211BlockAck *blockAck);
 
         virtual void frameGotInProgress(Ieee80211DataOrMgmtFrame *dataOrMgmtFrame) override;
         virtual void processTransmittedDataOrMgmtFrame(Ieee80211DataOrMgmtFrame*frame);

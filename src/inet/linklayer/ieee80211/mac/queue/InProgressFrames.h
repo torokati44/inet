@@ -33,18 +33,19 @@ class INET_API InProgressFrames
         class SequenceControlPredicate
         {
             private:
-                const std::set<std::pair<Tid, SequenceControlField>>& seqAndFragNums;
+                const std::set<std::pair<MACAddress, std::pair<Tid, SequenceControlField>>>& seqAndFragNums;
 
             public:
-                SequenceControlPredicate(const std::set<std::pair<Tid, SequenceControlField>>& seqAndFragNums) :
+                SequenceControlPredicate(const std::set<std::pair<MACAddress, std::pair<Tid, SequenceControlField>>>& seqAndFragNums) :
                     seqAndFragNums(seqAndFragNums) {}
 
                 bool operator() (const Ieee80211DataOrMgmtFrame *frame) {
                     if (frame->getType() == ST_DATA_WITH_QOS) {
                         auto dataFrame = check_and_cast<const Ieee80211DataFrame*>(frame);
-                        return seqAndFragNums.count(std::make_pair(dataFrame->getTid(), SequenceControlField(dataFrame->getSequenceNumber(), dataFrame->getFragmentNumber()))) != 0;
+                        return seqAndFragNums.count(std::make_pair(dataFrame->getReceiverAddress(), std::make_pair(dataFrame->getTid(), SequenceControlField(dataFrame->getSequenceNumber(), dataFrame->getFragmentNumber())))) != 0;
                     }
-                    return 0;
+                    else
+                        throw cRuntimeError("This method is not applicable for NonQoS frames");
                 }
         };
 
@@ -69,8 +70,7 @@ class INET_API InProgressFrames
         virtual Ieee80211DataOrMgmtFrame *getFrameToTransmit();
         virtual Ieee80211DataOrMgmtFrame *getPendingFrameFor(Ieee80211Frame *frame);
         virtual void dropFrame(Ieee80211DataOrMgmtFrame *dataOrMgmtFrame);
-        virtual void dropFrame(int seqNum, int fragNum);
-        virtual void dropFrames(std::set<std::pair<Tid, SequenceControlField>> seqAndFragNums);
+        virtual void dropFrames(std::set<std::pair<MACAddress, std::pair<Tid, SequenceControlField>>> seqAndFragNums);
 
         virtual bool hasInProgressFrames() { ensureHasFrameToTransmit(); return hasEligibleFrameToTransmit(); }
         virtual std::vector<Ieee80211DataFrame*> getOutstandingFrames();
