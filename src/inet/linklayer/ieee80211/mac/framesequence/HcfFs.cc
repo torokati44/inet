@@ -50,7 +50,13 @@ int HcfFs::selectHcfSequence(AlternativesFs *frameSequence, FrameSequenceContext
 
 int HcfFs::selectDataOrManagementSequence(AlternativesFs *frameSequence, FrameSequenceContext *context)
 {
-    return 0;
+    auto frameToTransmit = context->getInProgressFrames()->getFrameToTransmit();
+    if (dynamic_cast<Ieee80211DataFrame*>(frameToTransmit))
+        return 0;
+    else if (dynamic_cast<Ieee80211ManagementFrame*>(frameToTransmit))
+        return 1;
+    else
+        throw cRuntimeError("frameToTransmit must be either a Data or a Management frame");
 }
 
 bool HcfFs::isSelfCtsNeeded(OptionalFs *frameSequence, FrameSequenceContext *context)
