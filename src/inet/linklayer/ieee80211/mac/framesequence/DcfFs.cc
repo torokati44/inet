@@ -26,6 +26,10 @@ DcfFs::DcfFs() :
     // frame-sequence =
     //   ( [ CTS ] ( Management + broadcast | Data + group ) ) |
     //   ( [ CTS | RTS CTS] {frag-frame ACK } last-frame ACK )
+    //
+    // frag-frame = ( Data | Management ) + individual + frag;
+    // last-frame = ( Data | Management ) + individual + last;
+    //
     AlternativesFs({new SequentialFs({new OptionalFs(new SelfCtsFs(), OPTIONALFS_PREDICATE(isSelfCtsNeeded)),
                                       new AlternativesFs({new ManagementFs(), new DataFs()}, ALTERNATIVESFS_SELECTOR(selectMulticastDataOrMgmt))}),
                     new SequentialFs({new OptionalFs(new AlternativesFs({new SelfCtsFs(), new SequentialFs({new RtsFs(), new CtsFs()})},
@@ -96,7 +100,7 @@ int DcfFs::selectMulticastDataOrMgmt(AlternativesFs* frameSequence, FrameSequenc
 
 bool DcfFs::isFragFrameSequenceNeeded(AlternativesFs *frameSequence, FrameSequenceContext *context)
 {
-    return context->getInProgressFrames()->hasInProgressFrames() && context->getInProgressFrames()->getFrameToTransmit()->getType() == ST_DATA;
+    return context->getInProgressFrames()->hasInProgressFrames() && dynamic_cast<Ieee80211DataOrMgmtFrame*>(context->getInProgressFrames()->getFrameToTransmit());
 }
 
 } // namespace ieee80211
