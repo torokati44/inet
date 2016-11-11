@@ -160,6 +160,8 @@ void Dcf::recipientProcessReceivedFrame(Ieee80211Frame* frame)
         recipientAckProcedure->processReceivedFrame(dataOrMgmtFrame, recipientAckPolicy, this);
     if (auto dataFrame = dynamic_cast<Ieee80211DataFrame*>(frame))
         sendUp(recipientDataService->dataFrameReceived(dataFrame));
+    else if (auto mgmtFrame = dynamic_cast<Ieee80211ManagementFrame*>(frame))
+        sendUp(recipientDataService->managementFrameReceived(mgmtFrame));
     else { // TODO: else if (auto ctrlFrame = dynamic_cast<Ieee80211ControlFrame*>(frame))
         sendUp(recipientDataService->controlFrameReceived(frame));
         recipientProcessControlFrame(frame);
