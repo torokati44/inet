@@ -67,7 +67,11 @@ bool HcfFs::isSelfCtsNeeded(OptionalFs *frameSequence, FrameSequenceContext *con
 bool HcfFs::hasMoreTxOps(RepeatingFs *frameSequence, FrameSequenceContext *context)
 {
     bool hasFrameToTransmit = context->getInProgressFrames()->hasInProgressFrames();
-    return hasFrameToTransmit && (context->getQoSContext()->txopProcedure->getRemaining() > 0 || frameSequence->getCount() == 0);
+    if (hasFrameToTransmit) {
+        auto nextFrameToTransmit = context->getInProgressFrames()->getFrameToTransmit();
+        return !nextFrameToTransmit->getReceiverAddress().isMulticast() && (context->getQoSContext()->txopProcedure->getRemaining() > 0 || frameSequence->getCount() == 0);
+    }
+    return false;
 }
 
 } // namespace ieee80211
