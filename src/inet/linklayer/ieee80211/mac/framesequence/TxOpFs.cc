@@ -40,7 +40,7 @@ TxOpFs::TxOpFs() :
                     new SequentialFs({new OptionalFs(new RtsCtsFs(), OPTIONALFS_PREDICATE(isBlockAckReqRtsCtsNeeded)),
                                       new BlockAckReqBlockAckFs()}),
                     new SequentialFs({new OptionalFs(new RtsCtsFs(), OPTIONALFS_PREDICATE(isRtsCtsNeeded)),
-                                      new AlternativesFs({new ManagementFs(),
+                                      new AlternativesFs({new ManagementAckFs(),
                                                           /* TODO: DATA + QAP*/},
                                                          ALTERNATIVESFS_SELECTOR(selectMgmtOrDataQap))})},
                    ALTERNATIVESFS_SELECTOR(selectTxOpSequence))

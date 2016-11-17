@@ -135,13 +135,13 @@ bool DataFs::completeStep(FrameSequenceContext *context)
     }
 }
 
-void ManagementFs::startSequence(FrameSequenceContext *context, int firstStep)
+void ManagementAckFs::startSequence(FrameSequenceContext *context, int firstStep)
 {
     this->firstStep = firstStep;
     step = 0;
 }
 
-IFrameSequenceStep *ManagementFs::prepareStep(FrameSequenceContext *context)
+IFrameSequenceStep *ManagementAckFs::prepareStep(FrameSequenceContext *context)
 {
     switch (step) {
         case 0: {
@@ -161,7 +161,7 @@ IFrameSequenceStep *ManagementFs::prepareStep(FrameSequenceContext *context)
     }
 }
 
-bool ManagementFs::completeStep(FrameSequenceContext *context)
+bool ManagementAckFs::completeStep(FrameSequenceContext *context)
 {
     switch (step) {
         case 0:
@@ -172,6 +172,37 @@ bool ManagementFs::completeStep(FrameSequenceContext *context)
             step++;
             return receiveStep->getReceivedFrame()->getType() == ST_ACK;
         }
+        default:
+            throw cRuntimeError("Unknown step");
+    }
+}
+
+void ManagementFs::startSequence(FrameSequenceContext *context, int firstStep)
+{
+    this->firstStep = firstStep;
+    step = 0;
+}
+
+IFrameSequenceStep *ManagementFs::prepareStep(FrameSequenceContext *context)
+{
+    switch (step) {
+        case 0: {
+            auto mgmtFrame = check_and_cast<Ieee80211ManagementFrame *>(context->getInProgressFrames()->getFrameToTransmit());
+            return new TransmitStep(mgmtFrame, context->getIfs());
+        }
+        case 1:
+            return nullptr;
+        default:
+            throw cRuntimeError("Unknown step");
+    }
+}
+
+bool ManagementFs::completeStep(FrameSequenceContext *context)
+{
+    switch (step) {
+        case 0:
+            step++;
+            return true;
         default:
             throw cRuntimeError("Unknown step");
     }

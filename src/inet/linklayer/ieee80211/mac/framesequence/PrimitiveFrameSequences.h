@@ -52,6 +52,19 @@ class INET_API DataFs : public IFrameSequence {
         virtual std::string getHistory() override { return "DATA"; }
 };
 
+class INET_API ManagementAckFs : public IFrameSequence {
+    protected:
+        int firstStep = -1;
+        int step = -1;
+
+    public:
+        virtual void startSequence(FrameSequenceContext *context, int firstStep) override;
+        virtual IFrameSequenceStep *prepareStep(FrameSequenceContext *context) override;
+        virtual bool completeStep(FrameSequenceContext *context) override;
+
+        virtual std::string getHistory() override { return "MANAGEMENT"; }
+};
+
 class INET_API ManagementFs : public IFrameSequence {
     protected:
         int firstStep = -1;
