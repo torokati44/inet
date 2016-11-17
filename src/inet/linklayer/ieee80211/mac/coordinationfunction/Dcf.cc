@@ -216,8 +216,10 @@ void Dcf::originatorProcessTransmittedFrame(Ieee80211Frame* transmittedFrame)
 {
     if (transmittedFrame->getReceiverAddress().isMulticast())
         recoveryProcedure->multicastFrameTransmitted(stationRetryCounters);
-    if (transmittedFrame->getType() == ST_DATA || dynamic_cast<Ieee80211ManagementFrame *>(transmittedFrame))
-        ackHandler->processTransmittedDataOrMgmtFrame(check_and_cast<Ieee80211DataOrMgmtFrame *>(transmittedFrame));
+    if (originatorAckPolicy->isAckNeeded(transmittedFrame)) {
+        auto transmittedDataOrMgmtFrame = check_and_cast<Ieee80211DataOrMgmtFrame *>(transmittedFrame);
+        ackHandler->processTransmittedDataOrMgmtFrame(transmittedDataOrMgmtFrame);
+    }
     else if (auto rtsFrame = dynamic_cast<Ieee80211RTSFrame *>(transmittedFrame))
         rtsProcedure->processTransmittedRts(rtsFrame);
 }
@@ -225,13 +227,14 @@ void Dcf::originatorProcessTransmittedFrame(Ieee80211Frame* transmittedFrame)
 void Dcf::originatorProcessReceivedFrame(Ieee80211Frame* frame, Ieee80211Frame* lastTransmittedFrame)
 {
     if (frame->getType() == ST_ACK) {
-        recoveryProcedure->ackFrameReceived(check_and_cast<Ieee80211DataOrMgmtFrame*>(lastTransmittedFrame), stationRetryCounters);
-        ackHandler->processReceivedAck(check_and_cast<Ieee80211ACKFrame *>(frame), check_and_cast<Ieee80211DataOrMgmtFrame*>(lastTransmittedFrame));
-        inProgressFrames->dropFrame(check_and_cast<Ieee80211DataOrMgmtFrame*>(lastTransmittedFrame));
+        auto lastTransmittedDataOrMgmtFrame = check_and_cast<Ieee80211DataOrMgmtFrame*>(lastTransmittedFrame);
+        recoveryProcedure->ackFrameReceived(lastTransmittedDataOrMgmtFrame, stationRetryCounters);
+        ackHandler->processReceivedAck(check_and_cast<Ieee80211ACKFrame *>(frame), lastTransmittedDataOrMgmtFrame);
+        inProgressFrames->dropFrame(lastTransmittedDataOrMgmtFrame);
         if (dataAndMgmtRateControl) {
             int retryCount;
             if (lastTransmittedFrame->getRetry())
-                retryCount = recoveryProcedure->getRetryCount(check_and_cast<Ieee80211DataOrMgmtFrame*>(lastTransmittedFrame));
+                retryCount = recoveryProcedure->getRetryCount(lastTransmittedDataOrMgmtFrame);
             else
                 retryCount = 0;
             dataAndMgmtRateControl->frameTransmitted(frame, retryCount, true, false);
