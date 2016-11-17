@@ -324,9 +324,12 @@ void Hcf::originatorProcessTransmittedFrame(Ieee80211Frame* transmittedFrame)
     auto edcaf = edca->getChannelOwner();
     if (edcaf) {
         AccessCategory ac = edcaf->getAccessCategory();
-        if (transmittedFrame->getReceiverAddress().isMulticast())
+        if (transmittedFrame->getReceiverAddress().isMulticast()) {
             edcaDataRecoveryProcedures[ac]->multicastFrameTransmitted();
-        if (auto dataFrame = dynamic_cast<Ieee80211DataFrame*>(transmittedFrame))
+            if (auto transmittedDataOrMgmtFrame = dynamic_cast<Ieee80211DataOrMgmtFrame*>(transmittedFrame))
+                edcaInProgressFrames[ac]->dropFrame(transmittedDataOrMgmtFrame);
+        }
+        else if (auto dataFrame = dynamic_cast<Ieee80211DataFrame*>(transmittedFrame))
             originatorProcessTransmittedDataFrame(dataFrame, ac);
         else if (auto mgmtFrame = dynamic_cast<Ieee80211ManagementFrame*>(transmittedFrame))
             originatorProcessTransmittedManagementFrame(mgmtFrame, ac);
@@ -367,7 +370,7 @@ void Hcf::originatorProcessTransmittedManagementFrame(Ieee80211ManagementFrame* 
             recipientBlockAckAgreementHandler->processTransmittedDelba(delba);
     }
     else
-        throw cRuntimeError("Unknown management frame");
+        throw cRuntimeError("Unknown management frame"); // FIXME: Beacon?
 }
 
 void Hcf::originatorProcessTransmittedControlFrame(Ieee80211Frame* controlFrame, AccessCategory ac)
