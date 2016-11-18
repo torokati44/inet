@@ -88,12 +88,14 @@ Ieee80211DataOrMgmtFrame* InProgressFrames::getPendingFrameFor(Ieee80211Frame *f
 void InProgressFrames::dropFrame(Ieee80211DataOrMgmtFrame* frame)
 {
     inProgressFrames.remove(frame);
+    delete frame;
 }
 
 void InProgressFrames::dropFrames(std::set<std::pair<MACAddress, std::pair<Tid, SequenceControlField>>> seqAndFragNums)
 {
     SequenceControlPredicate predicate(seqAndFragNums);
     inProgressFrames.remove_if(predicate);
+    // FIXME: DELETE FRAMES
 }
 
 std::vector<Ieee80211DataFrame*> InProgressFrames::getOutstandingFrames()
