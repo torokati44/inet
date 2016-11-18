@@ -28,7 +28,6 @@ namespace ieee80211 {
 class INET_API RecipientAckPolicy : public ModeSetListener, public IRecipientAckPolicy
 {
     protected:
-        Ieee80211ModeSet *modeSet = nullptr;
         IRateSelection *rateSelection = nullptr;
 
     protected:
