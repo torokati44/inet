@@ -45,6 +45,7 @@ std::vector<Ieee80211DataOrMgmtFrame *> *Fragmentation::fragmentFrame(Ieee80211D
         fragment->setByteLength(fragmentSizes->at(i));
         fragments->push_back(fragment);
     }
+    delete fragmentHeader;
     return fragments;
 }
 
