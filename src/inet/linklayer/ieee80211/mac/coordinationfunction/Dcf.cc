@@ -214,15 +214,15 @@ void Dcf::originatorProcessRtsProtectionFailed(Ieee80211DataOrMgmtFrame* protect
 
 void Dcf::originatorProcessTransmittedFrame(Ieee80211Frame* transmittedFrame)
 {
-    if (transmittedFrame->getReceiverAddress().isMulticast()) {
+    if (originatorAckPolicy->isAckNeeded(transmittedFrame)) {
+        auto transmittedDataOrMgmtFrame = check_and_cast<Ieee80211DataOrMgmtFrame *>(transmittedFrame);
+        ackHandler->processTransmittedDataOrMgmtFrame(transmittedDataOrMgmtFrame);
+    }
+    else if (transmittedFrame->getReceiverAddress().isMulticast()) {
         recoveryProcedure->multicastFrameTransmitted(stationRetryCounters);
         auto transmittedDataOrMgmtFrame = dynamic_cast<Ieee80211DataOrMgmtFrame *>(transmittedFrame);
         if (transmittedDataOrMgmtFrame)
             inProgressFrames->dropFrame(transmittedDataOrMgmtFrame);
-    }
-    if (originatorAckPolicy->isAckNeeded(transmittedFrame)) {
-        auto transmittedDataOrMgmtFrame = check_and_cast<Ieee80211DataOrMgmtFrame *>(transmittedFrame);
-        ackHandler->processTransmittedDataOrMgmtFrame(transmittedDataOrMgmtFrame);
     }
     else if (auto rtsFrame = dynamic_cast<Ieee80211RTSFrame *>(transmittedFrame))
         rtsProcedure->processTransmittedRts(rtsFrame);
