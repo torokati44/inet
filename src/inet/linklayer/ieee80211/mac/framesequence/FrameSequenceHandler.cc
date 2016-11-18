@@ -144,6 +144,20 @@ void FrameSequenceHandler::finishFrameSequenceStep()
 void FrameSequenceHandler::finishFrameSequence(bool ok)
 {
     EV_INFO << (ok ? "Frame sequence finished\n" : "Frame sequence aborted\n");
+    int numSteps = 0;
+    if (ok)
+        numSteps = context->getNumSteps();
+    else
+        numSteps = context->getNumSteps() - (dynamic_cast<IReceiveStep*>(context->getLastStep()) ? 2 : 1);
+    for (int i = 0; i < numSteps; i++) {
+        auto step = context->getStep(i);
+        if (auto transmitStep = dynamic_cast<TransmitStep*>(step))
+            delete transmitStep->getFrameToTransmit();
+        else if (auto rtsTransmitStep = dynamic_cast<RtsTransmitStep*>(step)) {
+            delete rtsTransmitStep->getFrameToTransmit();
+            delete rtsTransmitStep->getProtectedFrame();
+        }
+    }
     delete context;
     delete frameSequence;
     context = nullptr;
