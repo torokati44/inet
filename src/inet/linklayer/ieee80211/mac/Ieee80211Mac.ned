@@ -142,6 +142,7 @@ module Ieee80211CompatibleMac extends Ieee80211Mac
         string opMode @enum("a","b","g","n","p") = default("g");
         double bitrate @unit("bps") = default(-1bps);
         double dataBitrate @unit("bps") = default(-1bps); // TODO: validation
+        double multicastBitrate @unit("bps") = default(-1bps); // TODO: validation
         double basicBitrate @unit("bps") = default(-1bps);
         double controlBitrate @unit("bps") = default(-1bps);
         double initialRateControlRate @unit("bps") = default(-1bps);
@@ -169,7 +170,7 @@ module Ieee80211CompatibleMac extends Ieee80211Mac
         modeSet = opMode; // BasicRateSelection
         *.maxQueueSize = maxQueueSize; // TODO: validation
         *.rateControlType = rateControlType;
-        *.rateSelection.multicastFrameBitrate = basicBitrate; // BasicRateSelection
+        *.rateSelection.multicastFrameBitrate = multicastBitrate; // BasicRateSelection
         *.rateSelection.dataFrameBitrate = dataBitrate; // BasicRateSelection
         *.rateSelection.mgmtFrameBitrate = basicBitrate;
         *.rateSelection.controlFrameBitrate = controlBitrate;
