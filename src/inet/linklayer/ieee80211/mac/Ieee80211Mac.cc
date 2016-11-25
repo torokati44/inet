@@ -224,7 +224,7 @@ void Ieee80211Mac::sendDownPendingRadioConfigMsg()
 
 bool Ieee80211Mac::isForUs(Ieee80211Frame *frame) const
 {
-    return frame->getReceiverAddress() == getAddress() || (frame->getReceiverAddress().isMulticast() && !isSentByUs(frame));
+    return frame->getReceiverAddress() == getAddress() || (frame->getReceiverAddress().isBroadcast() && !isSentByUs(frame));
 }
 
 bool Ieee80211Mac::isSentByUs(Ieee80211Frame *frame) const
