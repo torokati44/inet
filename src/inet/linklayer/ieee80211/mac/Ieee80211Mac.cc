@@ -229,6 +229,9 @@ bool Ieee80211Mac::isForUs(Ieee80211Frame *frame) const
 
 bool Ieee80211Mac::isSentByUs(Ieee80211Frame *frame) const
 {
+    // FIXME:
+    // Check the roles of the Addr3 field when aggregation is applied
+    // Table 8-19—Address field contents
     if (auto dataOrMgmtFrame = dynamic_cast<Ieee80211DataOrMgmtFrame *>(frame))
         return dataOrMgmtFrame->getAddress3() == getAddress();
     else
