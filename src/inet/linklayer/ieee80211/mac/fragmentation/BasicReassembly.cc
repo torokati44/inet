@@ -25,6 +25,9 @@ Register_Class(BasicReassembly);
 
 Ieee80211DataOrMgmtFrame *BasicReassembly::addFragment(Ieee80211DataOrMgmtFrame *frame)
 {
+    // Frame is not fragmented
+    if (!frame->getMoreFragments() && frame->getFragmentNumber() == 0)
+        return frame;
     // FIXME: temporary fix for mgmt frames
     if (dynamic_cast<Ieee80211ManagementFrame*>(frame))
         return frame;
