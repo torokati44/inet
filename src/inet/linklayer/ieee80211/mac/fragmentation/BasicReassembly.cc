@@ -23,6 +23,9 @@ namespace ieee80211 {
 
 Register_Class(BasicReassembly);
 
+/*
+ * FIXME: this function needs a serious review
+ */
 Ieee80211DataOrMgmtFrame *BasicReassembly::addFragment(Ieee80211DataOrMgmtFrame *frame)
 {
     // Frame is not fragmented
@@ -52,11 +55,16 @@ Ieee80211DataOrMgmtFrame *BasicReassembly::addFragment(Ieee80211DataOrMgmtFrame 
         frame->setByteLength(0);  // needed for decapsulation of larger packet
         value.frame = check_and_cast_nullable<Ieee80211DataOrMgmtFrame *>(frame->decapsulate());
     }
+    MACAddress txAddress = frame->getTransmitterAddress();
     delete frame;
 
     // if all fragments arrived, return assembled frame
     if (value.allFragments != 0 && value.allFragments == value.receivedFragments) {
         Ieee80211DataOrMgmtFrame *result = value.frame;
+        // We need to restore some data from the carrying frame's header like TX address
+        // TODO: Maybe we need to restore the fromDs, toDs fields as well when traveling through multiple APs
+        // TODO: Are there any other fields that we need to restore?
+        result->setTransmitterAddress(txAddress);
         fragmentsMap.erase(key);
         return result;
     }
