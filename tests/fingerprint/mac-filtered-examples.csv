@@ -8,7 +8,6 @@
 /examples/adhoc/qos/,                -f omnetpp.ini -c MacNonQos -r 0,              10s,             e380-3151/tplx
 /examples/adhoc/qos/,                -f omnetpp.ini -c MacNonQos -r 1,              10s,             6ab4-222a/tplx
 # /examples/adhoc/qos/,                -f omnetpp.ini -c Edca -r 0,                   100s,            0000-0000   # Edca extended
-/examples/adhoc/qos/,                -f omnetpp.ini -c oldMacQos -r 0,              10s,             cc03-66e0/tplx
 /examples/adhoc/qos/,                -f omnetpp.ini -c MacQos -r 0,                 10s,             c4ad-3e77/tplx
 /examples/adhoc/qos/,                -f omnetpp.ini -c MacQos -r 1,                 10s,             8f03-89fc/tplx
 
