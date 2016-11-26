@@ -57,9 +57,8 @@ Ieee80211DataOrMgmtFrame* OriginatorQoSMacDataService::assignSequenceNumber(Ieee
 OriginatorQoSMacDataService::Fragments* OriginatorQoSMacDataService::fragmentIfNeeded(Ieee80211DataOrMgmtFrame* frame)
 {
     auto fragmentSizes = fragmentationPolicy->computeFragmentSizes(frame);
-    if (fragmentSizes) {
+    if (fragmentSizes.size() > 1) {
         auto fragmentFrames = fragmentation->fragmentFrame(frame, fragmentSizes);
-        delete fragmentSizes;
         return fragmentFrames;
     }
     return nullptr;

@@ -23,7 +23,7 @@ namespace ieee80211 {
 
 Register_Class(Fragmentation);
 
-std::vector<Ieee80211DataOrMgmtFrame *> *Fragmentation::fragmentFrame(Ieee80211DataOrMgmtFrame *frame, std::vector<int> *fragmentSizes)
+std::vector<Ieee80211DataOrMgmtFrame *> *Fragmentation::fragmentFrame(Ieee80211DataOrMgmtFrame *frame, const std::vector<int>& fragmentSizes)
 {
     // Notes:
     // 1. only the MSDU is carried in the fragments (i.e. only frame's payload, without the 802.11 header)
@@ -35,14 +35,14 @@ std::vector<Ieee80211DataOrMgmtFrame *> *Fragmentation::fragmentFrame(Ieee80211D
     Ieee80211DataOrMgmtFrame *fragmentHeader = frame->dup();
     frame->encapsulate(payload); // restore original state
 
-    for (int i = 0; i < (int)fragmentSizes->size(); i++) {
-        bool lastFragment = i == (int)fragmentSizes->size() - 1;
+    for (int i = 0; i < (int)fragmentSizes.size(); i++) {
+        bool lastFragment = i == (int)fragmentSizes.size() - 1;
         Ieee80211DataOrMgmtFrame *fragment = fragmentHeader->dup();
         fragment->setFragmentNumber(i);
         fragment->setMoreFragments(!lastFragment);
         if (lastFragment)
             fragment->encapsulate(frame); // TODO: khm, 802.11 in 802.11, convenient but wrong
-        fragment->setByteLength(fragmentSizes->at(i));
+        fragment->setByteLength(fragmentSizes.at(i));
         fragments->push_back(fragment);
     }
     delete fragmentHeader;

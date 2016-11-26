@@ -32,7 +32,7 @@ class INET_API BasicFragmentationPolicy : public IFragmentationPolicy, public cS
         virtual void initialize() override;
 
     public:
-        virtual std::vector<int> *computeFragmentSizes(Ieee80211DataOrMgmtFrame *frame) override;
+        virtual std::vector<int> computeFragmentSizes(Ieee80211DataOrMgmtFrame *frame) override;
 };
 
 } // namespace ieee80211

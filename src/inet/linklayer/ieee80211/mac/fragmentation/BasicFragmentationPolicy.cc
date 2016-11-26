@@ -28,28 +28,27 @@ void BasicFragmentationPolicy::initialize()
     fragmentationThreshold = par("fragmentationThreshold");
 }
 
-std::vector<int> *BasicFragmentationPolicy::computeFragmentSizes(Ieee80211DataOrMgmtFrame *frame)
+std::vector<int> BasicFragmentationPolicy::computeFragmentSizes(Ieee80211DataOrMgmtFrame *frame)
 {
-    if (dynamic_cast<Ieee80211ManagementFrame*>(frame)) // FIXME: temporary fix for mgmt frames
-        return nullptr;
-    std::vector<int> *sizes = new std::vector<int>();
-    cPacket *payload = frame->decapsulate(); // FIXME: mgmt frames have no payload
-    int payloadLength = payload->getByteLength();
+    std::vector<int> sizes;
     int headerLength = frame->getByteLength();
-    frame->encapsulate(payload); // restore original state
-
+    int payloadLength = 0;
+    // Mgmt frames don't have payload
+    if (dynamic_cast<Ieee80211DataFrame*>(frame)) {
+        cPacket *payload = frame->decapsulate();
+        payloadLength = payload->getByteLength();
+        frame->encapsulate(payload); // restore original state
+    }
     int maxFragmentPayload = fragmentationThreshold - headerLength;
     if (payloadLength >= maxFragmentPayload * MAX_NUM_FRAGMENTS)
         throw cRuntimeError("Fragmentation: frame \"%s\" too large, won't fit into %d fragments", frame->getName(), MAX_NUM_FRAGMENTS);
-
     for(int i = 0; headerLength + payloadLength > fragmentationThreshold; i++) {
-        sizes->push_back(fragmentationThreshold);
+        sizes.push_back(fragmentationThreshold);
         payloadLength -= maxFragmentPayload;
     }
-    sizes->push_back(headerLength + payloadLength);
+    sizes.push_back(headerLength + payloadLength);
     return sizes;
 }
 
 } // namespace ieee80211
 } // namespace inet
-
