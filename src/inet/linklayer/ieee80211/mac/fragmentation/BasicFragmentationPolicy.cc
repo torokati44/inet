@@ -30,24 +30,27 @@ void BasicFragmentationPolicy::initialize()
 
 std::vector<int> BasicFragmentationPolicy::computeFragmentSizes(Ieee80211DataOrMgmtFrame *frame)
 {
-    std::vector<int> sizes;
-    int headerLength = frame->getByteLength();
-    int payloadLength = 0;
-    // Mgmt frames don't have payload
-    if (dynamic_cast<Ieee80211DataFrame*>(frame)) {
-        cPacket *payload = frame->decapsulate();
-        payloadLength = payload->getByteLength();
-        frame->encapsulate(payload); // restore original state
+    if (fragmentationThreshold < frame->getByteLength()) {
+        std::vector<int> sizes;
+        int headerLength = frame->getByteLength();
+        int payloadLength = 0;
+        // Mgmt frames don't have payload
+        if (dynamic_cast<Ieee80211DataFrame*>(frame)) {
+            cPacket *payload = frame->decapsulate();
+            payloadLength = payload->getByteLength();
+            frame->encapsulate(payload); // restore original state
+        }
+        int maxFragmentPayload = fragmentationThreshold - headerLength;
+        if (payloadLength >= maxFragmentPayload * MAX_NUM_FRAGMENTS)
+            throw cRuntimeError("Fragmentation: frame \"%s\" too large, won't fit into %d fragments", frame->getName(), MAX_NUM_FRAGMENTS);
+        for(int i = 0; headerLength + payloadLength > fragmentationThreshold; i++) {
+            sizes.push_back(fragmentationThreshold);
+            payloadLength -= maxFragmentPayload;
+        }
+        sizes.push_back(headerLength + payloadLength);
+        return sizes;
     }
-    int maxFragmentPayload = fragmentationThreshold - headerLength;
-    if (payloadLength >= maxFragmentPayload * MAX_NUM_FRAGMENTS)
-        throw cRuntimeError("Fragmentation: frame \"%s\" too large, won't fit into %d fragments", frame->getName(), MAX_NUM_FRAGMENTS);
-    for(int i = 0; headerLength + payloadLength > fragmentationThreshold; i++) {
-        sizes.push_back(fragmentationThreshold);
-        payloadLength -= maxFragmentPayload;
-    }
-    sizes.push_back(headerLength + payloadLength);
-    return sizes;
+    return std::vector<int>();
 }
 
 } // namespace ieee80211
