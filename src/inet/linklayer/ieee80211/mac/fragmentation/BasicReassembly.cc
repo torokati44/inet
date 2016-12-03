@@ -64,6 +64,7 @@ Ieee80211DataOrMgmtFrame *BasicReassembly::addFragment(Ieee80211DataOrMgmtFrame 
         // We need to restore some data from the carrying frame's header like TX address
         // TODO: Maybe we need to restore the fromDs, toDs fields as well when traveling through multiple APs
         // TODO: Are there any other fields that we need to restore?
+        // TODO: SET TX ADDR WHEN THE FRAME ARRIVES FROM UPPER LAYER
         result->setTransmitterAddress(txAddress);
         fragmentsMap.erase(key);
         return result;
