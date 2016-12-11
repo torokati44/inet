@@ -80,7 +80,7 @@ void Rx::lowerFrameReceived(Ieee80211Frame *frame)
         delete frame;
         for (int i = 0; contention[i]; i++)
             contention[i]->corruptedFrameReceived();
-        upperMac->corruptedFrameReceived();
+        // upperMac->corruptedFrameReceived(); FIXME: A corrupted frame should not cause frame exchange abort
         statistics->erroneousFrameReceived();
     }
 }
