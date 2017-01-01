@@ -45,7 +45,7 @@ module Hcf
         int numEdcafs = default(4);
         int maxQueueSize = default(100); // -1 means unlimited
         string rateControlType = default("");
-        bool isBlockAckSupported = default(true);
+        bool isBlockAckSupported = default(false);
 
         string rxModule;
         string txModule;

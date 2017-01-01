@@ -94,7 +94,7 @@ module Ieee80211Mac extends MACProtocolBase like IIeee80211Mac
                                           // a generated MAC address in init stage 0.
         string modeSet @enum("a","b","g","n","p") = default("g");
 
-        bool qosStation = default(true);
+        bool qosStation = default(false);
 
         *.rxModule = "^.rx";
         *.txModule = "^.tx";
