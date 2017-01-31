@@ -1,3 +1,6 @@
+# adjust this as necessary
+EXTRA_OBJS += ../../smoltcp_c/target/debug/libsmoltcp_c.a
+
 #
 # on windows we have to link with the winsock library as it is no longer added 
 # to the oomnetpp system libraries by default
