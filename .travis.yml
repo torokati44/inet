@@ -1,0 +1,15 @@
+sudo: required
+
+language: generic
+
+services:
+  - docker
+
+env:
+  - DISTCC_HOSTS="" DISTCC_LOG="/dev/null"
+
+before_install:
+  - docker pull torokati44/worker-fingerprints
+
+script:
+  - docker run -ti --env DISTCC_HOSTS --env DISTCC_LOG --env TRAVIS_COMMIT --entrypoint /bin/sh torokati44/worker-fingerprints -c "cd /opt/inet && git fetch --all && git reset --hard $TRAVIS_COMMIT && make makefiles && make MODE=release && cd tests/fingerprint && ./runDefaultTests.sh -e opp_run_release"
