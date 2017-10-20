@@ -4,7 +4,8 @@ set -e
 
 # This script runs the jobs on Travis.
 # The following environment variables should be set to select which job to run:
-#    TODO
+#    OPP_PATH, MODE, RUN_FINGERPRINT_TESTS, TRAVIS_REPO_SLUG
+#    - TODO docs
 
 
 export PATH="$OPP_PATH:$PATH"
