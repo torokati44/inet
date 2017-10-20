@@ -6,21 +6,21 @@ services:
   - docker
 
 before_install:
-  - docker pull torokati44/omnetpp-core-triplatform
+  - docker pull omnetpp/omnetpp-core-triplatform
 
 # can't really do it with a matrix because of the constraint that fingerprint tests can only be ran on linux
 env:
-  - OPP_PATH=/root/omnetpp-5.2-linux/bin   RUN_FINGERPRINT_TESTS=yes MODE=release
-  - OPP_PATH=/root/omnetpp-5.2-linux/bin   RUN_FINGERPRINT_TESTS=no  MODE=release
-  - OPP_PATH=/root/omnetpp-5.2-windows/bin RUN_FINGERPRINT_TESTS=no  MODE=release
-  - OPP_PATH=/root/omnetpp-5.2-macosx/bin  RUN_FINGERPRINT_TESTS=no  MODE=release
+  - MODE=release TARGET_PLATFORM=linux   RUN_FINGERPRINT_TESTS=yes
+  - MODE=release TARGET_PLATFORM=linux   RUN_FINGERPRINT_TESTS=no
+  - MODE=release TARGET_PLATFORM=windows RUN_FINGERPRINT_TESTS=no
+  - MODE=release TARGET_PLATFORM=macosx  RUN_FINGERPRINT_TESTS=no
 
-  - OPP_PATH=/root/omnetpp-5.2-linux/bin   RUN_FINGERPRINT_TESTS=yes MODE=debug
-  - OPP_PATH=/root/omnetpp-5.2-linux/bin   RUN_FINGERPRINT_TESTS=no  MODE=debug
-  - OPP_PATH=/root/omnetpp-5.2-windows/bin RUN_FINGERPRINT_TESTS=no  MODE=debug
-  - OPP_PATH=/root/omnetpp-5.2-macosx/bin  RUN_FINGERPRINT_TESTS=no  MODE=debug
+  - MODE=debug   TARGET_PLATFORM=linux   RUN_FINGERPRINT_TESTS=yes
+  - MODE=debug   TARGET_PLATFORM=linux   RUN_FINGERPRINT_TESTS=no
+  - MODE=debug   TARGET_PLATFORM=windows RUN_FINGERPRINT_TESTS=no
+  - MODE=debug   TARGET_PLATFORM=macosx  RUN_FINGERPRINT_TESTS=no
 
 script:
-  - docker run -ti --env TRAVIS_REPO_SLUG --env OPP_PATH --env RUN_FINGERPRINT_TESTS --env MODE
+  - docker run -ti --env TRAVIS_REPO_SLUG --env TARGET_PLATFORM --env RUN_FINGERPRINT_TESTS --env MODE
       -v /home/travis/build/$TRAVIS_REPO_SLUG:/$TRAVIS_REPO_SLUG
-      torokati44/omnetpp-core-triplatform /bin/bash /root/travis-runner.sh
+      omnetpp/omnetpp-core-triplatform /bin/bash /root/travis-runner.sh
