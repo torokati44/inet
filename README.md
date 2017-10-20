@@ -1,10 +1,12 @@
 INET Framework for OMNEST/OMNeT++
 =================================
 
-[![Build Status of master](https://travis-ci.org/inet-framework/inet.svg?branch=master)
-](https://travis-ci.org/inet-framework/inet/branches "master branch")
-[![Build Status of integration](https://travis-ci.org/inet-framework/inet.svg?branch=integration)
-](https://travis-ci.org/inet-framework/inet/branches "integration branch")
+[![Build Status of master](
+    https://travis-ci.org/inet-framework/inet.svg?branch=master)](
+    https://travis-ci.org/inet-framework/inet "master branch")
+[![Build Status of integration](
+    https://travis-ci.org/inet-framework/inet.svg?branch=integration)](
+    https://travis-ci.org/inet-framework/inet "integration branch")
 
 The [INET framework](inet.omnetpp.org) is an open-source communication networks
 simulation package, written for the OMNEST/OMNeT++ simulation system. The INET
