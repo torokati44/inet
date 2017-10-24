@@ -20,7 +20,11 @@ env:
   - MODE=debug   TARGET_PLATFORM=windows RUN_FINGERPRINT_TESTS=no
   - MODE=debug   TARGET_PLATFORM=macosx  RUN_FINGERPRINT_TESTS=no
 
+cache:
+  directories:
+    - $HOME/docker_ccache
+
 script:
   - docker run -ti --env TRAVIS_REPO_SLUG --env TARGET_PLATFORM --env RUN_FINGERPRINT_TESTS --env MODE
-      -v /home/travis/build/$TRAVIS_REPO_SLUG:/$TRAVIS_REPO_SLUG
+      -v /home/travis/build/$TRAVIS_REPO_SLUG:/$TRAVIS_REPO_SLUG -v $HOME/docker_ccache:/root/.ccache
       omnetpp/omnetpp-core-triplatform /bin/bash /root/travis-runner.sh
