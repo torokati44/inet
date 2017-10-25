@@ -10,21 +10,29 @@ before_install:
 
 # can't really do it with a matrix because of the constraint that fingerprint tests can only be ran on linux
 env:
-  - MODE=release TARGET_PLATFORM=linux   RUN_FINGERPRINT_TESTS=yes
+
+  # simple build tests
   - MODE=release TARGET_PLATFORM=linux   RUN_FINGERPRINT_TESTS=no
+  - MODE=debug   TARGET_PLATFORM=linux   RUN_FINGERPRINT_TESTS=no
+
+  # fingerprint tests, doing the release ones in one go, as these run fast
+  - MODE=release TARGET_PLATFORM=linux   RUN_FINGERPRINT_TESTS=yes
+  # and the debug mode tests need to be broken into a couple chunks of similar size, to avoid the 50min timeout
+  - MODE=debug   TARGET_PLATFORM=linux   RUN_FINGERPRINT_TESTS=yes EXTRA_TEST_ARGS="-m wireless" # only the wireless tests
+  - MODE=debug   TARGET_PLATFORM=linux   RUN_FINGERPRINT_TESTS=yes EXTRA_TEST_ARGS="-m inet -m ethernet" # only a different group of tests
+  - MODE=debug   TARGET_PLATFORM=linux   RUN_FINGERPRINT_TESTS=yes EXTRA_TEST_ARGS="-x wireless -x inet -x ethernet" # all the rest
+
+  # cross-compilation tests, but only on release mode (to exercise the optimizers of the cross-compilers)
   - MODE=release TARGET_PLATFORM=windows RUN_FINGERPRINT_TESTS=no
   - MODE=release TARGET_PLATFORM=macosx  RUN_FINGERPRINT_TESTS=no
-
-  - MODE=debug   TARGET_PLATFORM=linux   RUN_FINGERPRINT_TESTS=yes
-  - MODE=debug   TARGET_PLATFORM=linux   RUN_FINGERPRINT_TESTS=no
-  - MODE=debug   TARGET_PLATFORM=windows RUN_FINGERPRINT_TESTS=no
-  - MODE=debug   TARGET_PLATFORM=macosx  RUN_FINGERPRINT_TESTS=no
+  # - MODE=debug   TARGET_PLATFORM=windows RUN_FINGERPRINT_TESTS=no
+  # - MODE=debug   TARGET_PLATFORM=macosx  RUN_FINGERPRINT_TESTS=no
 
 cache:
   directories:
     - $HOME/docker_ccache
 
 script:
-  - docker run -ti --env TRAVIS_REPO_SLUG --env TARGET_PLATFORM --env RUN_FINGERPRINT_TESTS --env MODE
+  - docker run -ti --env TRAVIS_REPO_SLUG --env TARGET_PLATFORM --env RUN_FINGERPRINT_TESTS --env MODE --env EXTRA_TEST_ARGS
       -v /home/travis/build/$TRAVIS_REPO_SLUG:/$TRAVIS_REPO_SLUG -v $HOME/docker_ccache:/root/.ccache
       torokati44/omnetpp-core-triplatform /bin/bash /root/travis-runner.sh

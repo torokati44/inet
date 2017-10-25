@@ -30,8 +30,7 @@ WORKDIR omnetpp-5.2-linux
 # We have to echo into configure.user because assignments with spaces in the value can't be passed as command line
 # arguments becauseof a bug in configure.in, and the environment variables are overridden by configure.user.
 RUN echo "CFLAGS_RELEASE='-O3 -DNDEBUG=1 -D_XOPEN_SOURCE'" >> configure.user
-# Adding O1 because without it, the INET fingerprint tests timed out on travis on a debug build, and we don't actually want to debug.
-RUN echo "CFLAGS_DEBUG='-O1 -ggdb -Wall -Wextra -Wno-unused-parameter'" >> configure.user
+RUN echo "CFLAGS_DEBUG='-ggdb -Wall -Wextra -Wno-unused-parameter'" >> configure.user
 
 ENV PATH /root/omnetpp-5.2-linux/bin:$PATH
 RUN ./configure WITH_TKENV=no WITH_QTENV=no WITH_OSG=no WITH_OSGEARTH=no
@@ -47,8 +46,7 @@ WORKDIR /root/omnetpp-5.2-macosx
 # We have to echo into configure.user because assignments with spaces in the value can't be passed as command line
 # arguments becauseof a bug in configure.in, and the environment variables are overridden by configure.user.
 RUN echo "CFLAGS_RELEASE='-O3 -DNDEBUG=1 -D_XOPEN_SOURCE'" >> configure.user
-# Adding O1 because without it, the INET fingerprint tests timed out on travis on a debug build, and we don't actually want to debug.
-RUN echo "CFLAGS_DEBUG='-O1 -ggdb -Wall -Wextra -Wno-unused-parameter'" >> configure.user
+RUN echo "CFLAGS_DEBUG='-ggdb -Wall -Wextra -Wno-unused-parameter'" >> configure.user
 
 ENV PATH /root/omnetpp-5.2-macosx/bin:$PATH
 # yes, msgc is nedtool too, and we have to use that because it redirects using $PATH, so it would pick up the macosx one
@@ -69,8 +67,7 @@ WORKDIR /root/omnetpp-5.2-windows
 # We have to echo into configure.user because assignments with spaces in the value can't be passed as command line
 # arguments becauseof a bug in configure.in, and the environment variables are overridden by configure.user.
 RUN echo "CFLAGS_RELEASE='-O3 -DNDEBUG=1'" >> configure.user
-# Adding O1 because without it, the INET fingerprint tests timed out on travis on a debug build, and we don't actually want to debug.
-RUN echo "CFLAGS_DEBUG='-O1 -ggdb -Wall -Wextra -Wno-unused-parameter'" >> configure.user
+RUN echo "CFLAGS_DEBUG='-ggdb -Wall -Wextra -Wno-unused-parameter'" >> configure.user
 
 ENV PATH /root/omnetpp-5.2-windows/bin:$PATH
 # yes, msgc is nedtool too, and we have to use that because it redirects using $PATH, so it would pick up the macosx one
