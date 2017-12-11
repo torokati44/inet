@@ -2,7 +2,7 @@
 // author: Thomas Reschka
 //
 
-package inet.examples.inet.ber;
+package inet.examples.inet.ber2;
 
 import inet.networklayer.configurator.ipv4.IPv4NetworkConfigurator;
 import inet.node.inet.StandardHost;
