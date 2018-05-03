@@ -2,11 +2,6 @@ sudo: required
 
 language: generic
 
-notifications:
-  email:
-    recipients:
-      - inet@omnetpp.org
-
 services:
   - docker
 
@@ -105,6 +100,18 @@ jobs:
       env: TARGET_PLATFORM=linux MODE=debug
     - script:
         - export STAGE=fingerprints INNER_ARGS="-x tutorials -x showcases -x examples/inet -x examples/wireless -x examples/voipstream -x ethernet -m v" # not env, so it doesn't affect the cache key
+        - *DOCKER_COMMAND
+      env: TARGET_PLATFORM=linux MODE=debug
+
+    - stage: moduletests
+      script:
+        - export STAGE=moduletests INNER_ARGS="" # not env, so it doesn't affect the cache key
+        - *DOCKER_COMMAND
+      env: TARGET_PLATFORM=linux MODE=debug
+
+    - stage: unittests
+      script:
+        - export STAGE=unittests INNER_ARGS="" # not env, so it doesn't affect the cache key
         - *DOCKER_COMMAND
       env: TARGET_PLATFORM=linux MODE=debug
 
