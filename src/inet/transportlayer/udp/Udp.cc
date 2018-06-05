@@ -1293,7 +1293,7 @@ void Udp::insertCrc(const Protocol *networkProtocol, const L3Address& srcAddress
 
 bool Udp::verifyCrc(const Protocol *networkProtocol, const Ptr<const UdpHeader>& udpHeader, Packet *packet)
 {
-    switch (udpHeader->getCrcMode()) {
+    switch (CRC_DECLARED_CORRECT) {
         case CRC_DISABLED:
             // if the CRC mode is disabled, then the check passes if the CRC is 0
             return udpHeader->getCrc() == 0x0000;
