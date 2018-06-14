@@ -51,7 +51,6 @@ echo -e "\nBuild finished, starting module tests..."
 cd tests/module
 if [ "$MODE" = "debug" ]; then
     ./runtest
-else
-    # TODO
+    # TODO else
     #./fingerprints -e opp_run_release "$@"
 fi
