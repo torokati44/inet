@@ -24,6 +24,45 @@
 
 #include <iostream>
 
+
+
+
+#include <fcntl.h>
+#include <errno.h>
+#include <string.h>
+#include <sys/wait.h>
+
+
+#define handle_error(msg) do { perror(msg); exit(EXIT_FAILURE); } while(0)
+
+
+static
+int * recv_fd(int socket, int n) {
+        int *fds = (int*)malloc (n * sizeof(int));
+        struct msghdr msg = {0};
+        struct cmsghdr *cmsg;
+        char buf[CMSG_SPACE(n * sizeof(int))], dup[256];
+        memset(buf, '\0', sizeof(buf));
+        struct iovec io = { .iov_base = &dup, .iov_len = sizeof(dup) };
+
+        msg.msg_iov = &io;
+        msg.msg_iovlen = 1;
+        msg.msg_control = buf;
+        msg.msg_controllen = sizeof(buf);
+
+        if (recvmsg (socket, &msg, 0) < 0)
+                handle_error ("Failed to receive message");
+
+        cmsg = CMSG_FIRSTHDR(&msg);
+
+        memcpy (fds, (int *) CMSG_DATA(cmsg), n * sizeof(int));
+
+        return fds;
+}
+
+
+
+
 #define NAME "/tmp/opp-sock"
 
 namespace inet {
@@ -59,12 +98,12 @@ void ExtTimeSync::initialize()
         // throw?
     }
 
-   scheduleAt(simTime() + 1, new cMessage("tick"));
+   scheduleAt(simTime(), new cMessage("tick"));
 }
 
 void ExtTimeSync::handleMessage(cMessage *msg)
 {
-    scheduleAt(simTime() + 1, msg);
+    scheduleAt(simTime() + 0.1, msg);
 }
 
 
@@ -72,15 +111,23 @@ bool ExtTimeSync::notify(int fd)
 {
     if (msgsock == fd) {
         int rval;
-        char buf[1024];
-        if ((rval = read(fd, buf, 1024)) < 0)
+        int opcode;
+        if ((rval = read(fd, &opcode, 4)) < 0)
             perror("reading stream message");
         else if (rval == 0) {
             printf("Ending connection\n");
             rtScheduler->removeCallback(msgsock, this);
         } else {
-            buf[50] = 0;
-            printf("-->%s\n", buf);
+            EV_INFO << "Read opcode: " << opcode << std::endl;
+
+            int64 secs = simTime().inUnit(SimTimeUnit::SIMTIME_S);
+            int64 usecs = simTime().inUnit(SimTimeUnit::SIMTIME_US) % 1000000;
+
+            ::send(fd, &secs, 8, MSG_EOR);
+            ::send(fd, &usecs, 8, MSG_EOR);
+
+            //buf[50] = 0;
+            //printf("-->%s\n", buf);
         }
 
         return true;
