@@ -112,6 +112,11 @@ jobs:
         - *DOCKER_COMMAND
       env: TARGET_PLATFORM=linux MODE=debug
 
+    - stage: unittests
+      script:
+        - export STAGE=unittests INNER_ARGS="" # not env, so it doesn't affect the cache key
+        - *DOCKER_COMMAND
+      env: TARGET_PLATFORM=linux MODE=debug
 
     - stage: coverage
       script:
