@@ -95,7 +95,9 @@ void TcpLwipConnection::initConnection(TcpLwipConnection& connP, int connIdP, Lw
 
 TcpLwipConnection::~TcpLwipConnection()
 {
+#if OMNETPP_BUILDNUM < 1505   //OMNETPP_VERSION < 0x0600    // 6.0 pre9
     ASSERT(!pcbM);
+#endif
     delete receiveQueueM;
     delete sendQueueM;
 }
