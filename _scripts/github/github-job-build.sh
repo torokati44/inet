@@ -52,8 +52,8 @@ fi
 echo "::group::Make Makefiles"
 make makefiles
 echo "::endgroup::"
-
-sed -i -e 's/-fuse-ld=lld/-Wl,--no-keep-memory -Wl,--reduce-memory-overheads/g' /root/omnetpp-6.0pre10-windows/Makefile.inc
+# -Wl,--reduce-memory-overheads
+sed -i -e 's/-fuse-ld=lld/-Wl,--no-keep-memory/g' /root/omnetpp-6.0pre10-windows/Makefile.inc
 
 echo "::group::Build"
 # This is a magical "process substitution" for piping stderr into tee...
