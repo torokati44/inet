@@ -53,6 +53,7 @@ echo "::group::Make Makefiles"
 make makefiles
 echo "::endgroup::"
 
+sed -i -e 's/-fuse-ld=lld//g' /root/omnetpp-6.0pre10-windows/Makefile.inc
 
 echo "::group::Build"
 # This is a magical "process substitution" for piping stderr into tee...
