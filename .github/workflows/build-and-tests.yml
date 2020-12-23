@@ -10,7 +10,30 @@ on:
     # nothing
 
 jobs:
+
+  check-for-redundancy:
+    name: Check for redundancy
+    runs-on: ubuntu-latest
+    outputs:
+      skip-this-run: ${{ env.SKIP_THIS_RUN }}
+    steps:
+      - name: Redundancy check
+        run: |
+          :
+          if [ "${{ github.event_name }}" == "repository_dispatch" ]; then
+             echo "Skipping redundancy check: workflow was triggered manually"
+          else
+            CHECK_RUNS_TOTAL_COUNT=$(curl -s "https://api.github.com/repos/$GITHUB_REPOSITORY/commits/$GITHUB_SHA/check-runs?status=completed" | jq ".total_count")
+            if [ $CHECK_RUNS_TOTAL_COUNT -gt 0 ]; then
+              echo "This run would be redundant"
+              echo "SKIP_THIS_RUN=true" >> $GITHUB_ENV
+            fi
+          fi
+        shell: bash
+
   build-native:
+    needs: check-for-redundancy
+    if: needs.check-for-redundancy.outputs.skip-this-run != 'true'
     runs-on: ubuntu-latest
     strategy:
       matrix:
@@ -31,6 +54,8 @@ jobs:
           path: ${{ github.workspace }}/src/libINET*.so
 
   build-cross:
+    needs: check-for-redundancy
+    if: needs.check-for-redundancy.outputs.skip-this-run != 'true'
     runs-on: ubuntu-latest
     strategy:
       matrix:
