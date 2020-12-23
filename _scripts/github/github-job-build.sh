@@ -53,6 +53,9 @@ echo "::group::Make Makefiles"
 make makefiles
 echo "::endgroup::"
 
+# -Wl,--reduce-memory-overheads
+sed -i -e 's/-fuse-ld=lld/-Wl,--no-keep-memory/g' /root/omnetpp-6.0pre10-windows/Makefile.inc
+
 if [ "$TARGET_PLATFORM" = "windows" ]; then
     # This is here to stop make from invoking the final .dll linker twice, seeing that
     # both the .dll and the import lib for it (.dll.a) are targets, that have to be
