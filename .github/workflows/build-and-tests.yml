@@ -17,6 +17,7 @@ jobs:
       - uses: fkirc/skip-duplicate-actions@master
         with:
           do_not_skip: '[]' # have to remove "schedule" from the default
+          concurrent_skipping: 'outdated_runs'
 
   build-native:
     needs: skip-duplicates
