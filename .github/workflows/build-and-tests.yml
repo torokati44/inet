@@ -12,7 +12,7 @@ on:
 jobs:
 
   skip-duplicates:
-    name: Skip duplicates
+    runs-on: ubuntu-latest
     steps:
       - uses: fkirc/skip-duplicate-actions@master
         with:
