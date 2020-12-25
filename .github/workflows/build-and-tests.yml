@@ -16,7 +16,7 @@ jobs:
     steps:
       - uses: fkirc/skip-duplicate-actions@master
         with:
-          do_not_skip: '["workflow_dispatch"]' # have to remove "schedule" from the default
+          do_not_skip: '[]' # have to remove "schedule" from the default
 
   build-native:
     needs: skip-duplicates
