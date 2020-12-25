@@ -9,18 +9,24 @@ on:
   workflow_dispatch:
     # nothing
 
-jobs:
 
-  skip-duplicates:
+
+jobs:
+  cancel-duplicate-workflow-runs:
+    name: "Cancel duplicate workflow runs"
     runs-on: ubuntu-latest
     steps:
-      - uses: fkirc/skip-duplicate-actions@master
+      - uses: potiuk/cancel-workflow-runs@master
+        name: "Cancel duplicate workflow runs"
         with:
-          do_not_skip: '[]' # have to remove "schedule" from the default
-          concurrent_skipping: 'outdated_runs'
+          cancelMode: allDuplicates
+          token: ${{ secrets.GITHUB_TOKEN }}
+          sourceRunId: ${{ github.event.workflow_run.id }}
+          selfPreservation: false
+          notifyPRCancel: true
 
   build-native:
-    needs: skip-duplicates
+    needs: cancel-duplicate-workflow-runs
     runs-on: ubuntu-latest
     strategy:
       matrix:
@@ -41,7 +47,7 @@ jobs:
           path: ${{ github.workspace }}/src/libINET*.so
 
   build-cross:
-    needs: skip-duplicates
+    needs: cancel-duplicate-workflow-runs
     runs-on: ubuntu-latest
     strategy:
       matrix:
