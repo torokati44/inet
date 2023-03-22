@@ -22,7 +22,7 @@ apt install -y python3-pip
 echo "::endgroup::"
 
 echo "::group::Installing Python packages"
-python3 -m pip install matplotlib pandas scipy ipython sewar dask
+python3 -m pip install matplotlib numpy pandas scipy ipython cppyy sewar dask distributed IPython sqlalchemy optimparallel
 echo "::endgroup::"
 
 mkdir /root/workspace
