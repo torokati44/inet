@@ -26,8 +26,8 @@ echo "::endgroup::"
 mkdir /root/workspace
 export WORKSPACE_ROOT=/root/workspace
 
-ln -s /root/omnetpp-6.0.1-linux /root/workspace/omnetpp
-ln -s $GITHUB_WORKSPACE /root/workspace/inet
+mv /root/omnetpp-6.0.1-linux /root/workspace/omnetpp
+mv $GITHUB_WORKSPACE /root/workspace/inet
 
 # TEST
 . /root/workspace/omnetpp/setenv -f
