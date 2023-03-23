@@ -14,8 +14,6 @@ set -e # make the script exit with error if any executed command exits with erro
 # this is where the cloned INET repo is mounted into the container
 cd $GITHUB_WORKSPACE
 
-# TEST
-. /root/omnetpp-6.0.1-linux/setenv -f
 
 echo "::group::Installing pip"
 apt install -y python3-pip
@@ -30,6 +28,9 @@ export WORKSPACE_ROOT=/root/workspace
 
 ln -s /root/omnetpp-6.0.1-linux /root/workspace/omnetpp
 ln -s $GITHUB_WORKSPACE /root/workspace/inet
+
+# TEST
+. /root/workspace/omnetpp/setenv -f
 
 cd /root/workspace/inet
 
