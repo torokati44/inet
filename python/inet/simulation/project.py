@@ -53,7 +53,10 @@ class SimulationProject:
         return self.get_multiple_args(option, map(self.get_full_path, paths))
 
     def get_default_args(self):
-        return [*self.get_full_path_args("-l", self.libraries), *self.get_full_path_args("-n", self.ned_folders), *self.get_multiple_args("-x", self.ned_exclusions), *self.get_full_path_args("--image-path", self.image_folders)]
+        ret = [*self.get_full_path_args("-l", self.libraries), *self.get_full_path_args("-n", self.ned_folders), *self.get_multiple_args("-x", self.ned_exclusions), *self.get_full_path_args("--image-path", self.image_folders)]
+        print("default args:")
+        print(ret)
+        return ret
 
     def collect_binary_simulation_distribution_file_names(self):
         file_names = []
