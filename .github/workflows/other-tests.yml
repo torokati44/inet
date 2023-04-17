@@ -11,7 +11,7 @@ on:
 jobs:
   activity-check:
     name: Activity check
-    runs-on: ubuntu-latest
+    runs-on: self-hosted
     outputs:
       is_active: ${{ steps.activity.outputs.is_active }}
 
@@ -32,7 +32,7 @@ jobs:
 
   other-tests:
     needs: activity-check
-    runs-on: ubuntu-latest
+    runs-on: self-hosted
     strategy:
       matrix:
         # TODO: add debug/release mode when the runtest scripts can switch between

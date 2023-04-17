@@ -9,7 +9,7 @@ on:
 
 jobs:
   feature-tests:
-    runs-on: ubuntu-latest
+    runs-on: self-hosted
     strategy:
       matrix:
         # we could go all the way up to 20 even
