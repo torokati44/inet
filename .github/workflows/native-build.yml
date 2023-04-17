@@ -44,7 +44,7 @@ jobs:
           sudo apt-get install -y --no-install-recommends git wget curl ca-certificates \
             make ccache clang lld gdb bison flex perl doxygen graphviz libxml2-dev zlib1g-dev \
             libavcodec-dev libavformat-dev libavutil-dev libswresample-dev libz3-dev \
-            libopenscenegraph-dev python3
+            libopenscenegraph-dev python3 libpython3-dev
           echo "::endgroup::"
 
           source $GITHUB_WORKSPACE/inet/_scripts/github/build-omnetpp.sh
