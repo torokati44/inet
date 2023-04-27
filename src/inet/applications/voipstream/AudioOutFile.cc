@@ -71,7 +71,7 @@ void AudioOutFile::open(const char *resultFile, int sampleRate, short int sample
         p->codec_type = AVMEDIA_TYPE_AUDIO;
         p->bit_rate = sampleRate * sampleBits;
         p->sample_rate = sampleRate;
-        p->channels = 1;
+        p->ch_layout = AV_CHANNEL_LAYOUT_MONO;
     }
 
     av_dump_format(oc, 0, resultFile, 1);
@@ -124,16 +124,18 @@ void AudioOutFile::write(void *decBuf, int pktBytes)
 
     AVFrame *frame = av_frame_alloc();
     frame->nb_samples = samples;
-    frame->channel_layout = AV_CH_LAYOUT_MONO;
+//    frame->channel_layout = AV_CH_LAYOUT_MONO;
     frame->sample_rate = codecCtx->sample_rate;
-    frame->channels = codecCtx->channels;
+//    frame->channels = codecCtx->channels;
+    frame->ch_layout = codecCtx->ch_layout;
+    frame->ch_layout.u.mask = AV_CH_LAYOUT_MONO;
     frame->format = codecCtx->sample_fmt;
     int err = avcodec_fill_audio_frame(frame, /*channels*/ 1, codecCtx->sample_fmt, (const uint8_t *)(decBuf), pktBytes, 1);
     if (err < 0)
         throw cRuntimeError("Error in avcodec_fill_audio_frame(): err=%d", err);
 
     // The bitsPerOutSample is not 0 when codec is PCM.
-    frame->channels = codecCtx->channels;
+//    frame->channels = codecCtx->channels;
     frame->format = codecCtx->sample_fmt;
     err = avcodec_send_frame(codecCtx, frame);
     if (err < 0)

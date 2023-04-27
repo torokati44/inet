@@ -240,7 +240,7 @@ void VoipStreamSender::openSoundFile(const char *name)
     // set bitrate:
     pEncoderCtx->bit_rate = compressedBitRate;
     pEncoderCtx->sample_rate = sampleRate;
-    pEncoderCtx->channels = 1;
+    pEncoderCtx->ch_layout = AV_CHANNEL_LAYOUT_MONO;
 
     pCodecEncoder = avcodec_find_encoder_by_name(codec);
     if (!pCodecEncoder)
@@ -253,7 +253,7 @@ void VoipStreamSender::openSoundFile(const char *name)
 
     if (pCodecCtx->sample_rate == sampleRate
         && pCodecCtx->sample_fmt == pEncoderCtx->sample_fmt
-        && pCodecCtx->channels == 1)
+        && pCodecCtx->ch_layout.nb_channels == 1)
     {
         pReSampleCtx = nullptr;
     }
@@ -262,8 +262,11 @@ void VoipStreamSender::openSoundFile(const char *name)
         if (!pReSampleCtx)
             throw cRuntimeError("error in av_audio_resample_init()");
 
-        int inChannelLayout = pCodecCtx->channel_layout == 0 ? av_get_default_channel_layout(pCodecCtx->channels) : pCodecCtx->channel_layout;
-        if (av_opt_set_int(pReSampleCtx, "in_channel_layout", inChannelLayout, 0))
+        AVChannelLayout inChannelLayout = pCodecCtx->ch_layout;
+        if (inChannelLayout.u.mask == 0)
+            av_channel_layout_default(&inChannelLayout, pCodecCtx->ch_layout.nb_channels);
+        ASSERT(inChannelLayout.u.mask != 0);
+        if (av_opt_set_int(pReSampleCtx, "in_channel_layout", inChannelLayout.u.mask, 0))
             throw cRuntimeError("error in option setting of 'in_channel_layout'");
         if (av_opt_set_int(pReSampleCtx, "in_sample_fmt", pCodecCtx->sample_fmt, 0))
             throw cRuntimeError("error in option setting of 'in_sample_fmt'");
@@ -308,11 +311,11 @@ Packet *VoipStreamSender::generatePacket()
     AVPacket *opacket = av_packet_alloc();
     AVFrame *frame = av_frame_alloc();
     frame->nb_samples = samples;
-    frame->channel_layout = AV_CH_LAYOUT_MONO;
     frame->sample_rate = pEncoderCtx->sample_rate;
-    frame->channels = pEncoderCtx->channels;
+    // frame->ch_layout = AV_CHANNEL_LAYOUT_MONO;
+    frame->ch_layout = pEncoderCtx->ch_layout;
     frame->format = pEncoderCtx->sample_fmt;
-    int err = avcodec_fill_audio_frame(frame, pEncoderCtx->channels, pEncoderCtx->sample_fmt, (const uint8_t *)(sampleBuffer.readPtr()), inBytes, 1);
+    int err = avcodec_fill_audio_frame(frame, pEncoderCtx->ch_layout.nb_channels, pEncoderCtx->sample_fmt, (const uint8_t *)(sampleBuffer.readPtr()), inBytes, 1);
     if (err < 0)
         throw cRuntimeError("Error in avcodec_fill_audio_frame(): err=%d", err);
     err = avcodec_send_frame(pEncoderCtx, frame);
