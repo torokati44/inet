@@ -112,7 +112,7 @@ void AudioOutFile::open(const char *resultFile, int sampleRate, short int sample
     // write the stream header
     err = avformat_write_header(oc, nullptr);
     if (err < 0)
-        throw cRuntimeError("Could not write header to '%s', error=%d", resultFile, err);
+        throw cRuntimeError("Could not write header to '%s', error=(%d) %s", resultFile, err, av_err2str(err));
 }
 
 void AudioOutFile::write(void *decBuf, int pktBytes)
@@ -132,28 +132,28 @@ void AudioOutFile::write(void *decBuf, int pktBytes)
     frame->format = codecCtx->sample_fmt;
     int err = avcodec_fill_audio_frame(frame, /*channels*/ 1, codecCtx->sample_fmt, (const uint8_t *)(decBuf), pktBytes, 1);
     if (err < 0)
-        throw cRuntimeError("Error in avcodec_fill_audio_frame(): err=%d", err);
+        throw cRuntimeError("Error in avcodec_fill_audio_frame(): error (%d) %s", err, av_err2str(err));
 
     // The bitsPerOutSample is not 0 when codec is PCM.
 //    frame->channels = codecCtx->channels;
     frame->format = codecCtx->sample_fmt;
     err = avcodec_send_frame(codecCtx, frame);
     if (err < 0)
-        throw cRuntimeError("avcodec_send_frame() error: %d", err);
+        throw cRuntimeError("avcodec_send_frame() error: (%d) %s", err, av_err2str(err));
     AVPacket *pkt = av_packet_alloc();
     while(true) {
         err = avcodec_receive_packet(codecCtx, pkt);
         if (err == AVERROR(EAGAIN) || err == AVERROR_EOF)
             break;
         else if (err < 0)
-            throw cRuntimeError("avcodec_receive_packet() error: %d", err);
+            throw cRuntimeError("avcodec_receive_packet() error: (%d) %s", err, av_err2str(err));
 
         pkt->dts = 0; // HACK for libav 11
 
         // write the compressed frame into the media file
         err = av_interleaved_write_frame(oc, pkt);
         if (err != 0)
-            throw cRuntimeError("Error while writing audio frame: %d", err);
+            throw cRuntimeError("Error while writing audio frame: (%d) %s", err, av_err2str(err));
     }
     av_packet_free(&pkt);
     av_frame_free(&frame);
@@ -166,21 +166,21 @@ bool AudioOutFile::close()
 
     int err = avcodec_send_frame(codecCtx, nullptr);
     if (err < 0)
-        throw cRuntimeError("avcodec_send_frame() error: %d", err);
+        throw cRuntimeError("avcodec_send_frame() error: (%d) %s", err, av_err2str(err));
     AVPacket *pkt = av_packet_alloc();
     while(true) {
         err = avcodec_receive_packet(codecCtx, pkt);
         if (err == AVERROR(EAGAIN) || err == AVERROR_EOF)
             break;
         else if (err < 0)
-            throw cRuntimeError("avcodec_receive_packet() error: %d", err);
+            throw cRuntimeError("avcodec_receive_packet() error: (%d) %s", err, av_err2str(err));
 
         pkt->dts = 0; // HACK for libav 11
 
         // write the compressed frame into the media file
         err = av_interleaved_write_frame(oc, pkt);
         if (err != 0)
-            throw cRuntimeError("Error while writing audio frame: %d", err);
+            throw cRuntimeError("Error while writing audio frame: (%d) %s", err, av_err2str(err));
     }
     av_packet_free(&pkt);
 
