@@ -9,7 +9,7 @@ on:
 jobs:
   activity-check:
     name: Activity check
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-20.04
     outputs:
       is_active: ${{ steps.activity.outputs.is_active }}
 
@@ -30,7 +30,7 @@ jobs:
 
   main:
     needs: activity-check
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-20.04
     # runs-on: [self-hosted, linux]
     strategy:
       matrix:
