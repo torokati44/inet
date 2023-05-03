@@ -251,6 +251,8 @@ void VoipStreamSender::openSoundFile(const char *name)
     if (avcodec_open2(pEncoderCtx, pCodecEncoder, nullptr) < 0)
         throw cRuntimeError("could not open %s encoding codec!", codec);
 
+    pEncoderCtx->frame_size = samplesPerPacket; // TODO required for g726 codec in libavcodec: 60.3.100 (KLUDGE?)
+
     pReSampleCtx = nullptr;
     if (pCodecCtx->sample_rate != sampleRate
         || pCodecCtx->sample_fmt != pEncoderCtx->sample_fmt
@@ -313,6 +315,7 @@ Packet *VoipStreamSender::generatePacket()
     int err = avcodec_fill_audio_frame(frame, pEncoderCtx->ch_layout.nb_channels, pEncoderCtx->sample_fmt, (const uint8_t *)(sampleBuffer.readPtr()), inBytes, 1);
     if (err < 0)
         throw cRuntimeError("Error in avcodec_fill_audio_frame(): (%d) %s", err, av_err2str(err));
+
     err = avcodec_send_frame(pEncoderCtx, frame);
     if (err < 0)
         throw cRuntimeError("avcodec_send_frame() error: (%d) %s", err, av_err2str(err));
