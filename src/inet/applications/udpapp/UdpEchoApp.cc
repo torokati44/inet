@@ -30,7 +30,14 @@ void UdpEchoApp::initialize(int stage)
 
 void UdpEchoApp::handleMessageWhenUp(cMessage *msg)
 {
-    socket.processMessage(msg);
+    if (msg->isSelfMessage()) {
+        if (strcmp(msg->getName(), "bindSocket") == 0) {
+            bindSocket();
+            delete msg;
+        }
+    }
+    else
+        socket.processMessage(msg);
 }
 
 void UdpEchoApp::socketDataArrived(UdpSocket *socket, Packet *pk)
@@ -76,12 +83,14 @@ void UdpEchoApp::finish()
 
 void UdpEchoApp::handleStartOperation(LifecycleOperation *operation)
 {
-    socket.setOutputGate(gate("socketOut"));
-    int localPort = par("localPort");
-    socket.bind(localPort);
-    MulticastGroupList mgl = getModuleFromPar<IInterfaceTable>(par("interfaceTableModule"), this)->collectMulticastGroups();
-    socket.joinLocalMulticastGroups(mgl);
-    socket.setCallback(this);
+    simtime_t startupTime = par("startupTime");
+    if (startupTime <= simTime()) {
+        bindSocket();
+    }
+    else {
+        cMessage *timerMsg = new cMessage("bindSocket");
+        scheduleAt(startupTime, timerMsg);
+    }
 }
 
 void UdpEchoApp::handleStopOperation(LifecycleOperation *operation)
@@ -97,5 +106,14 @@ void UdpEchoApp::handleCrashOperation(LifecycleOperation *operation)
     socket.setCallback(nullptr);
 }
 
-} // namespace inet
+void UdpEchoApp::bindSocket()
+{
+    socket.setOutputGate(gate("socketOut"));
+    int localPort = par("localPort");
+    socket.bind(localPort);
+    MulticastGroupList mgl = getModuleFromPar<IInterfaceTable>(par("interfaceTableModule"), this)->collectMulticastGroups();
+    socket.joinLocalMulticastGroups(mgl);
+    socket.setCallback(this);
+}
 
+} // namespace inet

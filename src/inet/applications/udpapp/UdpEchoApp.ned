@@ -19,6 +19,7 @@ simple UdpEchoApp like IApp
     parameters:
         string interfaceTableModule;   // The path to the InterfaceTable module
         int localPort;  // Local port to listen on
+        double startupTime @unit(s) = default(0s); // Time when the application should start
         @display("i=block/app");
         @lifecycleSupport;
         double stopOperationExtraTime @unit(s) = default(-1s);    // Extra time after lifecycle stop operation finished
@@ -29,4 +30,3 @@ simple UdpEchoApp like IApp
         input socketIn @labels(UdpControlInfo/up);
         output socketOut @labels(UdpControlInfo/down);
 }
-

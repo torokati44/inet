@@ -21,6 +21,7 @@ class INET_API UdpEchoApp : public ApplicationBase, public UdpSocket::ICallback
   protected:
     UdpSocket socket;
     int numEchoed; // just for WATCH
+    simtime_t startupTime; // Added member variable to store the startupTime parameter value
 
   protected:
     virtual int numInitStages() const override { return NUM_INIT_STAGES; }
@@ -36,9 +37,9 @@ class INET_API UdpEchoApp : public ApplicationBase, public UdpSocket::ICallback
     virtual void socketDataArrived(UdpSocket *socket, Packet *packet) override;
     virtual void socketErrorArrived(UdpSocket *socket, Indication *indication) override;
     virtual void socketClosed(UdpSocket *socket) override;
+    virtual void bindSocket(); // Declared the socket binding method
 };
 
 } // namespace inet
 
 #endif
-
