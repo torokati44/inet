@@ -22,7 +22,23 @@ echo "::endgroup::"
 echo "::group::Configuring omnetpp"
 ./configure WITH_LIBXML=yes WITH_QTENV=no WITH_OSG=yes WITH_OSGEARTH=no
 echo "::endgroup::"
- 
+
+echo "::group::config.log"
+cat config.log
+echo "::endgroup::"
+
+echo "::group::config.status"
+cat config.status
+echo "::endgroup::"
+
+echo "::group::configure.user"
+cat configure.user
+echo "::endgroup::"
+
+echo "::group::Makefile.inc"
+cat Makefile.inc
+echo "::endgroup::"
+
 echo "::group::Compiling omnetpp"
 make MODE=$MODE -j $(nproc) base
 echo "::endgroup::"
