@@ -31,7 +31,7 @@ jobs:
           path: omnetpp
           ref: omnetpp-6.x
 
-      - run: omnetpp/install.sh
+      - run: omnetpp/install.sh -y
 
       - uses: actions/checkout@v4
         with:
@@ -42,6 +42,6 @@ jobs:
           MODE: ${{ matrix.mode }}
         run: |
 
-          source $GITHUB_WORKSPACE/inet/_scripts/github/build-omnetpp.sh
+          # source $GITHUB_WORKSPACE/inet/_scripts/github/build-omnetpp.sh
 
           source $GITHUB_WORKSPACE/inet/_scripts/github/build-inet.sh
