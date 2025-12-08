@@ -32,7 +32,9 @@ jobs:
           path: omnetpp
           ref: omnetpp-6.x
 
-      - run: ./install.sh -y
+      - run: |
+          cp configure.user.dist configure.user
+          ./install.sh -y
         working-directory: omnetpp
 
       - uses: actions/checkout@v4
