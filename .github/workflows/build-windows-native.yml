@@ -76,7 +76,7 @@ jobs:
 
       - uses: actions/checkout@v4
         with:
-          repository: omnetpp/omnetpp
+          repository: torokati44/omnetpp
           path: omnetpp
           ref: omnetpp-6.x
 
