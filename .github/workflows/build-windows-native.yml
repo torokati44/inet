@@ -8,7 +8,55 @@ on:
     # nothing
 
 jobs:
-  main:
+
+  from-release-bundled-tools:
+    runs-on: windows-2025
+    strategy:
+      matrix:
+        mode: ["debug", "release"]
+      fail-fast: false
+
+    steps:
+      - run: C:\msys64\usr\bin\wget.exe https://github.com/omnetpp/omnetpp/releases/download/omnetpp-6.3.0/omnetpp-6.3.0-windows-x86_64.7z
+
+      - name: Extract artifact
+        shell: cmd # Because I had some trouble with pwsh.
+        run: '"C:/Program Files/7-Zip/7z.exe" x omnetpp-6.3.0-windows-x86_64.7z'
+
+      - name: Extract tools
+        working-directory: omnetpp-6.3.0/tools
+        shell: cmd # Because I had some trouble with pwsh.
+        # Better use backslashes here for paths...
+        run: |
+          7za.exe x -aos -y -owin32.x86_64 opp-tools-win32-x86_64-clang64-toolchain.7z
+          del opp-tools-win32-x86_64-clang64-toolchain.7z
+
+      - name: Install release
+        working-directory: omnetpp-6.3.0/tools
+        # These are needed for the bundled MinGW bash to find the included binaries.
+        env:
+          MSYSTEM: CLANG64
+          MSYSCON: defterm
+        # GitHub doesn't reliably provide the repo name on its own anywhere,
+        # so we have to extract it from the username/repository slug.
+        # "${{ github.workspace }}" is "D:\a\<repository-name>\<repository-name>\",
+        # but we need to MinGW-ify it for bash...
+        # The > means the following is a single line, hence the semicolons for bash.
+        run: >
+          win32.x86_64\usr\bin\bash -l -c '
+            GITHUB_REPOSITORY="${{ github.repository }}";
+            REPOSITORY_NAME="${GITHUB_REPOSITORY#*/}";
+            cd /d/a/$REPOSITORY_NAME/$REPOSITORY_NAME/omnetpp-6.3.0;
+            source setenv;
+            ./configure;
+            make -j4;
+            cd samples/aloha;
+            ./aloha -u Cmdenv -c PureAloha1 --sim-time-limit=10s;
+          '
+
+
+
+  from-repo-install-sh:
     runs-on: windows-2025
     strategy:
       matrix:
